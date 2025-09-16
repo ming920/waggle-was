@@ -37,4 +37,4 @@ This enables users to log in securely with email and password.
 ```
 ---
 # Code Convention
-[네이버 자바 컨벤션](https://naver.github.io/hackday-conventions-java/#newline-after-annotation)
+[네이버 자바 컨벤션](https://naver.github.io/hackday-conventions-java/#newline-after-annotation) !
