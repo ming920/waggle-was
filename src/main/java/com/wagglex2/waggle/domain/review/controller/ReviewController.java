@@ -4,12 +4,12 @@ import com.wagglex2.waggle.common.response.ApiResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.dto.response.PageResponse;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewCreationRequestDto;
+import com.wagglex2.waggle.domain.review.dto.request.ReviewUpdateRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,14 +30,6 @@ public class ReviewController {
     /**
      * 리뷰를 작성한다.
      *
-     * <p><b>처리 흐름:</b></p>
-     * <ol>
-     *   <li>요청 본문 DTO 검증 (@Valid)</li>
-     *   <li>인증 사용자 정보 추출 (@AuthenticationPrincipal)</li>
-     *   <li>ReviewService 호출하여 리뷰 생성</li>
-     *   <li>생성된 리뷰 ID 반환</li>
-     * </ol>
-     *
      * @param dto         후기 작성 요청 DTO
      * @param userDetails 인증된 사용자 정보
      * @return 생성된 리뷰 ID를 포함한 ApiResponse
@@ -56,15 +48,6 @@ public class ReviewController {
 
     /**
      * 로그인한 사용자가 <b>작성한 리뷰 목록</b>을 페이지네이션 방식으로 조회한다.
-     *
-     * <p><b>처리 흐름:</b></p>
-     * <ol>
-     *   <li>Spring MVC가 요청 파라미터({@code page}, {@code size}, {@code sort})를 {@link Pageable} 객체로 자동 변환한다.</li>
-     *   <li>인증된 사용자 정보에서 작성자 ID({@code reviewerId})를 추출한다.</li>
-     *   <li>{@code reviewService.getReviewsByReviewerId()} 호출 시 {@link Pageable}을 전달하여 조회를 수행한다.</li>
-     *   <li>서비스 계층에서 조회 결과를 {@link PageResponse}<{@link ReviewResponseDto}> 형태로 변환하여 반환한다.</li>
-     *   <li>컨트롤러는 이를 {@link ApiResponse}로 감싸 200 OK 응답을 반환한다.</li>
-     * </ol>
      *
      * <p><b>요청 파라미터 예시:</b></p>
      * <ul>
@@ -98,21 +81,6 @@ public class ReviewController {
     /**
      * 로그인한 사용자가 <b>받은 리뷰 목록</b>을 페이지네이션 방식으로 조회한다.
      *
-     * <p><b>처리 흐름:</b></p>
-     * <ol>
-     *   <li>Spring MVC가 요청 파라미터({@code page}, {@code size}, {@code sort})를 {@link Pageable} 객체로 자동 변환한다.</li>
-     *   <li>인증 정보에서 리뷰 대상 사용자 ID({@code revieweeId})를 추출한다.</li>
-     *   <li>{@code reviewService.getReviewsByRevieweeId()} 호출 시 {@link Pageable}을 전달하여 조회를 수행한다.</li>
-     *   <li>서비스 계층에서 조회 결과를 {@link PageResponse}<{@link ReviewResponseDto}> 형태로 변환하여 반환한다.</li>
-     *   <li>컨트롤러는 이를 {@link ApiResponse}로 감싸 200 OK 응답을 반환한다.</li>
-     * </ol>
-     *
-     * <p><b>요청 파라미터 예시:</b></p>
-     * <ul>
-     *   <li>{@code GET /me/received?page=0&size=5&sort=createdAt,desc}</li>
-     *   <li>페이지 번호는 0부터 시작 (Spring Data JPA의 기본 규칙)</li>
-     * </ul>
-     *
      * @param userDetails 현재 인증된 사용자 정보
      * @param pageable    페이지 정보 (기본값: size=5, sort=createdAt, direction=DESC)
      * @return 받은 리뷰 목록을 포함한 {@link ApiResponse} (200 OK)
@@ -134,5 +102,34 @@ public class ReviewController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok("내가 받은 리뷰 조회에 성공했습니다.", data));
+    }
+
+    /**
+     * 리뷰 수정 API
+     *
+     * <p>사용자가 본인이 작성한 리뷰 내용을 수정한다.
+     * PATCH 메서드를 사용하여 부분 업데이트를 수행한다.
+     *
+     * @param reviewId 수정할 리뷰 ID (PathVariable)
+     * @param dto 리뷰 수정 요청 DTO (내용 검증 포함)
+     * @param userDetails 현재 인증된 사용자 정보 (Spring Security Context에서 주입)
+     * @return 수정된 리뷰의 ID를 포함한 응답 (ApiResponse<Long>)
+     */
+    @PatchMapping("/me/written/{reviewId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Long>> updateReview(
+            @PathVariable Long reviewId,
+            @Valid @RequestBody ReviewUpdateRequestDto dto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+
+        Long data = reviewService.updateReview(
+                userDetails.getUserId(),
+                reviewId,
+                dto
+                );
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok("리뷰 수정에 성공했습니다.", data));
     }
 }

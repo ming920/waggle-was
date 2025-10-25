@@ -4,8 +4,10 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.common.dto.response.PageResponse;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewCreationRequestDto;
+import com.wagglex2.waggle.domain.review.dto.request.ReviewUpdateRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.review.entity.Review;
+import com.wagglex2.waggle.domain.review.entity.type.ReviewStatus;
 import com.wagglex2.waggle.domain.review.repository.ReviewRepository;
 import com.wagglex2.waggle.domain.review.service.ReviewService;
 import com.wagglex2.waggle.domain.user.entity.User;
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +26,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ReviewServiceImpl implements ReviewService {
 
-    private final static int DEFAULT_PAGE_SIZE = 5;
-
     private final ReviewRepository reviewRepository;
     private final UserService userService;
+
+
+    @Override
+    public Review findById(Long id) {
+        return reviewRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
+    }
 
     /**
      * 리뷰를 생성하는 서비스 로직.
@@ -76,7 +84,11 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public PageResponse<ReviewResponseDto> getReviewsByRevieweeId(Long revieweeId, Pageable pageable) {
-        Page<ReviewResponseDto> page = reviewRepository.findByRevieweeId(revieweeId, pageable)
+        Page<ReviewResponseDto> page = reviewRepository.findByRevieweeIdAndStatus(
+                        revieweeId,
+                        ReviewStatus.ACTIVE,
+                        pageable
+                )
                 .map(ReviewResponseDto::from);
 
         return PageResponse.from(page);
@@ -99,9 +111,42 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public PageResponse<ReviewResponseDto> getReviewsByReviewerId(Long reviewerId, Pageable pageable) {
-        Page<ReviewResponseDto> page = reviewRepository.findByReviewerId(reviewerId, pageable)
+        Page<ReviewResponseDto> page = reviewRepository.findByReviewerIdAndStatus(
+                        reviewerId,
+                        ReviewStatus.ACTIVE,
+                        pageable
+                )
                 .map(ReviewResponseDto::from);
 
         return PageResponse.from(page);
+    }
+
+
+    /**
+     * 리뷰 수정 서비스 로직
+     *
+     * <p>
+     * 사용자가 작성한 리뷰 내용을 수정한다.
+     * 단, 삭제된 리뷰나 본인 소유가 아닌 리뷰는 수정할 수 없다.
+     * <p>
+     * - 메서드 내부에서 userId와 작성자 일치 여부를 추가 검증 (본인 리뷰만 수정 가능)
+     */
+    @Override
+    @Transactional
+    @PreAuthorize("#userId == authentication.principal.userId")
+    public Long updateReview(Long userId, Long reviewId, ReviewUpdateRequestDto dto) {
+
+        Review review = findById(reviewId);
+
+        if (!userId.equals(review.getReviewer().getId())) {
+            throw new BusinessException(ErrorCode.NOT_UPDATE_ANOTHER_USER_REVIEW);
+        }
+
+        if (review.getStatus() != ReviewStatus.ACTIVE) {
+            throw new BusinessException(ErrorCode.NOT_UPDATE_NOT_ACTIVE_REVIEW);
+        }
+
+        review.update(dto);
+        return review.getId();
     }
 }
