@@ -49,4 +49,9 @@ public class Bookmark {
     @Column(name = "bookmarked_at", nullable = false, updatable = false)
     @CreatedDate
     private LocalDateTime bookmarkedAt;
+
+    public Bookmark(User user, BaseRecruitment recruitment) {
+        this.user = user;
+        this.recruitment = recruitment;
+    }
 }
