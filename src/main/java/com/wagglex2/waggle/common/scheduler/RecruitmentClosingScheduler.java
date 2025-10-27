@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.TimeZone;
+
 /**
  * 모집 공고 마감 스케줄러
  *
@@ -21,8 +23,9 @@ public class RecruitmentClosingScheduler {
     private final RecruitmentService  recruitmentService;
 
     // 매일 자정(00:00:00)에 실행
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void scheduleRecruitmentClosing() {
         recruitmentService.closeExpiredRecruitments();
+        TimeZone.getTimeZone("America/Los_Angeles");
     }
 }
