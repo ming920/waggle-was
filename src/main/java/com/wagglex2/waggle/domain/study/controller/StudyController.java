@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class StudyController {
     private final StudyService studyService;
 
-    @PostMapping("/")
+    @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Long>> createStudy(
             @RequestBody @Valid StudyCreationRequestDto requestDto,
