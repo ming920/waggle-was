@@ -27,7 +27,15 @@ import java.time.LocalDateTime;
  * @see BaseRecruitment
  * @author 오재민
  */
-@Table(name = "bookmarks")
+@Table(
+        name = "bookmarks",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "UniqueUserAndRecruitment",
+                        columnNames = {"user_id", "recruitment_id"}
+                ),
+        }
+)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
