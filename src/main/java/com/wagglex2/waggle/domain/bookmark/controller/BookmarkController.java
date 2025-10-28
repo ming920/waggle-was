@@ -19,7 +19,7 @@ public class BookmarkController {
 
     @PostMapping("/recruitments/{recruitmentId}")
     @PreAuthorize("isAuthenticated()")
-    ResponseEntity<ApiResponse<Long>> createBookmark(
+    public ResponseEntity<ApiResponse<Long>> createBookmark(
             @PathVariable("recruitmentId") Long recruitmentId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
