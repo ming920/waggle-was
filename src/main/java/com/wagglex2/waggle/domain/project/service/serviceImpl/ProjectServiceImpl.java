@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
             ProjectSearchCondition condition,
             Pageable pageable
     ) {
-        return projectRepository.findProjectSummaries(condition, pageable);
+        return projectRepository.getProjectSummaries(condition, pageable);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

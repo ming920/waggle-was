@@ -42,7 +42,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      *     </ol>
      */
     @Override
-    public Page<ProjectSummaryResponseDto> findProjectSummaries(ProjectSearchCondition condition, Pageable pageable) {
+    public Page<ProjectSummaryResponseDto> getProjectSummaries(ProjectSearchCondition condition, Pageable pageable) {
         // 조건에 맞는 모든 Project 공고 id 조회
         List<Long> projectIds = queryFactory
                 .select(project.id)
@@ -59,6 +59,33 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                 .orderBy(project.createdAt.desc())
                 .fetch();
 
+        // 해당 id의 Project 공고 조회
+        List<ProjectSummaryResponseDto> content = getProjectSummariesByIds(projectIds);
+
+        // 조건을 만족하는 모든 프로젝트 엔티티의 개수를 구하는 쿼리
+        // 페이지의 총 개수를 제공하기 위함
+        JPAQuery<Long> countQuery = queryFactory
+                .select(project.count())
+                .from(project)
+                .where(
+                        eqPurpose(condition.purpose()),
+                        eqStatus(condition.status()),
+                        containsAnyKeyword(condition.keywords()),
+                        containsAnyPosition(condition.positions()),
+                        containsAnySkill(condition.skills())
+                );
+
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    /**
+     * 주어진 Project ID 목록에 해당하는 프로젝트 요약 정보를 조회한다.
+     *
+     * @param projectIds 조회할 Project ID 목록
+     * @return 입력 순서에 맞춘 {@code List<ProjectSummaryResponseDto>}
+     */
+    @Override
+    public List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds) {
         // 해당 id에 대한 Project 정보 조회
         // collection 데이터를 group by로 묶어서 가져오기 위함
         Map<Long, ProjectSummaryResponseDto> responseDtoMap = queryFactory
@@ -85,24 +112,9 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                 );
 
         // 최종 응답 데이터 (불변 리스트)
-        List<ProjectSummaryResponseDto> content = projectIds.stream()
+        return projectIds.stream()
                 .map(responseDtoMap::get)
                 .toList();
-
-        // 조건을 만족하는 모든 프로젝트 엔티티의 개수를 구하는 쿼리
-        // 페이지의 총 개수를 제공하기 위함
-        JPAQuery<Long> countQuery = queryFactory
-                .select(project.count())
-                .from(project)
-                .where(
-                        eqPurpose(condition.purpose()),
-                        eqStatus(condition.status()),
-                        containsAnyKeyword(condition.keywords()),
-                        containsAnyPosition(condition.positions()),
-                        containsAnySkill(condition.skills())
-                );
-
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     /**
