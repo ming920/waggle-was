@@ -1,5 +1,7 @@
 package com.wagglex2.waggle.domain.review.entity;
 
+import com.wagglex2.waggle.domain.review.dto.request.ReviewUpdateRequestDto;
+import com.wagglex2.waggle.domain.review.entity.type.ReviewStatus;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -53,6 +55,10 @@ public class Review {
     @Column(nullable = false, length = 100)
     private String content;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus status = ReviewStatus.ACTIVE;
+
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -66,5 +72,9 @@ public class Review {
         this.reviewer = reviewer;
         this.reviewee = reviewee;
         this.content = content;
+    }
+
+    public void update(ReviewUpdateRequestDto dto) {
+        this.content = dto.content();
     }
 }
