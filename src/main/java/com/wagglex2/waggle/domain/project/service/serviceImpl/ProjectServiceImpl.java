@@ -13,6 +13,11 @@ import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto
 import com.wagglex2.waggle.domain.project.entity.Project;
 import com.wagglex2.waggle.domain.project.repository.ProjectRepository;
 import com.wagglex2.waggle.domain.project.service.ProjectService;
+import com.wagglex2.waggle.domain.team.entity.Team;
+import com.wagglex2.waggle.domain.team.service.TeamService;
+import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
+import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
+import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +37,7 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserService userService;
+    private final TeamService teamService;
 
     @Transactional
     @Override
@@ -40,7 +46,14 @@ public class ProjectServiceImpl implements ProjectService {
         User user = userService.findById(userId);
         Project newProject = ProjectCreationRequestDto.toEntity(user, requestDto);
 
-        return projectRepository.save(newProject).getId();
+        Long projectId = projectRepository.save(newProject).getId();
+
+        Team team = new Team(newProject);
+        TeamMember leader = new TeamMember(team, user, TeamRole.LEADER);
+        team.addMember(leader);
+        teamService.save(team);
+
+        return projectId;
     }
 
     @Transactional

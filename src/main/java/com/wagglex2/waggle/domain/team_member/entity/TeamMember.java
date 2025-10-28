@@ -6,6 +6,7 @@ import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -27,7 +28,7 @@ import java.time.LocalDateTime;
  *
  * <p>포지션(position)은 Project 팀에서만 사용되며, Study / Assignment 팀의 경우 null 값이 허용된다.</p>
  *
- * @author
+ * @author 김민재
  */
 @Entity
 @Table(name = "team_members")
@@ -65,6 +66,13 @@ public class TeamMember {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Builder
+    public TeamMember(Team team, User user, TeamRole role) {
+        this.team = team;
+        this.user = user;
+        this.role = role;
+    }
 
     public void setTeam(Team team) {
         this.team = team;
