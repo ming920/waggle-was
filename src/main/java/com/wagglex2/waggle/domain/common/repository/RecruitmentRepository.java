@@ -11,8 +11,10 @@ import java.util.Optional;
 @Repository
 public interface RecruitmentRepository extends JpaRepository<BaseRecruitment, Long> {
 
-    @Query("SELECT r FROM BaseRecruitment r " +
-            "WHERE r.id = :id " +
-            "AND r.status != com.wagglex2.waggle.domain.common.type.RecruitmentStatus.CANCELED")
+    @Query("""
+        SELECT r FROM BaseRecruitment r
+        WHERE r.id = :id
+        AND r.status != com.wagglex2.waggle.domain.common.type.RecruitmentStatus.CANCELED
+    """)
     Optional<BaseRecruitment> findByIdNotCanceled(@Param("id") Long id);
 }
