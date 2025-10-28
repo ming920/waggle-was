@@ -3,7 +3,6 @@ package com.wagglex2.waggle.domain.bookmark.controller;
 import com.wagglex2.waggle.common.response.ApiResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +17,10 @@ public class BookmarkController {
 
     private final BookmarkService bookmarkService;
 
-    @PostMapping
+    @PostMapping("/recruitments/{recruitmentId}")
     @PreAuthorize("isAuthenticated()")
     ResponseEntity<ApiResponse<Long>> createBookmark(
-            @RequestParam("recruitment-id") @NotNull Long recruitmentId,
+            @PathVariable("recruitmentId") Long recruitmentId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long bookmarkId = bookmarkService.createBookmark(userDetails.getUserId(), recruitmentId);
