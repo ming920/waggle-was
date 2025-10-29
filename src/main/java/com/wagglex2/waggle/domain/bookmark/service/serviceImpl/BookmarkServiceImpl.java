@@ -48,7 +48,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         // 권한 검증
         if (!userId.equals(bookmark.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_BOOKMARK);
         }
 
         bookmarkRepository.delete(bookmark);
