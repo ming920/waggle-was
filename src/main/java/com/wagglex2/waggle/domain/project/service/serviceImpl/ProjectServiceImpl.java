@@ -23,6 +23,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -82,6 +83,22 @@ public class ProjectServiceImpl implements ProjectService {
             Pageable pageable
     ) {
         return projectRepository.getProjectSummaries(condition, pageable);
+    }
+
+    /**
+     * 주어진 Project ID 목록에 해당하는 프로젝트 요약 정보를 조회한다.
+     * <p>
+     * <ul>
+     *      <li>컨트롤러 요청이 아닌 다른 서비스에서 호출하기 위한 메서드</li>
+     *      <li>반환 리스트는 입력된 ID 순서를 보장</li>
+     * </ul>
+     *
+     * @param projectIds 조회할 Project ID 목록
+     * @return 입력 ID 순서에 맞춘 {@code List<ProjectSummaryResponseDto>}
+     */
+    @Override
+    public List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds) {
+        return projectRepository.getProjectSummariesByIds(projectIds);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
