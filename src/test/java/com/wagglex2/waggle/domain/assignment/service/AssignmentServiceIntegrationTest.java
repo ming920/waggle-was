@@ -90,6 +90,27 @@ public class AssignmentServiceIntegrationTest {
         assertThat(assignment.getStatus()).isEqualTo(RecruitmentStatus.CLOSED);
     }
 
+    @Test
+    @DisplayName("과제 공고 삭제 시, 상태가 'CANCELED'로 바뀌어야 한다.")
+    void cancelAssignment() {
+        // given
+        Assignment assignment = createAssignment();
+        assignmentRepository.save(assignment);
+
+        Long userId = assignment.getUser().getId();
+        Long assignmentId = assignment.getId();
+        RecruitmentStatus beforeStatus = assignment.getStatus();
+
+        // 삭제 전 상태 확인
+        assertThat(beforeStatus).isEqualTo(RecruitmentStatus.RECRUITING);
+
+        // when
+        assignmentService.deleteAssignment(userId, assignmentId);
+
+        // then
+        assertThat(assignment.getStatus()).isEqualTo(RecruitmentStatus.CANCELED);
+    }
+
     private AssignmentUpdateRequestDto createUpdateDto() {
         LocalDateTime deadline = LocalDateTime.now().minusDays(1)
                 .withHour(23).withMinute(59).withSecond(59);
