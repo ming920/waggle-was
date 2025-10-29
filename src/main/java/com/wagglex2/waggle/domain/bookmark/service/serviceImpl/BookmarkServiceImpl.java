@@ -55,6 +55,11 @@ public class BookmarkServiceImpl implements BookmarkService {
         Page<Long> targetIds =
                 bookmarkRepository.findBookmarkedRecruitmentIdsByUserId(userId, RecruitmentCategory.PROJECT, pageable);
 
+        // 조회할 공고가 없으면, 빈 리스트 반환
+        if (targetIds.getContent().isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, targetIds.getTotalElements());
+        }
+
         // targetIds에 해당하는 프로젝트 공고 정보 조회
         List<ProjectSummaryResponseDto> projectSummaries =
                 projectService.getProjectSummariesByIds(targetIds.getContent());
