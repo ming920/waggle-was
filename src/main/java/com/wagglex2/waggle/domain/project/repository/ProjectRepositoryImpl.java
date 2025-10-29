@@ -43,17 +43,19 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      */
     @Override
     public Page<ProjectSummaryResponseDto> getProjectSummaries(ProjectSearchCondition condition, Pageable pageable) {
+        // where문 조건
+        BooleanBuilder builder = new BooleanBuilder()
+                .and(eqPurpose(condition.purpose()))
+                .and(eqStatus(condition.status()))
+                .and(containsAnyKeyword(condition.keywords()))
+                .and(containsAnyPosition(condition.positions()))
+                .and(containsAnySkill(condition.skills()));
+
         // 조건에 맞는 모든 Project 공고 id 조회
         List<Long> projectIds = queryFactory
                 .select(project.id)
                 .from(project)
-                .where(
-                        eqPurpose(condition.purpose()),
-                        eqStatus(condition.status()),
-                        containsAnyKeyword(condition.keywords()),
-                        containsAnyPosition(condition.positions()),
-                        containsAnySkill(condition.skills())
-                )
+                .where(builder)
                 .offset(pageable.getOffset())  // page
                 .limit(pageable.getPageSize()) // size
                 .orderBy(project.createdAt.desc())
@@ -67,13 +69,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(project.count())
                 .from(project)
-                .where(
-                        eqPurpose(condition.purpose()),
-                        eqStatus(condition.status()),
-                        containsAnyKeyword(condition.keywords()),
-                        containsAnyPosition(condition.positions()),
-                        containsAnySkill(condition.skills())
-                );
+                .where(builder);
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
