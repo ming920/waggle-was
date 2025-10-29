@@ -109,6 +109,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 
         // 최종 응답 데이터 (불변 리스트)
         return projectIds.stream()
+                .filter(Objects::nonNull)
                 .map(responseDtoMap::get)
                 .toList();
     }
