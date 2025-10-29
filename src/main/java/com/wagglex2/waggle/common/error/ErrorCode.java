@@ -25,6 +25,7 @@ public enum ErrorCode {
     MAX_PARTICIPANTS_EXCEEDED(HttpStatus.BAD_REQUEST, "MAX_PARTICIPANTS_EXCEEDED", "참가 인원이 최대 모집 인원을 초과했습니다."),
     SELF_REVIEW_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "SELF_REVIEW_NOT_ALLOWED", "자기 자신에 대한 리뷰는 작성할 수 없습니다."),
     INVALID_PAGE_NUMBER(HttpStatus.BAD_REQUEST, "INVALID_PAGE_NUMBER", "페이지 번호는 1 이상이어야 합니다"),
+    INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "INVALID_ENUM_VALUE", "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요."),
 
     // 401
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다."),
@@ -39,6 +40,10 @@ public enum ErrorCode {
     // 403
     FORBIDDEN(HttpStatus.FORBIDDEN, "FORBIDDEN", "접근 권한이 없습니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "ACCESS_DENIED", "요청한 리소스에 접근할 수 없습니다."),
+    NOT_UPDATE_NOT_ACTIVE_REVIEW(HttpStatus.FORBIDDEN, "NOT_UPDATE_NOT_ACTIVE_REVIEW","비활성화된 리뷰는 수정할 수 없습니다."),
+    NOT_DELETE_NOT_ACTIVE_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_NOT_ACTIVE_REVIEW","비활성화된 리뷰는 삭제할 수 없습니다."),
+    NOT_UPDATE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_UPDATE_ANOTHER_USER_REVIEW", "본인 리뷰만 수정할 수 있습니다."),
+    NOT_DELETE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_ANOTHER_USER_REVIEW", "본인 리뷰만 삭제할 수 있습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
@@ -47,6 +52,7 @@ public enum ErrorCode {
     ASSIGNMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ASSIGNMENT_NOT_FOUND", "과제 공고를 찾을 수 없습니다."),
     POSITION_NOT_FOUND(HttpStatus.NOT_FOUND, "POSITION_NOT_FOUND", "역할을 찾을 수 없습니다."),
     SKILL_NOT_FOUND(HttpStatus.NOT_FOUND, "SKILL_NOT_FOUND", "기술 스택을 찾을 수 없습니다."),
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_NOT_FOUND", "리뷰를 찾을 수 없습니다."),
 
     // 406
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT_ACCEPTABLE", "응답 가능한 미디어 타입이 없습니다."),
