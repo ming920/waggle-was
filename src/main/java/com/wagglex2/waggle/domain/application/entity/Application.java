@@ -4,6 +4,7 @@ import com.wagglex2.waggle.domain.application.type.ApplicationStatus;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.Skill;
+import com.wagglex2.waggle.domain.project.type.MeetingType;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -37,6 +38,13 @@ public class Application {
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private Integer grade;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "meeting_type", nullable = false)
+    private MeetingType meetingType;
 
     /**
      * Project 공고에 대한 지원에만 존재<br>
