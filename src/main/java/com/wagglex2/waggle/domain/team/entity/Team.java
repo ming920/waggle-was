@@ -4,7 +4,6 @@ import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -59,7 +58,6 @@ public class Team {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Builder
     public Team(BaseRecruitment recruitment) {
         this.recruitment = recruitment;
     }

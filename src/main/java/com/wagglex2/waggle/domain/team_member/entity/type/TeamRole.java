@@ -21,4 +21,8 @@ public enum TeamRole {
     MEMBER("멤버");
 
     private final String desc;
+
+    public String getName() {
+        return this.name();
+    }
 }

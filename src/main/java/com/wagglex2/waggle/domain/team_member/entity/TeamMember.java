@@ -6,7 +6,6 @@ import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -67,7 +66,6 @@ public class TeamMember {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    @Builder
     public TeamMember(Team team, User user, TeamRole role) {
         this.team = team;
         this.user = user;
