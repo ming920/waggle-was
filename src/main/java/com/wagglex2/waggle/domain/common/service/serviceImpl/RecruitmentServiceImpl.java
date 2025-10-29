@@ -1,5 +1,8 @@
 package com.wagglex2.waggle.domain.common.service.serviceImpl;
 
+import com.wagglex2.waggle.common.error.ErrorCode;
+import com.wagglex2.waggle.common.exception.BusinessException;
+import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.repository.RecruitmentRepository;
 import com.wagglex2.waggle.domain.common.service.RecruitmentService;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +14,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class RecruitmentServiceImpl implements RecruitmentService {
 
     private final RecruitmentRepository recruitmentRepository;
+
+    @Override
+    public BaseRecruitment findById(Long recruitmentId) {
+        return recruitmentRepository.findByIdNotCanceled(recruitmentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RECRUITMENT_NOT_FOUND));
+    }
 
     @Transactional
     @Override

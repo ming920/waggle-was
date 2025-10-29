@@ -8,9 +8,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Repository
 public interface RecruitmentRepository extends JpaRepository<BaseRecruitment, Long> {
+
+    @Query("""
+        SELECT r FROM BaseRecruitment r
+        WHERE r.id = :id
+        AND r.status != com.wagglex2.waggle.domain.common.type.RecruitmentStatus.CANCELED
+    """)
+    Optional<BaseRecruitment> findByIdNotCanceled(@Param("id") Long id);
 
     /**
      * 마감일(deadline)이 기준 시각(baseTime) 이전인 공고들의 상태를 CLOSED로 변경

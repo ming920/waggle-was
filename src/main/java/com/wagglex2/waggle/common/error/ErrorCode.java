@@ -48,6 +48,7 @@ public enum ErrorCode {
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE_NOT_FOUND", "파일을 찾을 수 없습니다."),
+    RECRUITMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT_NOT_FOUND", "공고를 찾을 수 없습니다."),
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_NOT_FOUND", "프로젝트 공고를 찾을 수 없습니다."),
     ASSIGNMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ASSIGNMENT_NOT_FOUND", "과제 공고를 찾을 수 없습니다."),
     POSITION_NOT_FOUND(HttpStatus.NOT_FOUND, "POSITION_NOT_FOUND", "역할을 찾을 수 없습니다."),
@@ -61,7 +62,8 @@ public enum ErrorCode {
     DUPLICATED_USERNAME(HttpStatus.CONFLICT, "DUPLICATED_USERNAME", "이미 가입된 아이디입니다."),
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "DUPLICATED_EMAIL", "이미 가입된 이메일입니다."),
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "DUPLICATED_NICKNAME", "이미 존재하는 닉네임입니다."),
-    ALREADY_WITHDRAWN_USER(HttpStatus.CONFLICT, "AREADY_WITHDRAWN_USER", "이미 탈퇴한 회원입니다."),
+    ALREADY_WITHDRAWN_USER(HttpStatus.CONFLICT, "ALREADY_WITHDRAWN_USER", "이미 탈퇴한 회원입니다."),
+    ALREADY_BOOKMARKED(HttpStatus.CONFLICT, "ALREADY_BOOKMARKED", "이미 찜한 공고입니다."),
 
     // 413
     PAYLOAD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "PAYLOAD_TOO_LARGE", "요청 또는 파일 크기가 너무 큽니다."),
