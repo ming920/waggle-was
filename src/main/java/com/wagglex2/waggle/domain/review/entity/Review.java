@@ -77,4 +77,6 @@ public class Review {
     public void update(ReviewUpdateRequestDto dto) {
         this.content = dto.content();
     }
+
+    public void delete() { this.status = ReviewStatus.DELETED; }
 }

@@ -41,7 +41,9 @@ public enum ErrorCode {
     FORBIDDEN(HttpStatus.FORBIDDEN, "FORBIDDEN", "접근 권한이 없습니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "ACCESS_DENIED", "요청한 리소스에 접근할 수 없습니다."),
     NOT_UPDATE_NOT_ACTIVE_REVIEW(HttpStatus.FORBIDDEN, "NOT_UPDATE_NOT_ACTIVE_REVIEW","비활성화된 리뷰는 수정할 수 없습니다."),
+    NOT_DELETE_NOT_ACTIVE_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_NOT_ACTIVE_REVIEW","비활성화된 리뷰는 삭제할 수 없습니다."),
     NOT_UPDATE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_UPDATE_ANOTHER_USER_REVIEW", "본인 리뷰만 수정할 수 있습니다."),
+    NOT_DELETE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_ANOTHER_USER_REVIEW", "본인 리뷰만 삭제할 수 있습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
