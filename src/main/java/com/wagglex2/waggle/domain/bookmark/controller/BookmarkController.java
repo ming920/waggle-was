@@ -28,4 +28,17 @@ public class BookmarkController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.ok("공고를 찜 목록에 성공적으로 추가하였습니다.", bookmarkId));
     }
+
+    @DeleteMapping("/{bookmarkId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> deleteBookmark(
+            @PathVariable("bookmarkId") Long bookmarkId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        bookmarkService.deleteBookmark(userDetails.getUserId(), bookmarkId);
+
+        return ResponseEntity.ok(
+                ApiResponse.ok("공고를 찜 목록에서 성공적으로 삭제하였습니다.")
+        );
+    }
 }

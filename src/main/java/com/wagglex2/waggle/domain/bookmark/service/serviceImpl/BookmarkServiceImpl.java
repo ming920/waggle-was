@@ -38,4 +38,19 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         return bookmarkRepository.save(newBookmark).getId();
     }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void deleteBookmark(@P("userId") Long userId, Long bookmarkId) {
+        Bookmark bookmark = bookmarkRepository.findById(bookmarkId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.BOOKMARK_NOT_FOUND));
+
+        // 권한 검증
+        if (!userId.equals(bookmark.getUser().getId())) {
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_BOOKMARK);
+        }
+
+        bookmarkRepository.delete(bookmark);
+    }
 }

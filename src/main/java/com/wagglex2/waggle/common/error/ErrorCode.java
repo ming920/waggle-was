@@ -44,6 +44,7 @@ public enum ErrorCode {
     NOT_DELETE_NOT_ACTIVE_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_NOT_ACTIVE_REVIEW","비활성화된 리뷰는 삭제할 수 없습니다."),
     NOT_UPDATE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_UPDATE_ANOTHER_USER_REVIEW", "본인 리뷰만 수정할 수 있습니다."),
     NOT_DELETE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_ANOTHER_USER_REVIEW", "본인 리뷰만 삭제할 수 있습니다."),
+    CANNOT_DELETE_ANOTHER_USER_BOOKMARK(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_BOOKMARK", "다른 사용자의 찜은 취소할 수 없습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
@@ -54,6 +55,7 @@ public enum ErrorCode {
     POSITION_NOT_FOUND(HttpStatus.NOT_FOUND, "POSITION_NOT_FOUND", "역할을 찾을 수 없습니다."),
     SKILL_NOT_FOUND(HttpStatus.NOT_FOUND, "SKILL_NOT_FOUND", "기술 스택을 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_NOT_FOUND", "리뷰를 찾을 수 없습니다."),
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKMARK_NOT_FOUND", "찜 정보를 찾을 수 없습니다."),
 
     // 406
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT_ACCEPTABLE", "응답 가능한 미디어 타입이 없습니다."),
