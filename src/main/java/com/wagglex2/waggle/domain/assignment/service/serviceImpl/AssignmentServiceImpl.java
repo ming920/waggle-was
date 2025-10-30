@@ -4,7 +4,7 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentCreationRequestDto;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentUpdateRequestDto;
-import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentResponseDto;
+import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
@@ -35,7 +35,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Transactional
     @Override
-    public AssignmentResponseDto getAssignment(Long assignmentId) {
+    public AssignmentDetailResponseDto getAssignment(Long assignmentId) {
         int updated = assignmentRepository.increaseViewCount(assignmentId);
         if (updated == 0) {
             throw new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND);
@@ -44,7 +44,7 @@ public class AssignmentServiceImpl implements AssignmentService {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND));
 
-        return AssignmentResponseDto.fromEntity(assignment);
+        return AssignmentDetailResponseDto.fromEntity(assignment);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

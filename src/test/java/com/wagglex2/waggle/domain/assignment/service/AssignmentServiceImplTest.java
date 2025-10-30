@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.assignment.service;
 
-import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentResponseDto;
+import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.assignment.service.serviceImpl.AssignmentServiceImpl;
@@ -43,10 +43,10 @@ class AssignmentServiceImplTest {
         given(assignmentRepository.increaseViewCount(1L)).willReturn(1);
 
         // when
-        AssignmentResponseDto actual = assignmentService.getAssignment(1L);
+        AssignmentDetailResponseDto actual = assignmentService.getAssignment(1L);
 
         // then
-        AssignmentResponseDto expected = AssignmentResponseDto.fromEntity(assignment);
+        AssignmentDetailResponseDto expected = AssignmentDetailResponseDto.fromEntity(assignment);
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("viewCount")
                 .isEqualTo(expected);

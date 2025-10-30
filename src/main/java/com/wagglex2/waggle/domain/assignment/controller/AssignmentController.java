@@ -4,7 +4,7 @@ import com.wagglex2.waggle.common.response.ApiResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentCreationRequestDto;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentUpdateRequestDto;
-import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentResponseDto;
+import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,8 +34,8 @@ public class AssignmentController {
 
     @GetMapping("/{assignmentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<AssignmentResponseDto>> getAssignment(@PathVariable Long assignmentId) {
-        AssignmentResponseDto responseDto = assignmentService.getAssignment(assignmentId);
+    public ResponseEntity<ApiResponse<AssignmentDetailResponseDto>> getAssignment(@PathVariable Long assignmentId) {
+        AssignmentDetailResponseDto responseDto = assignmentService.getAssignment(assignmentId);
 
         return ResponseEntity.ok(
                 ApiResponse.ok("과제 공고를 성공적으로 조회하였습니다.", responseDto)
