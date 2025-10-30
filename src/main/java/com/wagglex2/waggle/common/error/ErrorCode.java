@@ -26,6 +26,7 @@ public enum ErrorCode {
     SELF_REVIEW_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "SELF_REVIEW_NOT_ALLOWED", "자기 자신에 대한 리뷰는 작성할 수 없습니다."),
     INVALID_PAGE_NUMBER(HttpStatus.BAD_REQUEST, "INVALID_PAGE_NUMBER", "페이지 번호는 1 이상이어야 합니다"),
     INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "INVALID_ENUM_VALUE", "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요."),
+    MISMATCHED_RECRUITMENT_CATEGORY(HttpStatus.BAD_REQUEST, "MISMATCHED_RECRUITMENT_CATEGORY", "지원하려는 공고의 카테고리가 요청한 카테고리와 일치하지 않습니다."),
 
     // 401
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다."),
@@ -45,6 +46,8 @@ public enum ErrorCode {
     NOT_UPDATE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_UPDATE_ANOTHER_USER_REVIEW", "본인 리뷰만 수정할 수 있습니다."),
     NOT_DELETE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_ANOTHER_USER_REVIEW", "본인 리뷰만 삭제할 수 있습니다."),
     CANNOT_DELETE_ANOTHER_USER_BOOKMARK(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_BOOKMARK", "다른 사용자의 찜은 취소할 수 없습니다."),
+    CANNOT_APPLY_OWN_RECRUITMENT(HttpStatus.FORBIDDEN, "CANNOT_APPLY_OWN_RECRUITMENT", "본인 공고에는 지원할 수 없습니다."),
+    RECRUITMENT_CLOSED(HttpStatus.FORBIDDEN, "RECRUITMENT_CLOSED", "모집이 마감된 공고입니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
@@ -66,6 +69,7 @@ public enum ErrorCode {
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "DUPLICATED_NICKNAME", "이미 존재하는 닉네임입니다."),
     ALREADY_WITHDRAWN_USER(HttpStatus.CONFLICT, "ALREADY_WITHDRAWN_USER", "이미 탈퇴한 회원입니다."),
     ALREADY_BOOKMARKED(HttpStatus.CONFLICT, "ALREADY_BOOKMARKED", "이미 찜한 공고입니다."),
+    ALREADY_APPLIED_RECRUITMENT(HttpStatus.CONFLICT, "ALREADY_APPLIED_RECRUITMENT", "이미 지원한 공고입니다."),
 
     // 413
     PAYLOAD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "PAYLOAD_TOO_LARGE", "요청 또는 파일 크기가 너무 큽니다."),

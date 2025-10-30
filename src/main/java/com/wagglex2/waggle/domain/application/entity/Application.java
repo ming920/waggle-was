@@ -8,6 +8,7 @@ import com.wagglex2.waggle.domain.project.type.MeetingType;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -72,4 +73,19 @@ public class Application {
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
+
+    @Builder
+    public Application(
+            User applicant, BaseRecruitment recruitment, String content,
+            Integer grade, MeetingType meetingType, PositionType position,
+            Set<Skill> skills
+    ) {
+        this.applicant = applicant;
+        this.recruitment = recruitment;
+        this.content = content;
+        this.grade = grade;
+        this.meetingType = meetingType;
+        this.position = position;
+        this.skills = skills;
+    }
 }
