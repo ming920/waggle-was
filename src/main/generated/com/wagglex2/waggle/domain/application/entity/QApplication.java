@@ -35,6 +35,8 @@ public class QApplication extends EntityPathBase<Application> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isDeleted = createBoolean("isDeleted");
+
     public final EnumPath<com.wagglex2.waggle.domain.project.type.MeetingType> meetingType = createEnum("meetingType", com.wagglex2.waggle.domain.project.type.MeetingType.class);
 
     public final EnumPath<com.wagglex2.waggle.domain.common.type.PositionType> position = createEnum("position", com.wagglex2.waggle.domain.common.type.PositionType.class);

@@ -82,6 +82,9 @@ public class Application {
     @CreatedDate
     private LocalDateTime createdAt;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     @Builder
     public Application(
             User applicant, BaseRecruitment recruitment, String content,
