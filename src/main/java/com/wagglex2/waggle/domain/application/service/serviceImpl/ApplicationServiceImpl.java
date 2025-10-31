@@ -3,12 +3,18 @@ package com.wagglex2.waggle.domain.application.service.serviceImpl;
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.application.dto.request.ApplicationCommonRequestDto;
+import com.wagglex2.waggle.domain.application.dto.request.ApplicationProjectRequestDto;
 import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.repository.ApplicationRepository;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
+import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.service.RecruitmentService;
+import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
+import com.wagglex2.waggle.domain.common.type.PositionParticipantInfo;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
+import com.wagglex2.waggle.domain.project.entity.Project;
+import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +53,7 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new BusinessException(ErrorCode.MISMATCHED_RECRUITMENT_CATEGORY);
         }
 
-        // 모집이 마감된 공고에 지원한 경우
+        // 모집 기간이 종료된 공고에 지원한 경우
         if (recruitment.getStatus() != RecruitmentStatus.RECRUITING) {
             throw new BusinessException(ErrorCode.RECRUITMENT_CLOSED);
         }
@@ -62,7 +68,54 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new BusinessException(ErrorCode.ALREADY_APPLIED_RECRUITMENT);
         }
 
-        Application newApplication = requestDto.toEntity(applicant, recruitment);
+        return switch (recruitment.getCategory()) {
+            case PROJECT -> applyProject(applicant, (Project) recruitment, (ApplicationProjectRequestDto) requestDto);
+            case ASSIGNMENT -> applyAssignment(applicant, (Assignment) recruitment, requestDto);
+            case STUDY -> applyStudy(applicant, (Study) recruitment, requestDto);
+        };
+    }
+
+    private Long applyProject(User applicant, Project project, ApplicationProjectRequestDto requestDto) {
+        // 지원한 포지션에 대한 정보 가져오기
+        PositionParticipantInfo targetPositionInfo = project.getPositions().stream()
+                .filter((p) -> p.getPosition() == requestDto.getPosition())
+                .findAny()
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_RECRUITING_POSITION));
+
+        ParticipantInfo participantInfo = targetPositionInfo.getParticipantInfo();
+
+        // 지원한 포지션의 모집이 이미 완료된 경우
+        if (participantInfo.getCurrParticipants() >= participantInfo.getMaxParticipants()) {
+            throw new BusinessException(ErrorCode.POSITION_FULL);
+        }
+
+        Application newApplication = requestDto.toEntity(applicant, project);
+
+        return applicationRepository.save(newApplication).getId();
+    }
+
+    private Long applyAssignment(User applicant, Assignment assignment, ApplicationCommonRequestDto requestDto) {
+        ParticipantInfo participantInfo = assignment.getParticipants();
+
+        // 모집이 이미 완료된 경우
+        if (participantInfo.getCurrParticipants() >= participantInfo.getMaxParticipants()) {
+            throw new BusinessException(ErrorCode.RECRUITMENT_FULL);
+        }
+
+        Application newApplication = requestDto.toEntity(applicant, assignment);
+
+        return applicationRepository.save(newApplication).getId();
+    }
+
+    private Long applyStudy(User applicant, Study study, ApplicationCommonRequestDto requestDto) {
+        ParticipantInfo participantInfo = study.getParticipants();
+
+        // 모집이 이미 완료된 경우
+        if (participantInfo.getCurrParticipants() >= participantInfo.getMaxParticipants()) {
+            throw new BusinessException(ErrorCode.RECRUITMENT_FULL);
+        }
+
+        Application newApplication = requestDto.toEntity(applicant, study);
 
         return applicationRepository.save(newApplication).getId();
     }

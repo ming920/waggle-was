@@ -9,6 +9,7 @@ import com.wagglex2.waggle.domain.project.type.MeetingType;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
 
 import java.util.Set;
 
@@ -42,6 +43,7 @@ import java.util.Set;
  */
 public class ApplicationProjectRequestDto extends ApplicationCommonRequestDto {
 
+    @Getter
     @NotNull(message = "지원하는 포지션 정보가 누락되었습니다.")
     private final PositionType position;
 
