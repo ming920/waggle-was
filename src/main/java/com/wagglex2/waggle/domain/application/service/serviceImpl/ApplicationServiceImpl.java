@@ -33,7 +33,13 @@ public class ApplicationServiceImpl implements ApplicationService {
             Long recruitmentId,
             ApplicationCommonRequestDto requestDto
     ) {
+        User applicant = userService.findById(userId);
         BaseRecruitment recruitment = recruitmentService.findById(recruitmentId);
+
+        // 타 대학의 공고에 지원한 경우
+        if (applicant.getUniversity() != recruitment.getUser().getUniversity()) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_CROSS_UNIVERSITY_RECRUITMENT);
+        }
 
         // 요청한 공고 카테고리가 실제 카테고리와 일치하지 않는 경우
         if (requestDto.getCategory() != recruitment.getCategory()) {
@@ -55,7 +61,6 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new BusinessException(ErrorCode.ALREADY_APPLIED_RECRUITMENT);
         }
 
-        User applicant = userService.findById(userId);
         Application newApplication = requestDto.toEntity(applicant, recruitment);
 
         return applicationRepository.save(newApplication).getId();
