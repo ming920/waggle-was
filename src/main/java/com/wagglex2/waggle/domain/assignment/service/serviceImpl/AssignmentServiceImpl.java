@@ -3,8 +3,10 @@ package com.wagglex2.waggle.domain.assignment.service.serviceImpl;
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentCreationRequestDto;
+import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentSearchCondition;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentUpdateRequestDto;
 import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentDetailResponseDto;
+import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentSummaryResponseDto;
 import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
@@ -12,6 +14,8 @@ import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -45,6 +49,14 @@ public class AssignmentServiceImpl implements AssignmentService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND));
 
         return AssignmentDetailResponseDto.fromEntity(assignment);
+    }
+
+    @Override
+    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(
+            AssignmentSearchCondition condition,
+            Pageable pageable
+    ) {
+        return assignmentRepository.findAssignmentSummaries(condition, pageable);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
