@@ -21,9 +21,9 @@ public class AssignmentSummaryResponseDto extends BaseRecruitmentSummaryResponse
     private final ParticipantInfoResponseDto participants;
     private final Set<Integer> grades;
 
-    protected AssignmentSummaryResponseDto(
+    public AssignmentSummaryResponseDto(
             Long id, Long authorId, String authorNickname,
-            RecruitmentCategory category, University university, String title,
+            University university, RecruitmentCategory category, String title,
             LocalDateTime deadline, RecruitmentStatus status,
             String department, String lecture, String lectureCode,
             ParticipantInfoResponseDto participants, Set<Integer> grades

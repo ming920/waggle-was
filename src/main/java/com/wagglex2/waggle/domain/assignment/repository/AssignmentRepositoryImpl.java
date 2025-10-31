@@ -71,7 +71,15 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
                                 assignment.title,
                                 assignment.deadline,
                                 assignment.status,
-                                set(assignment.grades)
+                                assignment.department,
+                                assignment.lecture,
+                                assignment.lectureCode,
+                                Projections.constructor(
+                                        com.wagglex2.waggle.domain.common.dto.response.ParticipantInfoResponseDto.class,
+                                        assignment.participants.currParticipants,
+                                        assignment.participants.maxParticipants
+                                ),
+                                set(assignment.grades.any())
                         ))
                 );
 

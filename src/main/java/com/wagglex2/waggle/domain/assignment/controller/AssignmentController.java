@@ -30,7 +30,7 @@ public class AssignmentController {
     private final AssignmentService assignmentService;
     private final KomoranUtil KomoranUtil;
 
-    @PostMapping("/")
+    @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Long>> createAssignment(
             @RequestBody @Valid AssignmentCreationRequestDto requestDto,
