@@ -28,6 +28,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     @PreAuthorize("#userId == authentication.principal.userId")
     @Transactional
+    @Override
     public Long submitApplication(
             @P("userId") Long userId,
             Long recruitmentId,
