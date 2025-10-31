@@ -99,4 +99,9 @@ public class Application {
         this.position = position;
         this.skills = skills;
     }
+
+    // 논리적 삭제
+    public void delete() {
+        this.isDeleted = true;
+    }
 }

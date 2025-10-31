@@ -161,6 +161,12 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_APPLICATION);
         }
 
-        applicationRepository.delete(application);
+        // 이미 삭제 처리된 경우
+        if (application.isDeleted()) {
+            throw new BusinessException(ErrorCode.APPLICATION_NOT_FOUND);
+        }
+
+        // 논리적 삭제
+        application.delete();
     }
 }
