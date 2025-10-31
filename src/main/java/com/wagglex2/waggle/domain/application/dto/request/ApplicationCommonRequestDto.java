@@ -9,7 +9,7 @@ import com.wagglex2.waggle.domain.project.type.MeetingType;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -68,7 +68,7 @@ public abstract class ApplicationCommonRequestDto {
     @Max(value = 4, message = "학년은 4 이하여야 합니다.")
     protected final Integer grade;
 
-    @NotEmpty(message = "지원서 본문이 누락되었습니다.")
+    @NotBlank(message = "지원서 본문이 누락되었습니다.")
     protected final String content;
 
     public abstract Application toEntity(User applicant, BaseRecruitment recruitment);
