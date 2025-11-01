@@ -32,6 +32,11 @@ public class TeamServiceImpl implements TeamService {
         teamRepository.save(team);
     }
 
+    @Override
+    public boolean existsById(Long id) {
+        return teamRepository.existsById(id);
+    }
+
     /**
      * 특정 사용자가 생성한 모집공고(프로젝트/스터디 등)에 속한 팀 목록을
      * 카테고리(category)와 상태(status)에 따라 페이징 조회하는 서비스 메서드.
