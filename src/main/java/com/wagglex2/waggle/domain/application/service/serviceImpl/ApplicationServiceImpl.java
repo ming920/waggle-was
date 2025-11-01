@@ -22,6 +22,7 @@ import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
 
     private final ApplicationRepository applicationRepository;
@@ -104,6 +106,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // 과제 / 스터디 지원
         return applications.map(ApplicationSimpleResponseDto::fromEntity);
+    }
+
+    @Transactional
+    @Override
+    public void closeApplicationsForClosedRecruitments() {
+        int updated = applicationRepository.closeApplicationsForClosedRecruitments();
+
+        log.info("[지원 상태 모집 종료 처리] 모집 종료 상태로 변경된 지원 건수: {}", updated);
     }
 
     private Long applyProject(User applicant, Project project, ApplicationProjectRequestDto requestDto) {
