@@ -41,17 +41,22 @@ public enum ErrorCode {
     FORBIDDEN(HttpStatus.FORBIDDEN, "FORBIDDEN", "접근 권한이 없습니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "ACCESS_DENIED", "요청한 리소스에 접근할 수 없습니다."),
     NOT_UPDATE_NOT_ACTIVE_REVIEW(HttpStatus.FORBIDDEN, "NOT_UPDATE_NOT_ACTIVE_REVIEW","비활성화된 리뷰는 수정할 수 없습니다."),
+    NOT_DELETE_NOT_ACTIVE_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_NOT_ACTIVE_REVIEW","비활성화된 리뷰는 삭제할 수 없습니다."),
     NOT_UPDATE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_UPDATE_ANOTHER_USER_REVIEW", "본인 리뷰만 수정할 수 있습니다."),
-    CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT", "다른 사용자의 과제는 삭제할 수 없습니다."),
+    NOT_DELETE_ANOTHER_USER_REVIEW(HttpStatus.FORBIDDEN, "NOT_DELETE_ANOTHER_USER_REVIEW", "본인 리뷰만 삭제할 수 있습니다."),
+    CANNOT_DELETE_ANOTHER_USER_BOOKMARK(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_BOOKMARK", "다른 사용자의 찜은 취소할 수 없습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
     IMAGE_NOT_FOUND(HttpStatus.NOT_FOUND, "IMAGE_NOT_FOUND", "파일을 찾을 수 없습니다."),
+    RECRUITMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "RECRUITMENT_NOT_FOUND", "공고를 찾을 수 없습니다."),
     PROJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "PROJECT_NOT_FOUND", "프로젝트 공고를 찾을 수 없습니다."),
     ASSIGNMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ASSIGNMENT_NOT_FOUND", "과제 공고를 찾을 수 없습니다."),
+    STUDY_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_NOT_FOUND", "스터디 공고를 찾을 수 없습니다."),
     POSITION_NOT_FOUND(HttpStatus.NOT_FOUND, "POSITION_NOT_FOUND", "역할을 찾을 수 없습니다."),
     SKILL_NOT_FOUND(HttpStatus.NOT_FOUND, "SKILL_NOT_FOUND", "기술 스택을 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_NOT_FOUND", "리뷰를 찾을 수 없습니다."),
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKMARK_NOT_FOUND", "찜 정보를 찾을 수 없습니다."),
 
     // 406
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT_ACCEPTABLE", "응답 가능한 미디어 타입이 없습니다."),
@@ -60,7 +65,8 @@ public enum ErrorCode {
     DUPLICATED_USERNAME(HttpStatus.CONFLICT, "DUPLICATED_USERNAME", "이미 가입된 아이디입니다."),
     DUPLICATED_EMAIL(HttpStatus.CONFLICT, "DUPLICATED_EMAIL", "이미 가입된 이메일입니다."),
     DUPLICATED_NICKNAME(HttpStatus.CONFLICT, "DUPLICATED_NICKNAME", "이미 존재하는 닉네임입니다."),
-    ALREADY_WITHDRAWN_USER(HttpStatus.CONFLICT, "AREADY_WITHDRAWN_USER", "이미 탈퇴한 회원입니다."),
+    ALREADY_WITHDRAWN_USER(HttpStatus.CONFLICT, "ALREADY_WITHDRAWN_USER", "이미 탈퇴한 회원입니다."),
+    ALREADY_BOOKMARKED(HttpStatus.CONFLICT, "ALREADY_BOOKMARKED", "이미 찜한 공고입니다."),
 
     // 413
     PAYLOAD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "PAYLOAD_TOO_LARGE", "요청 또는 파일 크기가 너무 큽니다."),

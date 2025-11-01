@@ -7,6 +7,7 @@ import com.wagglex2.waggle.common.response.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -61,7 +62,23 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     * 컨트롤러에서 전달된 파라미터 타입이 예상과 다른 경우 발생하는 예외를 처리
+     * MissingServletRequestParameterException 예외 처리
+     * <p>
+     * 클라이언트 요청에서 필수 {@code @RequestParam} 파라미터가 누락될 경우 발생하는 예외를 처리한다.
+     * 클라이언트에게 HTTP 상태 코드와 ErrorCode, 누락된 필드 이름을 전달한다.
+     * </p>
+     *
+     * @param ex {@link MissingServletRequestParameterException} - 누락된 요청 파라미터 정보 포함
+     * @return {@link ResponseEntity} - {@link ApiResponse}를 포함한 에러 응답
+     * @author 오재민
+     */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiResponse<String>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ErrorCode.REQUIRED_FIELD_MISSING, ex.getParameterName()));
+    }
+      
+    /** 컨트롤러에서 전달된 파라미터 타입이 예상과 다른 경우 발생하는 예외를 처리
      *
      * <p>특히 Enum 타입 파라미터에 잘못된 문자열이 전달될 때 발생하는 {@link MethodArgumentTypeMismatchException}를 처리</p>
      *

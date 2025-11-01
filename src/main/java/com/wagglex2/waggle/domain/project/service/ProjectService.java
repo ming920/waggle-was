@@ -8,10 +8,13 @@ import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface ProjectService {
     Long createProject(Long userId, ProjectCreationRequestDto projectCreationRequestDto);
     ProjectDetailResponseDto getProject(Long projectId);
     Page<ProjectSummaryResponseDto> getProjectSummaries(ProjectSearchCondition condition, Pageable pageable);
+    List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds);
     void updateProject(Long userId, Long projectId, ProjectUpdateRequestDto updateDto);
     void deleteProject(Long userId, Long projectId);
 }

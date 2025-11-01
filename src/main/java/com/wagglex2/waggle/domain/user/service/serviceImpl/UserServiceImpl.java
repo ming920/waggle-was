@@ -197,21 +197,10 @@ public class UserServiceImpl implements UserService {
             user.updateNickname(dto.nickname());
         }
 
-        if (dto.grade() != null) {
-            user.updateGrade(dto.grade());
-        }
-
-        if (dto.position() != null) {
-            user.updatePosition(dto.position());
-        }
-
-        if (dto.skills() != null) {
-            user.updateSkills(dto.skills());
-        }
-
-        if (StringUtils.hasText(dto.shortIntro())) {
-            user.updateShortIntro(dto.shortIntro());
-        }
+        user.updateGrade(dto.grade());
+        user.updatePosition(dto.position());
+        user.updateSkills(dto.skills());
+        user.updateShortIntro(dto.shortIntro());
 
         log.info("회원정보 수정 성공 : userId = {}", userId);
 

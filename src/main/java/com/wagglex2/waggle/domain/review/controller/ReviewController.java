@@ -132,4 +132,33 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok("리뷰 수정에 성공했습니다.", data));
     }
+
+
+    /**
+     * 리뷰 삭제 API (Soft Delete)
+     *
+     * <p>
+     * 현재 로그인한 사용자가 작성한 리뷰를 삭제한다.
+     * <br>
+     * 실제 데이터베이스에서 물리적으로 삭제하지 않고,
+     * 리뷰의 상태를 {ReviewStatus.DELETED} 로 변경한다.
+     *
+     * @param reviewId 삭제할 리뷰의 ID (PathVariable)
+     * @param userDetails 인증된 사용자 정보
+     * @return 리뷰 삭제 성공 메시지를 담은 표준 응답 객체
+     */
+    @DeleteMapping("/me/written/{reviewId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> deleteReview(
+            @PathVariable Long reviewId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        reviewService.deleteReview(
+                userDetails.getUserId(),
+                reviewId
+        );
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok("리뷰 삭제에 성공했습니다."));
+    }
 }
