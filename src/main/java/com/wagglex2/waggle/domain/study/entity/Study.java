@@ -47,7 +47,7 @@ public class Study extends BaseRecruitment {
     @Enumerated(value = EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
-            name = "recruitment_skills",
+            name = "study_skills",
             joinColumns = @JoinColumn(name = "recruitment_id", referencedColumnName = "id")
     )
     private Set<Skill> skills = new HashSet<>();
