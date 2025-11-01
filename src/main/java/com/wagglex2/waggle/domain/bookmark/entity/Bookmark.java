@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
         name = "bookmarks",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "UniqueUserAndRecruitment",
+                        name = "uk_bookmarks_user_id_recruitment_id",
                         columnNames = {"user_id", "recruitment_id"}
                 ),
         }

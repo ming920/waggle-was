@@ -35,4 +35,8 @@ public class ParticipantInfo {
     public ParticipantInfo(int maxParticipants) {
         this.maxParticipants = maxParticipants;
     }
+
+    public boolean isFull() {
+        return this.currParticipants >= this.maxParticipants;
+    }
 }
