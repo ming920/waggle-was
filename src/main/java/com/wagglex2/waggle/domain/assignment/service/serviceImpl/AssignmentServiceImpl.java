@@ -76,7 +76,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         // 권한 검증
         if (!userId.equals(assignment.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT);
         }
 
         // 논리적 삭제
