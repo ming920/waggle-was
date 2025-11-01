@@ -77,15 +77,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 
     private Long applyProject(User applicant, Project project, ApplicationProjectRequestDto requestDto) {
         // 지원한 포지션에 대한 정보 가져오기
-        PositionParticipantInfo targetPositionInfo = project.getPositions().stream()
-                .filter((p) -> p.getPosition() == requestDto.getPosition())
-                .findAny()
+        PositionParticipantInfo targetPositionInfo = project.getPositionInfoByRole(requestDto.getPosition())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_RECRUITING_POSITION));
 
         ParticipantInfo participantInfo = targetPositionInfo.getParticipantInfo();
 
         // 지원한 포지션의 모집이 이미 완료된 경우
-        if (participantInfo.getCurrParticipants() >= participantInfo.getMaxParticipants()) {
+        if (participantInfo.isFull()) {
             throw new BusinessException(ErrorCode.POSITION_FULL);
         }
 
@@ -98,7 +96,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         ParticipantInfo participantInfo = assignment.getParticipants();
 
         // 모집이 이미 완료된 경우
-        if (participantInfo.getCurrParticipants() >= participantInfo.getMaxParticipants()) {
+        if (participantInfo.isFull()) {
             throw new BusinessException(ErrorCode.RECRUITMENT_FULL);
         }
 
@@ -111,7 +109,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         ParticipantInfo participantInfo = study.getParticipants();
 
         // 모집이 이미 완료된 경우
-        if (participantInfo.getCurrParticipants() >= participantInfo.getMaxParticipants()) {
+        if (participantInfo.isFull()) {
             throw new BusinessException(ErrorCode.RECRUITMENT_FULL);
         }
 
