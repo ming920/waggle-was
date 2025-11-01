@@ -1,6 +1,10 @@
 package com.wagglex2.waggle.domain.application.repository;
 
 import com.wagglex2.waggle.domain.application.entity.Application;
+import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,4 +12,17 @@ import org.springframework.stereotype.Repository;
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
     boolean existsByApplicantIdAndRecruitmentId(Long applicantId, Long recruitmentId);
+
+    /**
+     * 특정 사용자의 지원 내역 중, 삭제 처리 되지 않은 내역을 카테고리별로 페이지 단위로 조회한다.
+     */
+    @EntityGraph(
+            attributePaths = {"recruitment", "skills"},
+            type = EntityGraph.EntityGraphType.LOAD
+    )
+    Page<Application> findAllByApplicantIdAndRecruitmentCategoryAndIsDeletedFalse(
+            Long applicantId,
+            RecruitmentCategory category,
+            Pageable pageable
+    );
 }
