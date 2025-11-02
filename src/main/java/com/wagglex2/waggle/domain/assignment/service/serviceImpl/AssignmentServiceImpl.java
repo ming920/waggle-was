@@ -56,7 +56,7 @@ public class AssignmentServiceImpl implements AssignmentService {
             AssignmentSearchCondition condition,
             Pageable pageable
     ) {
-        return assignmentRepository.findAssignmentSummaries(condition, pageable);
+        return assignmentRepository.getAssignmentSummaries(condition, pageable);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
