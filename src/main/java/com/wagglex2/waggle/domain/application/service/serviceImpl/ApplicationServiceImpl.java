@@ -83,6 +83,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         };
     }
 
+    @Override
+    public Application findById(Long id) {
+        return applicationRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.APPLICATION_NOT_FOUND));
+    }
+
     @PreAuthorize("#userId == authentication.principal.userId")
     @Override
     public Page<ApplicationCommonResponseDto> getAllByUserIdAndRecruitmentCategory(

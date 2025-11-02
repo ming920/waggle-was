@@ -14,5 +14,5 @@ public interface NotificationService {
      * @param receiverId 알림 수신자 ID
      * @param type 알림 타입
      */
-    void createNotification(Long senderId, Long receiverId, NotificationType type);
+    void createNotification(Long senderId, Long receiverId, Long applicationId, NotificationType type);
 }

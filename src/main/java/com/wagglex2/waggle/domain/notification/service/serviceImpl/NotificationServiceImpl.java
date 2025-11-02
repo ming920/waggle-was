@@ -1,5 +1,6 @@
 package com.wagglex2.waggle.domain.notification.service.serviceImpl;
 
+import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.notification.entity.Notification;
 import com.wagglex2.waggle.domain.notification.repository.NotificationRepository;
 import com.wagglex2.waggle.domain.notification.service.NotificationService;
@@ -16,13 +17,15 @@ public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserService userService;
+    private final ApplicationService applicationService;
 
     @Transactional
     @Override
-    public void createNotification(Long senderId, Long receiverId, NotificationType type) {
+    public void createNotification(Long senderId, Long receiverId, Long applicationId, NotificationType type) {
         Notification newNotification = new Notification(
                 userService.findById(senderId),
                 userService.findById(receiverId),
+                applicationService.findById(applicationId),
                 type
         );
 

@@ -25,6 +25,8 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public static final QNotification notification = new QNotification("notification");
 
+    public final com.wagglex2.waggle.domain.application.entity.QApplication application;
+
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
@@ -55,6 +57,7 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public QNotification(Class<? extends Notification> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.application = inits.isInitialized("application") ? new com.wagglex2.waggle.domain.application.entity.QApplication(forProperty("application"), inits.get("application")) : null;
         this.receiver = inits.isInitialized("receiver") ? new com.wagglex2.waggle.domain.user.entity.QUser(forProperty("receiver")) : null;
         this.sender = inits.isInitialized("sender") ? new com.wagglex2.waggle.domain.user.entity.QUser(forProperty("sender")) : null;
     }
