@@ -37,7 +37,8 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     @Query("""
         UPDATE Application a
         SET a.status = com.wagglex2.waggle.domain.application.type.ApplicationStatus.CLOSED
-        WHERE a.recruitment.status = com.wagglex2.waggle.domain.common.type.RecruitmentStatus.CLOSED
+        WHERE a.status = com.wagglex2.waggle.domain.application.type.ApplicationStatus.SUBMITTED
+        AND a.recruitment.status = com.wagglex2.waggle.domain.common.type.RecruitmentStatus.CLOSED
     """)
     int closeApplicationsForClosedRecruitments();
 }
