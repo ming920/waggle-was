@@ -12,6 +12,7 @@ public interface ApplicationService {
     Long submitApplication(Long userId, Long recruitmentId, ApplicationCommonRequestDto requestDto);
     Application findById(Long id);
     Page<ApplicationCommonResponseDto> getAllByUserIdAndRecruitmentCategory(Long userId, RecruitmentCategory category, Pageable pageable);
+    void acceptApplication(Long deciderId, Long applicationId);
     void cancelApplication(Long userId, Long applicationId);
 
     /**

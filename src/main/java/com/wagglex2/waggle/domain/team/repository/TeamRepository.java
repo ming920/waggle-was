@@ -16,6 +16,8 @@ import java.util.Optional;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
+    Optional<Team> findByRecruitmentId(Long recruitmentId);
+
     /**
      * 특정 사용자가 생성한 모집공고(프로젝트/스터디/과제)에 속한 팀 목록을
      * 카테고리(category) 및 상태(status) 기준으로 페이징 조회하는 쿼리.

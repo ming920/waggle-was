@@ -67,6 +67,9 @@ public class QProject extends EntityPathBase<Project> {
     public final com.wagglex2.waggle.domain.user.entity.QUser user;
 
     //inherited
+    public final NumberPath<Integer> version;
+
+    //inherited
     public final NumberPath<Integer> viewCount;
 
     public QProject(String variable) {
@@ -98,6 +101,7 @@ public class QProject extends EntityPathBase<Project> {
         this.title = _super.title;
         this.updatedAt = _super.updatedAt;
         this.user = _super.user;
+        this.version = _super.version;
         this.viewCount = _super.viewCount;
     }
 

@@ -43,6 +43,8 @@ public class QBaseRecruitment extends EntityPathBase<BaseRecruitment> {
 
     public final com.wagglex2.waggle.domain.user.entity.QUser user;
 
+    public final NumberPath<Integer> version = createNumber("version", Integer.class);
+
     public final NumberPath<Integer> viewCount = createNumber("viewCount", Integer.class);
 
     public QBaseRecruitment(String variable) {

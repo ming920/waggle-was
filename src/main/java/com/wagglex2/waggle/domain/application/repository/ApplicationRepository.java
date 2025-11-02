@@ -10,10 +10,13 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
     boolean existsByApplicantIdAndRecruitmentId(Long applicantId, Long recruitmentId);
+    Optional<Application> findByIdAndIsDeletedFalse(Long id);
 
     /**
      * 특정 사용자의 지원 내역 중, 삭제 처리 되지 않은 내역을 카테고리별로 페이지 단위로 조회한다.
