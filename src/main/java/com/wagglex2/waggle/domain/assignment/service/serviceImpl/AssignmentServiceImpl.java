@@ -66,4 +66,20 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         assignment.update(updateDto);
     }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void deleteAssignment(@P("userId") Long userId, Long assignmentId) {
+        Assignment assignment = assignmentRepository.findById(assignmentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND));
+
+        // 권한 검증
+        if (!userId.equals(assignment.getUser().getId())) {
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT);
+        }
+
+        // 논리적 삭제
+        assignment.cancel();
+    }
 }

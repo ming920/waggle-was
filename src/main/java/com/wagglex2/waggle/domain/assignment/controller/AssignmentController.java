@@ -55,4 +55,19 @@ public class AssignmentController {
                 ApiResponse.ok("과제 공고를 성공적으로 수정하였습니다.")
         );
     }
+
+
+    @DeleteMapping("/{assignmentId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> deleteAssignment(
+            @PathVariable Long assignmentId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        assignmentService.deleteAssignment(userDetails.getUserId(), assignmentId);
+
+        return ResponseEntity.ok(
+                ApiResponse.ok("과제 공고를 성공적으로 삭제하였습니다.")
+        );
+    }
+
 }

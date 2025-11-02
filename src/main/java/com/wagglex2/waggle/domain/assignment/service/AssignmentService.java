@@ -9,4 +9,5 @@ public interface AssignmentService {
     Long createAssignment(AssignmentCreationRequestDto assignmentCreationRequestDto, Long userId);
     AssignmentResponseDto getAssignment(Long assignmentId);
     void updateAssignment(Long userId, Long assignmentId, AssignmentUpdateRequestDto updateDto);
+    void deleteAssignment(Long userId, Long assignmentId);
 }
