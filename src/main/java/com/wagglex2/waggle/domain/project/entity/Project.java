@@ -4,10 +4,7 @@ import com.wagglex2.waggle.domain.common.dto.request.GradeRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.PeriodRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.PositionInfoUpdateRequestDto;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
-import com.wagglex2.waggle.domain.common.type.Period;
-import com.wagglex2.waggle.domain.common.type.PositionParticipantInfo;
-import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
-import com.wagglex2.waggle.domain.common.type.Skill;
+import com.wagglex2.waggle.domain.common.type.*;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectUpdateRequestDto;
 import com.wagglex2.waggle.domain.project.type.MeetingType;
 import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
@@ -17,6 +14,7 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -114,5 +112,11 @@ public class Project extends BaseRecruitment {
         this.grades.addAll(grades);
         this.period = PeriodRequestDto.to(dto.getPeriod());
         changeStatusByDeadline();
+    }
+
+    public Optional<PositionParticipantInfo> getPositionInfoByRole(PositionType position) {
+        return positions.stream()
+                .filter(p -> p.getPosition() == position)
+                .findAny();
     }
 }
