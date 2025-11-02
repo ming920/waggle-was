@@ -4,6 +4,9 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.application.dto.request.ApplicationCommonRequestDto;
 import com.wagglex2.waggle.domain.application.dto.request.ApplicationProjectRequestDto;
+import com.wagglex2.waggle.domain.application.dto.response.ApplicationCommonResponseDto;
+import com.wagglex2.waggle.domain.application.dto.response.ApplicationProjectResponseDto;
+import com.wagglex2.waggle.domain.application.dto.response.ApplicationSimpleResponseDto;
 import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.repository.ApplicationRepository;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
@@ -12,12 +15,15 @@ import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.service.RecruitmentService;
 import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
 import com.wagglex2.waggle.domain.common.type.PositionParticipantInfo;
+import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.project.entity.Project;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -73,6 +79,31 @@ public class ApplicationServiceImpl implements ApplicationService {
             case ASSIGNMENT -> applyAssignment(applicant, (Assignment) recruitment, requestDto);
             case STUDY -> applyStudy(applicant, (Study) recruitment, requestDto);
         };
+    }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Override
+    public Page<ApplicationCommonResponseDto> getAllByUserIdAndRecruitmentCategory(
+            Long userId,
+            RecruitmentCategory category,
+            Pageable pageable
+    ) {
+
+        Page<Application> applications =
+                applicationRepository.findAllByApplicantIdAndRecruitmentCategoryAndIsDeletedFalse(userId, category, pageable);
+
+        // 지원 내역이 없는 경우
+        if (applications.getContent().isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        // 프로젝트 지원
+        if (category == RecruitmentCategory.PROJECT) {
+            return applications.map(ApplicationProjectResponseDto::fromEntity);
+        }
+
+        // 과제 / 스터디 지원
+        return applications.map(ApplicationSimpleResponseDto::fromEntity);
     }
 
     private Long applyProject(User applicant, Project project, ApplicationProjectRequestDto requestDto) {
