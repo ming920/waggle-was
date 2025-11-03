@@ -11,4 +11,9 @@ public interface ApplicationService {
     Long submitApplication(Long userId, Long recruitmentId, ApplicationCommonRequestDto requestDto);
     Page<ApplicationCommonResponseDto> getAllByUserIdAndRecruitmentCategory(Long userId, RecruitmentCategory category, Pageable pageable);
     void cancelApplication(Long userId, Long applicationId);
+
+    /**
+     * 마감된 공고에 대한 모든 지원 상태를 CLOSED로 변경한다.
+     */
+    void closeApplicationsForClosedRecruitments();
 }
