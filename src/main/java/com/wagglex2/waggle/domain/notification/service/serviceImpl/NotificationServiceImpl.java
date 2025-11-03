@@ -1,12 +1,18 @@
 package com.wagglex2.waggle.domain.notification.service.serviceImpl;
 
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
+import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import com.wagglex2.waggle.domain.notification.dto.response.NotificationResponseDto;
 import com.wagglex2.waggle.domain.notification.entity.Notification;
 import com.wagglex2.waggle.domain.notification.repository.NotificationRepository;
 import com.wagglex2.waggle.domain.notification.service.NotificationService;
 import com.wagglex2.waggle.domain.notification.type.NotificationType;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,5 +36,15 @@ public class NotificationServiceImpl implements NotificationService {
         );
 
         notificationRepository.save(newNotification);
+    }
+
+    @PreAuthorize("#receiverId == authentication.principal.userId")
+    @Override
+    public Page<NotificationResponseDto> getAllByUserIdAndCategory(
+            @P("receiverId") Long receiverId,
+            RecruitmentCategory category,
+            Pageable pageable
+    ) {
+        return notificationRepository.getAllByUserIdAndCategory(receiverId, category, pageable);
     }
 }

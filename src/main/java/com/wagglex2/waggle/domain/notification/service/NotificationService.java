@@ -1,6 +1,10 @@
 package com.wagglex2.waggle.domain.notification.service;
 
+import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import com.wagglex2.waggle.domain.notification.dto.response.NotificationResponseDto;
 import com.wagglex2.waggle.domain.notification.type.NotificationType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface NotificationService {
 
@@ -15,4 +19,5 @@ public interface NotificationService {
      * @param type 알림 타입
      */
     void createNotification(Long senderId, Long receiverId, Long applicationId, NotificationType type);
+    Page<NotificationResponseDto> getAllByUserIdAndCategory(Long receiverId, RecruitmentCategory category, Pageable pageable);
 }
