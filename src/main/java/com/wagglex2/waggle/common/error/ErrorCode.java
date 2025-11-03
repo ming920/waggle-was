@@ -49,6 +49,7 @@ public enum ErrorCode {
     CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT", "다른 사용자의 과제는 삭제할 수 없습니다."),
     CANNOT_APPLY_OWN_RECRUITMENT(HttpStatus.FORBIDDEN, "CANNOT_APPLY_OWN_RECRUITMENT", "본인 공고에는 지원할 수 없습니다."),
     FORBIDDEN_CROSS_UNIVERSITY_RECRUITMENT(HttpStatus.FORBIDDEN, "FORBIDDEN_CROSS_UNIVERSITY_RECRUITMENT", "타 대학의 공고입니다."),
+    CANNOT_DELETE_ANOTHER_USER_APPLICATION(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_APPLICATION", "다른 사용자의 지원은 취소할 수 없습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
@@ -61,6 +62,7 @@ public enum ErrorCode {
     SKILL_NOT_FOUND(HttpStatus.NOT_FOUND, "SKILL_NOT_FOUND", "기술 스택을 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_NOT_FOUND", "리뷰를 찾을 수 없습니다."),
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKMARK_NOT_FOUND", "찜 정보를 찾을 수 없습니다."),
+    APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICATION_NOT_FOUND", "지원 정보를 찾을 수 없습니다."),
 
     // 406
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT_ACCEPTABLE", "응답 가능한 미디어 타입이 없습니다."),

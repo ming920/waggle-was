@@ -148,4 +148,25 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         return applicationRepository.save(newApplication).getId();
     }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void cancelApplication(Long userId, Long applicationId) {
+        Application application = applicationRepository.findById(applicationId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.APPLICATION_NOT_FOUND));
+
+        // 권한 검증
+        if (!userId.equals(application.getApplicant().getId())) {
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_APPLICATION);
+        }
+
+        // 이미 삭제 처리된 경우
+        if (application.isDeleted()) {
+            throw new BusinessException(ErrorCode.APPLICATION_NOT_FOUND);
+        }
+
+        // 논리적 삭제
+        application.delete();
+    }
 }

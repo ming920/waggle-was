@@ -67,4 +67,17 @@ public class ApplicationController {
                 ApiResponse.ok(category.getDesc() + " 공고 지원 내역을 성공적으로 조회하였습니다.", applications)
         );
     }
+
+    @DeleteMapping("{applicationId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> cancelApplication(
+            @PathVariable("applicationId") Long applicationId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        applicationService.cancelApplication(userDetails.getUserId(), applicationId);
+
+        return ResponseEntity.ok(
+                ApiResponse.ok("지원서가 성공적으로 삭제되었습니다.")
+        );
+    }
 }
