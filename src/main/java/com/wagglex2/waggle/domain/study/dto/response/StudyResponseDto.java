@@ -1,7 +1,7 @@
 package com.wagglex2.waggle.domain.study.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wagglex2.waggle.domain.common.dto.response.BaseRecruitmentResponseDto;
+import com.wagglex2.waggle.domain.common.dto.response.BaseRecruitmentDetailResponseDto;
 import com.wagglex2.waggle.domain.common.dto.response.ParticipantInfoResponseDto;
 import com.wagglex2.waggle.domain.common.dto.response.PeriodResponseDto;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class StudyResponseDto extends BaseRecruitmentResponseDto {
+public class StudyResponseDto extends BaseRecruitmentDetailResponseDto {
     private final ParticipantInfoResponseDto participants;
     private final PeriodResponseDto period;
 

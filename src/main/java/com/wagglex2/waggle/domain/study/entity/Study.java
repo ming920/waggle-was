@@ -1,10 +1,12 @@
 package com.wagglex2.waggle.domain.study.entity;
 
+import com.wagglex2.waggle.domain.common.dto.request.PeriodRequestDto;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
 import com.wagglex2.waggle.domain.common.type.Period;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.Skill;
+import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -63,4 +65,20 @@ public class Study extends BaseRecruitment {
         this.period = period;
         this.skills = skills;
     }
+
+    public void update(StudyUpdateRequestDto dto) {
+        update(dto.getTitle(), dto.getContent(), dto.getDeadline());
+
+        this.participants = new ParticipantInfo(
+                dto.getParticipants().maxParticipants(),
+                dto.getParticipants().currParticipants()
+        );
+
+        this.period = PeriodRequestDto.to(dto.getPeriod());
+        this.skills.clear();
+        this.skills.addAll(dto.getSkills());
+
+        changeStatusByDeadline();
+    }
+
 }
