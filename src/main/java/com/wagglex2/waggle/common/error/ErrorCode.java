@@ -58,6 +58,7 @@ public enum ErrorCode {
     CANNOT_DELETE_ANOTHER_USER_APPLICATION(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_APPLICATION", "다른 사용자의 지원은 취소할 수 없습니다."),
     CANNOT_REMOVE_NOT_LEADER(HttpStatus.FORBIDDEN, "CANNOT_DELETE_NOT_LEADER", "리더만 멤버를 삭제할 수 있습니다."),
     CANNOT_REMOVE_SELF(HttpStatus.FORBIDDEN, "CANNOT_DELETE_MYSELF", "자기 자신은 삭제할 수 없습니다."),
+    CANNOT_DELETE_ANOTHER_USER_NOTIFICATION(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_NOTIFICATION", "다른 사용자의 알림은 삭제할 수 없습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
@@ -74,6 +75,7 @@ public enum ErrorCode {
     TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM_NOT_FOUND", "팀을 찾을 수 없습니다."),
     LEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "LEADER_NOT_FOUND", "리더를 찾을 수 없습니다."),
     TARGET_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "TARGET_MEMBER_NOT_FOUND", "삭제할 멤버를 찾을 수 없습니다."),
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION_NOT_FOUND", "알림을 찾을 수 없습니다."),
 
     // 406
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT_ACCEPTABLE", "응답 가능한 미디어 타입이 없습니다."),

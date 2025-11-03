@@ -14,10 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/notifications")
@@ -48,5 +45,16 @@ public class NotificationController {
         String message = (category != null ? category.getDesc() + " 알림을" : "전체 알림을") + " 성공적으로 조회하였습니다.";
 
         return ResponseEntity.ok(ApiResponse.ok(message, notifications));
+    }
+
+    @DeleteMapping("{notificationId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> deleteById(
+            @PathVariable("notificationId") Long notificationId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        notificationService.deleteById(userDetails.getUserId(), notificationId);
+
+        return ResponseEntity.ok(ApiResponse.ok("알림이 성공적으로 삭제되었습니다."));
     }
 }
