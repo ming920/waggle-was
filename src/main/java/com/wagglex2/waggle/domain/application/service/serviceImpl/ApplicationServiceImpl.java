@@ -194,6 +194,30 @@ public class ApplicationServiceImpl implements ApplicationService {
         team.addMember(newMember);
     }
 
+    @PreAuthorize("#deciderId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void rejectApplication(Long deciderId, Long applicationId) {
+        Application application =
+                applicationRepository.findByIdAndNotDeletedWithRecruitmentAndAuthor(applicationId)
+                        .orElseThrow(() -> new BusinessException(ErrorCode.APPLICATION_NOT_FOUND));
+
+        BaseRecruitment recruitment = application.getRecruitment();
+
+        // 수락/거절 자격 확인(공고 작성자인지 확인)
+        if (!deciderId.equals(recruitment.getUser().getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_DECIDE_APPLICATION, "지원 거절 권한이 없습니다.");
+        }
+
+        // 이미 처리된 지원서인 경우
+        if (application.getStatus() != ApplicationStatus.SUBMITTED) {
+            throw new BusinessException(ErrorCode.ALREADY_PROCESSED_APPLICATION);
+        }
+
+        // 처리 로직
+        application.reject();
+    }
+
     @PreAuthorize("#userId == authentication.principal.userId")
     @Transactional
     @Override

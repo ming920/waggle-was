@@ -79,6 +79,17 @@ public class ApplicationController {
         return ResponseEntity.ok(ApiResponse.ok("공고 지원 요청을 수락하였습니다."));
     }
 
+    @PostMapping("{applicationId}/reject")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> rejectApplication(
+            @PathVariable("applicationId") Long applicationId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        applicationService.rejectApplication(userDetails.getUserId(), applicationId);
+
+        return ResponseEntity.ok(ApiResponse.ok("공고 지원 요청을 거절하였습니다."));
+    }
+
     @DeleteMapping("{applicationId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<Void>> cancelApplication(

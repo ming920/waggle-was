@@ -104,6 +104,10 @@ public class Application {
         this.status = ApplicationStatus.ACCEPTED;
     }
 
+    public void reject() {
+        this.status = ApplicationStatus.REJECTED;
+    }
+
     // 논리적 삭제
     public void delete() {
         this.isDeleted = true;
