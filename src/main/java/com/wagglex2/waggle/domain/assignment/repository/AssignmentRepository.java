@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AssignmentRepository extends JpaRepository<Assignment, Long> {
+public interface AssignmentRepository extends JpaRepository<Assignment, Long>, AssignmentRepositoryCustom {
 
     @Modifying(clearAutomatically = true)
     @Query("update Assignment a set a.viewCount = a.viewCount + 1 where a.id = :assignmentId")

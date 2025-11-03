@@ -15,14 +15,14 @@ import java.util.Set;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class AssignmentResponseDto extends BaseRecruitmentDetailResponseDto {
+public class AssignmentDetailResponseDto extends BaseRecruitmentDetailResponseDto {
     private final String department;
     private final String lecture;
     private final String lectureCode;
     private final ParticipantInfoResponseDto participants;
     private final Set<Integer> grades;
 
-    private AssignmentResponseDto(
+    private AssignmentDetailResponseDto(
             Long id, Long authorId, String authorNickname, RecruitmentCategory category, University university,
             String title, String content, LocalDateTime deadline, LocalDateTime createdAt,
             RecruitmentStatus status, int viewCount, String department, String lecture, String lectureCode,
@@ -36,12 +36,12 @@ public class AssignmentResponseDto extends BaseRecruitmentDetailResponseDto {
         this.grades = grades;
     }
 
-    public static AssignmentResponseDto fromEntity(Assignment assignment) {
+    public static AssignmentDetailResponseDto fromEntity(Assignment assignment) {
         User author = assignment.getUser();
         ParticipantInfoResponseDto participants = ParticipantInfoResponseDto.from(assignment.getParticipants());
 
 
-        return new AssignmentResponseDto(
+        return new AssignmentDetailResponseDto(
                 assignment.getId(), author.getId(), author.getNickname(), assignment.getCategory(), author.getUniversity(),
                 assignment.getTitle(), assignment.getContent(), assignment.getDeadline(), assignment.getCreatedAt(),
                 assignment.getStatus(), assignment.getViewCount(), assignment.getDepartment(), assignment.getLecture(),

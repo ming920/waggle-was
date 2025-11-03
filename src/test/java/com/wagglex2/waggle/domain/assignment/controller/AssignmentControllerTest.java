@@ -2,7 +2,7 @@ package com.wagglex2.waggle.domain.assignment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
-import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentResponseDto;
+import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
 import com.wagglex2.waggle.domain.common.dto.response.ParticipantInfoResponseDto;
@@ -58,7 +58,7 @@ class AssignmentControllerTest {
     void getAssignment() throws Exception {
         // given
         Assignment assignment = createAssignment();
-        AssignmentResponseDto responseDto = AssignmentResponseDto.fromEntity(assignment);
+        AssignmentDetailResponseDto responseDto = AssignmentDetailResponseDto.fromEntity(assignment);
         given(assignmentService.getAssignment(1L)).willReturn(responseDto);
 
         // when
