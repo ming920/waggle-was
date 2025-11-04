@@ -132,6 +132,7 @@ public class Project extends BaseRecruitment {
      * - 동시 수정 가능성이 있으므로, 상위 서비스 계층에서는 비관적 락(PESSIMISTIC_WRITE)으로 수행한다.
      * </p>
      */
+    @Override
     public void decreaseCurrParticipant(PositionType positionType) {
         PositionParticipantInfo info = positions.stream()
                 .filter(p -> p.getPosition() == positionType)

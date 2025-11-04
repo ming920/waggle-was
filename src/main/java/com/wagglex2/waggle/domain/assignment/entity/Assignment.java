@@ -4,6 +4,7 @@ import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentUpdateRequest
 import com.wagglex2.waggle.domain.common.dto.request.GradeRequestDto;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
+import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
@@ -92,7 +93,8 @@ public class Assignment extends BaseRecruitment {
     }
 
     // 현재 모집 중인 참여 인원을 1명 감소시킨다.
-    public void decreaseCurrParticipant() {
+    @Override
+    public void decreaseCurrParticipant(PositionType positionType) {
         participants.decreaseCurrParticipants();
     }
 }
