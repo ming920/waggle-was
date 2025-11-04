@@ -90,4 +90,9 @@ public class Assignment extends BaseRecruitment {
         this.grades.addAll(grades);
         changeStatusByDeadline();
     }
+
+    // 현재 모집 중인 참여 인원을 1명 감소시킨다.
+    public void decreaseCurrParticipant() {
+        participants.decreaseCurrParticipants();
+    }
 }

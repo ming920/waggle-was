@@ -44,4 +44,10 @@ public class RecruitmentServiceImpl implements RecruitmentService {
                 updated
         );
     }
+
+    @Override
+    public BaseRecruitment findByIdForUpdate(Long recruitmentId) {
+        return recruitmentRepository.findByIdNotCanceledForUpdate(recruitmentId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.RECRUITMENT_NOT_FOUND));
+    }
 }

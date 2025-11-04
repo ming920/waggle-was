@@ -63,4 +63,9 @@ public class Study extends BaseRecruitment {
         this.period = period;
         this.skills = skills;
     }
+
+    // 현재 모집 중인 참여 인원을 1명 감소시킨다.
+    public void decreaseCurrParticipant() {
+        participants.decreaseCurrParticipants();
+    }
 }

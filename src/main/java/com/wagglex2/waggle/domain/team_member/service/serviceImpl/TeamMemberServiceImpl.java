@@ -2,6 +2,12 @@ package com.wagglex2.waggle.domain.team_member.service.serviceImpl;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
+import com.wagglex2.waggle.domain.assignment.entity.Assignment;
+import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
+import com.wagglex2.waggle.domain.common.service.RecruitmentService;
+import com.wagglex2.waggle.domain.project.entity.Project;
+import com.wagglex2.waggle.domain.study.entity.Study;
+import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
 import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
 import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
@@ -19,11 +25,13 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
     private final TeamMemberRepository teamMemberRepository;
     private final TeamService teamService;
+    private final RecruitmentService recruitmentService;
 
     /**
      * 팀 멤버 삭제 (리더 권한 전용)
      *
      * <p>해당 메서드는 특정 팀의 리더가 팀 멤버를 강제 탈퇴(삭제)시키는 로직을 수행한다.</p>
+     * <p>공고 엔티티 현재 인원 감소를 수행한다.</p>
      *
      * <ul>
      *   <li>리더만 멤버 삭제 가능</li>
@@ -37,9 +45,7 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     @PreAuthorize("#removerId == authentication.principal.userId")
     public void removeMember(Long teamId, Long removerId, Long targetId) {
 
-        if (!teamService.existsById(teamId)) {
-            throw new BusinessException(ErrorCode.TEAM_NOT_FOUND);
-        }
+        Team team = teamService.findById(teamId);
 
         if (removerId.equals(targetId)) {
             throw new BusinessException(ErrorCode.CANNOT_REMOVE_SELF);
@@ -54,6 +60,17 @@ public class TeamMemberServiceImpl implements TeamMemberService {
 
         TeamMember target = teamMemberRepository.findByTeamIdAndUserId(teamId, targetId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.TARGET_MEMBER_NOT_FOUND));
+
+        BaseRecruitment recruitment = recruitmentService
+                .findByIdForUpdate(team.getRecruitment().getId());
+
+        if (recruitment instanceof Project project) {
+            project.decreaseCurrParticipant(target.getPosition());
+        } else if (recruitment instanceof Study study) {
+            study.decreaseCurrParticipant();
+        } else if (recruitment instanceof Assignment assignment) {
+            assignment.decreaseCurrParticipant();
+        }
 
         teamMemberRepository.delete(target);
     }
