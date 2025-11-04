@@ -46,8 +46,8 @@ public class RecruitmentServiceImpl implements RecruitmentService {
     }
 
     @Override
-    public BaseRecruitment findByIdForUpdate(Long recruitmentId) {
-        return recruitmentRepository.findByIdNotCanceledForUpdate(recruitmentId)
+    public BaseRecruitment findByIdNotCanceled(Long recruitmentId) {
+        return recruitmentRepository.findByIdNotCanceled(recruitmentId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.RECRUITMENT_NOT_FOUND));
     }
 }

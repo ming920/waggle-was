@@ -11,5 +11,5 @@ public interface RecruitmentService {
      */
     void closeExpiredRecruitments();
 
-    BaseRecruitment findByIdForUpdate(Long recruitmentId);
+    BaseRecruitment findByIdNotCanceled(Long recruitmentId);
 }

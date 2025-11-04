@@ -41,6 +41,12 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    public Team findByIdWithMembers(Long id) {
+        return teamRepository.findByIdWithMembers(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.TEAM_NOT_FOUND));
+    }
+
+    @Override
     public boolean existsById(Long id) {
         return teamRepository.existsById(id);
     }
