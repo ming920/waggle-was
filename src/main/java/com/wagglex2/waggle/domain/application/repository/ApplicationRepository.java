@@ -10,10 +10,25 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
     boolean existsByApplicantIdAndRecruitmentId(Long applicantId, Long recruitmentId);
+
+    /**
+     * 조회 시 Application과 연관된 Recruitment 및 Recruitment의 User를 즉시 로딩
+     */
+    @Query("""
+        SELECT a
+        FROM Application a
+        JOIN FETCH a.recruitment r
+        JOIN FETCH r.user u
+        WHERE a.id = :id
+        AND a.isDeleted = false
+    """)
+    Optional<Application> findByIdAndNotDeletedWithRecruitmentAndAuthor(Long id);
 
     /**
      * 특정 사용자의 지원 내역 중, 삭제 처리 되지 않은 내역을 카테고리별로 페이지 단위로 조회한다.

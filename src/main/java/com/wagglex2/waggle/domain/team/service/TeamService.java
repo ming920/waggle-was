@@ -11,6 +11,7 @@ public interface TeamService {
     void save(Team team);
     Team findById(Long id);
     Team findByIdWithMembers(Long id);
+    Team findByRecruitmentId(Long recruitmentId);
     boolean existsById(Long id);
     Page<TeamResponseDto> getByUserIdAndCategoryAndStatus(Long userId, RecruitmentCategory category, RecruitmentStatus status, Pageable pageable);
 }

@@ -100,6 +100,10 @@ public class Application {
         this.skills = skills;
     }
 
+    public void accept() {
+        this.status = ApplicationStatus.ACCEPTED;
+    }
+
     // 논리적 삭제
     public void delete() {
         this.isDeleted = true;

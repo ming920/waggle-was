@@ -42,6 +42,10 @@ public class ParticipantInfo {
         return this.currParticipants >= this.maxParticipants;
     }
 
+    public void incrementCurrParticipants() {
+        this.currParticipants++;
+    }
+
     /**
      * 현재 참여 인원을 1명 감소시킨다.
      * <p>
