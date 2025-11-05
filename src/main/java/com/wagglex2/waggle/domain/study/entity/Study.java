@@ -1,10 +1,7 @@
 package com.wagglex2.waggle.domain.study.entity;
 
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
-import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
-import com.wagglex2.waggle.domain.common.type.Period;
-import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
-import com.wagglex2.waggle.domain.common.type.Skill;
+import com.wagglex2.waggle.domain.common.type.*;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -62,5 +59,11 @@ public class Study extends BaseRecruitment {
         this.participants = participants;
         this.period = period;
         this.skills = skills;
+    }
+
+    // 현재 모집 중인 참여 인원을 1명 감소시킨다.
+    @Override
+    public void decreaseCurrParticipant(PositionType positionType) {
+        participants.decreaseCurrParticipants();
     }
 }

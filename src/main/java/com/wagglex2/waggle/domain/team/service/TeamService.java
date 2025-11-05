@@ -9,5 +9,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface TeamService {
     void save(Team team);
+    Team findById(Long id);
+    Team findByIdWithMembers(Long id);
+    boolean existsById(Long id);
     Page<TeamResponseDto> getByUserIdAndCategoryAndStatus(Long userId, RecruitmentCategory category, RecruitmentStatus status, Pageable pageable);
 }

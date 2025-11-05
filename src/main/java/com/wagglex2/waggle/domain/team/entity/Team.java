@@ -1,5 +1,7 @@
 package com.wagglex2.waggle.domain.team.entity;
 
+import com.wagglex2.waggle.common.error.ErrorCode;
+import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
 import jakarta.persistence.*;
@@ -14,6 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -68,5 +71,21 @@ public class Team {
     public void addMember(TeamMember member) {
         this.members.add(member);
         member.setTeam(this);
+    }
+
+    public Optional<TeamMember> findMember(Long userId) {
+        return this.members.stream()
+                .filter(m -> m.getUser().getId().equals(userId))
+                .findFirst();
+    }
+
+    public void removeMember(TeamMember member) {
+        boolean removed = this.members.remove(member);
+
+        if (!removed) {
+            throw new BusinessException(ErrorCode.TARGET_MEMBER_NOT_FOUND);
+        }
+
+        member.setTeam(null);
     }
 }

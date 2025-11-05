@@ -1,5 +1,7 @@
 package com.wagglex2.waggle.domain.team.service.serviceImpl;
 
+import com.wagglex2.waggle.common.error.ErrorCode;
+import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.validator.PageableValidator;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -30,6 +32,23 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     public void save(Team team) {
         teamRepository.save(team);
+    }
+
+    @Override
+    public Team findById(Long id) {
+        return teamRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.TEAM_NOT_FOUND));
+    }
+
+    @Override
+    public Team findByIdWithMembers(Long id) {
+        return teamRepository.findByIdWithMembers(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.TEAM_NOT_FOUND));
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        return teamRepository.existsById(id);
     }
 
     /**

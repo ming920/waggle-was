@@ -1,5 +1,7 @@
 package com.wagglex2.waggle.domain.project.entity;
 
+import com.wagglex2.waggle.common.error.ErrorCode;
+import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.common.dto.request.GradeRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.PeriodRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.PositionInfoUpdateRequestDto;
@@ -118,5 +120,25 @@ public class Project extends BaseRecruitment {
         return positions.stream()
                 .filter(p -> p.getPosition() == position)
                 .findAny();
+    }
+
+    /**
+     * 특정 포지션(PositionType)의 현재 참여 인원을 1명 감소시킨다.
+     * <p>
+     * - 팀 멤버가 탈퇴하거나 강제 제거될 때, 해당 멤버의 포지션을 기준으로 인원 수를 감소시킨다.<br>
+     * - 지정된 포지션에 해당하는 {@link PositionParticipantInfo}가 존재하지 않으면 예외를 발생시킨다.<br>
+     * - 내부적으로 {@link ParticipantInfo#decreaseCurrParticipants()}를 호출하여 실제 카운트를 변경한다.<br>
+     * - 인원 수가 0명 이하로 내려가지 않도록 {@link ParticipantInfo}에서 검증 로직을 수행한다.<br>
+     * - 동시 수정 가능성이 있으므로, 상위 서비스 계층에서는 비관적 락(PESSIMISTIC_WRITE)으로 수행한다.
+     * </p>
+     */
+    @Override
+    public void decreaseCurrParticipant(PositionType positionType) {
+        PositionParticipantInfo info = positions.stream()
+                .filter(p -> p.getPosition() == positionType)
+                .findFirst()
+                .orElseThrow(() -> new BusinessException(ErrorCode.POSITION_NOT_FOUND));
+
+        info.getParticipantInfo().decreaseCurrParticipants();
     }
 }

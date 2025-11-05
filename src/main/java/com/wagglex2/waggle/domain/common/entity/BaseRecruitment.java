@@ -1,5 +1,6 @@
 package com.wagglex2.waggle.domain.common.entity;
 
+import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.project.entity.Project;
@@ -79,6 +80,10 @@ public abstract class BaseRecruitment {
     @Column(name = "view_count", nullable = false)
     private int viewCount = 0;
 
+    @Version
+    @Column(nullable = false)
+    private int version;
+
     protected BaseRecruitment(
             User user, RecruitmentCategory category,
             String title, String content, LocalDateTime deadline
@@ -111,5 +116,7 @@ public abstract class BaseRecruitment {
     public void cancel() {
         this.status = RecruitmentStatus.CANCELED;
     }
+
+    public abstract void decreaseCurrParticipant(PositionType positionType);
 }
 
