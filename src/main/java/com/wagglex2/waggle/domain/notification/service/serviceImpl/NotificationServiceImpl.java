@@ -1,5 +1,6 @@
 package com.wagglex2.waggle.domain.notification.service.serviceImpl;
 
+import com.wagglex2.waggle.common.validator.PageableValidator;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.notification.dto.response.NotificationResponseDto;
@@ -16,14 +17,18 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class NotificationServiceImpl implements NotificationService {
 
+    private static final Set<String> NOTIFICATION_SORT_FIELDS = Set.of("createdAt");
     private final NotificationRepository notificationRepository;
     private final UserService userService;
     private final ApplicationService applicationService;
+    private final PageableValidator pageableValidator;
 
     @Transactional
     @Override
@@ -45,6 +50,9 @@ public class NotificationServiceImpl implements NotificationService {
             RecruitmentCategory category,
             Pageable pageable
     ) {
+        pageableValidator.validate(pageable);
+        pageableValidator.validateSort(pageable, NOTIFICATION_SORT_FIELDS);
+
         return notificationRepository.getAllByUserIdAndCategory(receiverId, category, pageable);
     }
 }
