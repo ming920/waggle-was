@@ -13,6 +13,7 @@ public interface ApplicationService {
     Application findById(Long id);
     Page<ApplicationCommonResponseDto> getAllByUserIdAndRecruitmentCategory(Long userId, RecruitmentCategory category, Pageable pageable);
     void acceptApplication(Long deciderId, Long applicationId);
+    void rejectApplication(Long deciderId, Long applicationId);
     void cancelApplication(Long userId, Long applicationId);
 
     /**
