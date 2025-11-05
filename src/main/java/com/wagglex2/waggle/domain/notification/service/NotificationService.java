@@ -21,4 +21,15 @@ public interface NotificationService {
     void createNotification(Long senderId, Long receiverId, Long applicationId, NotificationType type);
     Page<NotificationResponseDto> getAllByUserIdAndCategory(Long receiverId, RecruitmentCategory category, Pageable pageable);
     void deleteById(Long userId, Long notificationId);
+
+    /**
+     * 지정된 사용자의 알림을 삭제한다.
+     * <p>
+     * category가 null이면 전체 삭제하고, 그렇지 않으면 해당 카테고리만 삭제한다.
+     * </p>
+     *
+     * @param receiverId 삭제할 사용자의 ID
+     * @param category 삭제할 알림 카테고리, null이면 전체 삭제
+     */
+    void deleteAll(Long receiverId, RecruitmentCategory category);
 }

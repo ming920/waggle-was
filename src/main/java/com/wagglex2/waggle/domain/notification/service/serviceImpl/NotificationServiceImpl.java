@@ -72,4 +72,18 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationRepository.delete(notification);
     }
+
+    @PreAuthorize("#receiverId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void deleteAll(@P("receiverId") Long receiverId, RecruitmentCategory category) {
+        // 전체 삭제
+        if (category == null) {
+            notificationRepository.deleteAllByReceiverId(receiverId);
+            return;
+        }
+
+        // 카테고리별 삭제
+        notificationRepository.deleteAllByReceiverIdAndCategory(receiverId, category);
+    }
 }

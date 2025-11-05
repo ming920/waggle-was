@@ -57,4 +57,17 @@ public class NotificationController {
 
         return ResponseEntity.ok(ApiResponse.ok("알림이 성공적으로 삭제되었습니다."));
     }
+
+    @DeleteMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Void>> deleteAll(
+            @RequestParam(value = "category", required = false) RecruitmentCategory category,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        notificationService.deleteAll(userDetails.getUserId(), category);
+
+        String message = (category != null ? category.getDesc() + " 알림을" : "전체 알림을") + " 성공적으로 삭제하였습니다.";
+
+        return ResponseEntity.ok(ApiResponse.ok(message));
+    }
 }
