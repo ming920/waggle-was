@@ -1,6 +1,8 @@
 package com.wagglex2.waggle.domain.notification.service.serviceImpl;
 
 import com.wagglex2.waggle.common.validator.PageableValidator;
+import com.wagglex2.waggle.common.error.ErrorCode;
+import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.notification.dto.response.NotificationResponseDto;
@@ -54,5 +56,20 @@ public class NotificationServiceImpl implements NotificationService {
         pageableValidator.validateSort(pageable, NOTIFICATION_SORT_FIELDS);
 
         return notificationRepository.getAllByUserIdAndCategory(receiverId, category, pageable);
+    }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void deleteById(@P("userId") Long userId, Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+        // 권한 검증
+        if (!userId.equals(notification.getReceiver().getId())) {
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_NOTIFICATION);
+        }
+
+        notificationRepository.delete(notification);
     }
 }
