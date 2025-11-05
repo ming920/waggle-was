@@ -28,7 +28,6 @@ import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -134,10 +133,10 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void acceptApplication(@P("deciderId") Long deciderId, Long applicationId) {
         Application application =
-                applicationRepository.findByIdAndIsDeletedFalse(applicationId)
+                applicationRepository.findByIdAndNotDeletedWithRecruitmentAndAuthor(applicationId)
                         .orElseThrow(() -> new BusinessException(ErrorCode.APPLICATION_NOT_FOUND));
 
-        BaseRecruitment recruitment = (BaseRecruitment) Hibernate.unproxy(application.getRecruitment());
+        BaseRecruitment recruitment = application.getRecruitment();
 
         // 수락/거절 자격 확인(공고 작성자인지 확인)
         if (!deciderId.equals(recruitment.getUser().getId())) {
