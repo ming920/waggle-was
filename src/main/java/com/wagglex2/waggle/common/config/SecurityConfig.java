@@ -46,6 +46,11 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/swagger.html",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/api/v1/api-docs/**",   // springdoc.api-docs.path 에 맞춰 허용
+                                "/api-docs/**",
                                 "/api/v1/auth/sign-in",
                                 "/api/v1/auth/sign-up",
                                 "/api/v1/auth/refresh",
