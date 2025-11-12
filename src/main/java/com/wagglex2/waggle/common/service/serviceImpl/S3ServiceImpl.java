@@ -34,8 +34,9 @@ public class S3ServiceImpl implements S3Service {
         if (file == null || file.isEmpty()) {
             throw new BusinessException(ErrorCode.FILE_NOT_UPLOADED);
         }
-        // 경로 : waggle-image-bucket/user-profile-images/{username}/{originalFileName}
-        String fileName = file.getOriginalFilename();
+        // 경로 : waggle-image-bucket/user-profile-images/{username}/{uuid}.확장자
+        String extension = getFileExtension(file.getOriginalFilename());
+        String fileName = UUID.randomUUID().toString() + "." + extension;
         String s3Key = folderPath + "/" + fileName;
 
         try {
@@ -92,4 +93,7 @@ public class S3ServiceImpl implements S3Service {
         }
     }
 
+    private String getFileExtension(String filename) {
+        return filename.substring(filename.lastIndexOf('.') + 1);
+    }
 }
