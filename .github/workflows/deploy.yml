@@ -1,0 +1,64 @@
+name: EC2에 스프링부트 애플리케이션 자동 배포 워크플로우
+
+on:     # 언제 실행되냐면
+  push:
+    branches: ["develop"]     # develop 브랜치에 push될 때 자동으로 실행될거임
+  workflow_dispatch: {}     # Actions 탭에 Run 버튼 추가해서 수동으로도 실행 가능하게
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest   # GitHub Actions가 리눅스 가상 머신 띄어줌
+
+    steps:
+      # (1) 현재 레포지토리 코드 가져오기
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # (2) GitHub Actions에서 임시로 띄운 가상머신안에 JDK 설치 (Gradle 빌드를 위해)
+      - name: Set up JDK 17 in GitHub Actions VM
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # (3) Gradle 빌드
+      - name: Build JAR by Gradle
+        run: |
+          chmod +x ./gradlew    # gradlew에 실행 권한 추가해주고
+          ./gradlew clean bootJar -x test   # 테스트는 생략해서 빌드 빠르게
+
+      # (4) GitHub Actions 가상 머신에서 빌드된 JAR를 EC2로 전송 (scp)
+      # 여기서 참조할 변수 들은 레포지토리 Settings > Secrets and variables > Actions 에서 미리 등록해둿음
+      - name: Copy JAR to EC2
+        uses: appleboy/scp-action@v0.1.7   # Actions가 SCP(SSH 기반 파일 전송)로 EC2에 파일 날림
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }} # EC2에서 발급받은 접근 시크릿 키 (귀한거라 제 로컬에 소중하게 보관중)
+          port: ${{ secrets.EC2_PORT }} # SSH 포트
+          source: build/libs/${{ secrets.JAR_NAME }}  # 빌드된 JAR 파일 경로
+          target: /home/ubuntu/springboot/${{ secrets.JAR_NAME }} # EC2 안에 여기다가 빌드된 JAR 복사할거임
+
+      # (5) EC2 내부에서 기존 프로세스 종료 후 새 jar 실행
+      - name: Restart app on EC2
+        uses: appleboy/ssh-action@v1.2.0  # Actions VM이 EC2에 SSH로 접속해서 명령어 실행하는 액션
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          port: ${{ secrets.EC2_PORT }}
+          script: |
+            echo "기존 배포 중인 애플리케이션 종료 중..."
+            pkill -f ${{ secrets.JAR_NAME }} || true
+
+            echo "새로 빌드한 애플리케이션 실행 중..."
+            nohup java -jar /home/ubuntu/springboot/${{ secrets.JAR_NAME }} > /home/ubuntu/springboot/nohup.out 2>&1 &
+            # nohup을 통해 터미널 종료되어도 프로세스 종료되지 않게 하고, nohub.out에 애플리케이션에서 생성되는 로그들 계속 남김
+            # log 계속 쌓이면 EC2 디스크 용량 부족해질 수 있으니 주기적으로 정리 필요한거 리마인드하기
+            
+            sleep 2
+            echo "실행 상태 확인"
+            ps -ef | grep 'java -jar' || true # java 프로세스 잘 실행되고 있는지 확인
+            sudo lsof -i:8080 || true  # 8080 포트로 애플리케이션이 잘 실행되고 있는지 확인
+            
+            echo "배포 성공 ~"
