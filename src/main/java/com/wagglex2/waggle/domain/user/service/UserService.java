@@ -21,4 +21,5 @@ public interface UserService {
     UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto dto);
     void withdraw(Long userId, String rawPassword);
     UserResponseDto uploadProfileImage(Long userId, MultipartFile file);
+    UserResponseDto deleteProfileImage(Long userId);
 }

@@ -319,4 +319,21 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.ok("프로필 이미지 업로드에 성공했습니다.", data));
     }
+
+    /**
+     * 현재 로그인한 사용자의 프로필 이미지를 삭제하고 기본 이미지로 변경한다.
+     *
+     * @param userDetails 현재 인증된 사용자 정보
+     * @return 기본 이미지로 변경된 사용자 정보를 담은 응답
+     */
+    @DeleteMapping("/me/profile-image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<UserResponseDto>> deleteProfileImage(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        UserResponseDto data = userService.deleteProfileImage(userDetails.getUserId());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok("프로필 이미지가 기본 이미지로 변경되었습니다.", data));
+    }
 }

@@ -12,6 +12,7 @@ import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
 import com.wagglex2.waggle.domain.user.repository.UserRepository;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,9 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
     private final S3Service s3Service;
+    
+    @Value("${aws.s3.default-profile-image-url}")
+    private String defaultProfileImageUrl;
 
     @Override
     public User findByUsername(String username) {
@@ -160,7 +165,7 @@ public class UserServiceImpl implements UserService {
         User user = findByIdWithSkills(userId);
 
         log.info("회원정보 불러오기 성공 : userId = {}", userId);
-        return UserResponseDto.from(user);
+        return UserResponseDto.from(user, defaultProfileImageUrl);
     }
 
     /**
@@ -206,7 +211,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("회원정보 수정 성공 : userId = {}", userId);
 
-        return UserResponseDto.from(user);
+        return UserResponseDto.from(user, defaultProfileImageUrl);
     }
 
     /**
@@ -251,7 +256,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     @PreAuthorize("#userId == authentication.principal.userId")
-    public UserResponseDto uploadProfileImage(Long userId, org.springframework.web.multipart.MultipartFile file) {
+    public UserResponseDto uploadProfileImage(Long userId, MultipartFile file) {
         User user = findByIdWithSkills(userId);
 
         // 기존 이미지가 있으면 삭제
@@ -260,12 +265,30 @@ public class UserServiceImpl implements UserService {
         }
 
         // 새 이미지 업로드
-        String folderPath = "users/" + userId + "/profile";
+        String folderPath = "user-profile-images/" + user.getUsername();
         String imageUrl = s3Service.uploadImage(file, folderPath);
 
         // 엔티티 업데이트
         user.updateProfileImageUrl(imageUrl);
 
-        return UserResponseDto.from(user);
+        return UserResponseDto.from(user, defaultProfileImageUrl);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("#userId == authentication.principal.userId")
+    public UserResponseDto deleteProfileImage(Long userId) {
+        User user = findByIdWithSkills(userId);
+
+        // 기존 이미지가 있고 기본 이미지가 아니면 삭제
+        if (user.getProfileImageUrl() != null &&
+                !user.getProfileImageUrl().equals(defaultProfileImageUrl)) {
+            s3Service.deleteImage(user.getProfileImageUrl());
+        }
+
+        // 기본 이미지로 변경
+        user.updateProfileImageUrl(defaultProfileImageUrl);
+
+        return UserResponseDto.from(user, defaultProfileImageUrl);
     }
 }

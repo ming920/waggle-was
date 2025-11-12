@@ -34,8 +34,8 @@ public class S3ServiceImpl implements S3Service {
         if (file == null || file.isEmpty()) {
             throw new BusinessException(ErrorCode.FILE_NOT_UPLOADED);
         }
-        // 파일 이름이 중복되지 않도록 UUID를 붙여서 저장
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        // 경로 : waggle-image-bucket/user-profile-images/{username}/{originalFileName}
+        String fileName = file.getOriginalFilename();
         String s3Key = folderPath + "/" + fileName;
 
         try {
