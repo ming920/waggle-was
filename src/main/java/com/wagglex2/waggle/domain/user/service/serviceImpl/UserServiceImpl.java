@@ -259,8 +259,9 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto uploadProfileImage(Long userId, MultipartFile file) {
         User user = findByIdWithSkills(userId);
 
-        // 기존 이미지가 있으면 삭제
-        if (user.getProfileImageUrl() != null) {
+        // 기존 이미지가 있고 기본 이미지가 아니면 삭제
+        if (user.getProfileImageUrl() != null &&
+        !user.getProfileImageUrl().equals(defaultProfileImageUrl)) {
             s3Service.deleteImage(user.getProfileImageUrl());
         }
 
