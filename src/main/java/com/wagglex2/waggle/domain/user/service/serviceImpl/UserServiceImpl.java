@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.user.service.serviceImpl;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
+import com.wagglex2.waggle.common.service.S3Service;
 import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.PasswordRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.UserUpdateRequestDto;
@@ -30,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
+    private final S3Service s3Service;
 
     @Override
     public User findByUsername(String username) {
@@ -244,5 +246,26 @@ public class UserServiceImpl implements UserService {
         redisTemplate.delete(redisKey);
 
         log.info("회원 탈퇴 성공 : userId = {}", userId);
+    }
+
+    @Override
+    @Transactional
+    @PreAuthorize("#userId == authentication.principal.userId")
+    public UserResponseDto uploadProfileImage(Long userId, org.springframework.web.multipart.MultipartFile file) {
+        User user = findByIdWithSkills(userId);
+
+        // 기존 이미지가 있으면 삭제
+        if (user.getProfileImageUrl() != null) {
+            s3Service.deleteImage(user.getProfileImageUrl());
+        }
+
+        // 새 이미지 업로드
+        String folderPath = "users/" + userId + "/profile";
+        String imageUrl = s3Service.uploadImage(file, folderPath);
+
+        // 엔티티 업데이트
+        user.updateProfileImageUrl(imageUrl);
+
+        return UserResponseDto.from(user);
     }
 }

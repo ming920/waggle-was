@@ -97,6 +97,9 @@ public class User {
     @Column(nullable = false)
     private UserStatus status = UserStatus.ACTIVE;
 
+    @Column(nullable = true)
+    private String profileImageUrl;
+
     @Builder
     private User(
             String username, String password, String email, String nickname,
@@ -140,5 +143,9 @@ public class User {
 
     public void withdraw() {
         this.status = UserStatus.WITHDRAWN;
+    }
+
+    public void updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

@@ -30,6 +30,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -298,5 +299,24 @@ public class UserController {
                 .build();
 
         response.addHeader("Set-Cookie", cookie.toString());
+    }
+
+    /**
+     * 현재 로그인한 사용자의 프로필 이미지를 업로드한다.
+     *
+     * @param userDetails 현재 인증된 사용자 정보
+     * @param file        업로드할 이미지 파일
+     * @return 업로드된 사용자 정보를 담은 응답
+     */
+    @PostMapping("/me/profile-image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<UserResponseDto>> uploadProfileImage(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("file") MultipartFile file
+    ) {
+        UserResponseDto data = userService.uploadProfileImage(userDetails.getUserId(), file);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok("프로필 이미지 업로드에 성공했습니다.", data));
     }
 }

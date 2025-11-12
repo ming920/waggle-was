@@ -22,7 +22,8 @@ public record UserResponseDto(
         Integer grade,
         PositionType position,
         Set<Skill> skills,
-        String shortIntro
+        String shortIntro,
+        String profileImageUrl
 ) {
     public static UserResponseDto from(User user) {
         return new UserResponseDto(
@@ -33,7 +34,8 @@ public record UserResponseDto(
                 user.getGrade(),
                 user.getPosition(),
                 user.getSkills(),
-                user.getShortIntro()
+                user.getShortIntro(),
+                user.getProfileImageUrl()
         );
     }
 }
