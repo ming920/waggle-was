@@ -16,7 +16,8 @@ public enum Skill {
     KOTLIN("Kotlin"),
     PYTHON("Python"),
     SWIFT("Swift"),
-    C_CPP("C/C++"),
+    C("C"),
+    CPP("C++"),
     CSHARP("C#"),
     TYPESCRIPT("TypeScript"),
 
@@ -41,7 +42,8 @@ public enum Skill {
     POSTGRESQL("PostgreSQL"),
 
     // 협업 / 툴
-    GIT_GITHUB("Git/GitHub"),
+    GIT("Git"),
+    GITHUB("GitHub"),
     GITHUB_ACTIONS("GitHub Actions"),
     FIGMA("Figma"),
     NOTION("Notion"),
