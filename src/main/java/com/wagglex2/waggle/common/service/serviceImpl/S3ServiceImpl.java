@@ -13,14 +13,16 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class S3ServiceImpl implements S3Service {
-    // private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png");
-    // private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB 제한
+    private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png");
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB 제한
     private final S3Client s3Client;
 
     @Value("${aws.s3.bucket}")
@@ -34,6 +36,10 @@ public class S3ServiceImpl implements S3Service {
         if (file == null || file.isEmpty()) {
             throw new BusinessException(ErrorCode.FILE_NOT_UPLOADED);
         }
+
+        // 파일 유효성 검증
+        validateFile(file);
+
         // 경로 : waggle-image-bucket/user-profile-images/{username}/{uuid}.확장자
         String extension = getFileExtension(file.getOriginalFilename());
         String fileName = UUID.randomUUID().toString() + "." + extension;
@@ -48,8 +54,10 @@ public class S3ServiceImpl implements S3Service {
 
             s3Client.putObject(
                     putObjectRequest,
-                    RequestBody.fromInputStream(file.getInputStream(),
-                            file.getSize())
+                    RequestBody.fromInputStream(
+                            file.getInputStream(),
+                            file.getSize()
+                    )
             );
 
             String fileUrl = String.format(
@@ -95,5 +103,24 @@ public class S3ServiceImpl implements S3Service {
 
     private String getFileExtension(String filename) {
         return filename.substring(filename.lastIndexOf('.') + 1);
+    }
+
+    private void validateFile(MultipartFile file) {
+        // 파일 크기 검증
+        if (file.getSize() > MAX_FILE_SIZE) {
+            throw new BusinessException(ErrorCode.FILE_SIZE_TOO_LARGE);
+        }
+
+        // 파일명 검증
+        String originalFilename = file.getOriginalFilename();
+        if (originalFilename == null) {
+            throw new BusinessException(ErrorCode.INVALID_FILE_NAME);
+        }
+
+        // 확장자 검증
+        String extension = getFileExtension(originalFilename).toLowerCase();
+        if (!ALLOWED_EXTENSIONS.contains(extension)) {
+            throw new BusinessException(ErrorCode.INVALID_FILE_FORMAT);
+        }
     }
 }

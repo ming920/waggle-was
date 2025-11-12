@@ -11,6 +11,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.List;
 
@@ -102,5 +103,21 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(ErrorCode.INVALID_ENUM_VALUE, message));
+    }
+
+    /**
+     * 파일 크기 초과 예외 처리
+     * <p>
+     * Spring의 multipart 크기 제한(기본 1MB) 또는 애플리케이션의 파일 크기 제한(5MB)을 초과한 경우 발생하는 예외를 처리한다.
+     * 클라이언트에게 HTTP 상태 코드와 ErrorCode를 전달한다.
+     * </p>
+     *
+     * @param ex {@link MaxUploadSizeExceededException}
+     * @return {@link ResponseEntity} - {@link ApiResponse}를 포함한 에러 응답
+     */
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Void>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(ApiResponse.error(ErrorCode.FILE_SIZE_TOO_LARGE));
     }
 }

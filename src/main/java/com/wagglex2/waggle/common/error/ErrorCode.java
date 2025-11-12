@@ -33,6 +33,8 @@ public enum ErrorCode {
     PAGE_INDEX_OUT_OF_RANGE(HttpStatus.BAD_REQUEST, "PAGE_INDEX_OUT_OF_RANGE", "페이지 번호는 0 이상이어야 합니다."),
     INVALID_MEMBER_COUNT(HttpStatus.BAD_REQUEST, "INVALID_MEMBER_COUNT", "현재 인원이 0명 이하일 때는 감소할 수 없습니다."),
     FILE_NOT_UPLOADED(HttpStatus.BAD_REQUEST, "FILE_NOT_UPLOADED", "파일이 업로드되지 않았습니다."),
+    INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "INVALID_FILE_NAME", "파일명이 올바르지 않습니다."),
+    INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, "INVALID_FILE_FORMAT", "지원하지 않는 파일 형식입니다. jpg, jpeg, png만 가능합니다."),
 
     // 401
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다."),
@@ -97,6 +99,7 @@ public enum ErrorCode {
 
     // 413
     PAYLOAD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "PAYLOAD_TOO_LARGE", "요청 또는 파일 크기가 너무 큽니다."),
+    FILE_SIZE_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_SIZE_TOO_LARGE", "이미지 크기는 5MB를 초과하면 안됩니다."),
 
     // 415
     UNSUPPORTED_MEDIA_TYPE(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE", "지원하지 않는 Content-Type 입니다."),
