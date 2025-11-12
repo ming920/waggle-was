@@ -37,7 +37,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }} # EC2에서 발급받은 접근 시크릿 키 (귀한거라 제 로컬에 소중하게 보관중)
           port: ${{ secrets.EC2_PORT }} # SSH 포트
           source: build/libs/${{ secrets.JAR_NAME }}  # 빌드된 JAR 파일 경로
-          target: /home/ubuntu/springboot/${{ secrets.JAR_NAME }} # EC2 안에 여기다가 빌드된 JAR 복사할거임
+          target: /home/ubuntu/springboot/ # EC2 안에 여기다가 빌드된 JAR 복사할거임
 
       # (5) EC2 내부에서 기존 프로세스 종료 후 새 jar 실행
       - name: Restart app on EC2
@@ -47,18 +47,21 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
+          script_stop: false # 스크립트 실패해도 멈추지 말라는 옵션(kill 안될 수도 있어서)
           script: |
-            echo "기존 배포 중인 애플리케이션 종료 중..."
-            pkill -f ${{ secrets.JAR_NAME }} || true
+            echo "기존 배포 중인 애플리케이션 종료 후 새로 빌드한거 실행..."
+            cd /home/ubuntu/springboot
+            chmod +x start.sh || true
+            ./start.sh
 
-            echo "새로 빌드한 애플리케이션 실행 중..."
-            nohup java -jar /home/ubuntu/springboot/${{ secrets.JAR_NAME }} > /home/ubuntu/springboot/nohup.out 2>&1 &
             # nohup을 통해 터미널 종료되어도 프로세스 종료되지 않게 하고, nohub.out에 애플리케이션에서 생성되는 로그들 계속 남김
             # log 계속 쌓이면 EC2 디스크 용량 부족해질 수 있으니 주기적으로 정리 필요한거 리마인드하기
             
             sleep 2
             echo "실행 상태 확인"
-            ps -ef | grep 'java -jar' || true # java 프로세스 잘 실행되고 있는지 확인
+            ps -ef | grep "${{ secrets.JAR_NAME }}" || echo "실행 안 됨" # java 프로세스 잘 실행되고 있는지 확인
+            
+            sleep 15
             sudo lsof -i:8080 || true  # 8080 포트로 애플리케이션이 잘 실행되고 있는지 확인
             
             echo "배포 성공 ~"
