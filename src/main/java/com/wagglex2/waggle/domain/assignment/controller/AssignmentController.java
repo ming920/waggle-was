@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.assignment.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.util.KomoranUtil;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentCreationRequestDto;
@@ -32,29 +32,29 @@ public class AssignmentController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Long>> createAssignment(
+    public ResponseEntity<APIResponse<Long>> createAssignment(
             @RequestBody @Valid AssignmentCreationRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long assignmentId = assignmentService.createAssignment(requestDto, userDetails.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("과제 공고를 성공적으로 등록하였습니다.", assignmentId));
+                .body(APIResponse.ok("과제 공고를 성공적으로 등록하였습니다.", assignmentId));
     }
 
     @GetMapping("/{assignmentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<AssignmentDetailResponseDto>> getAssignment(@PathVariable Long assignmentId) {
+    public ResponseEntity<APIResponse<AssignmentDetailResponseDto>> getAssignment(@PathVariable Long assignmentId) {
         AssignmentDetailResponseDto responseDto = assignmentService.getAssignment(assignmentId);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("과제 공고를 성공적으로 조회하였습니다.", responseDto)
+                APIResponse.ok("과제 공고를 성공적으로 조회하였습니다.", responseDto)
         );
     }
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Page<AssignmentSummaryResponseDto>>> getAssignmentSummaries(
+    public ResponseEntity<APIResponse<Page<AssignmentSummaryResponseDto>>> getAssignmentSummaries(
             @RequestParam(value = "q", required = false) String keywords,
             @RequestParam(value = "grades", required = false) Set<Integer> grades,
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
@@ -73,13 +73,13 @@ public class AssignmentController {
                 assignmentService.getAssignmentSummaries(condition, pageable);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("과제 공고 목록을 성공적으로 조회하였습니다.", assignmentSummaries)
+                APIResponse.ok("과제 공고 목록을 성공적으로 조회하였습니다.", assignmentSummaries)
         );
     }
 
     @PutMapping("/{assignmentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> updateAssignment(
+    public ResponseEntity<APIResponse<Void>> updateAssignment(
             @PathVariable Long assignmentId,
             @RequestBody @Valid AssignmentUpdateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -87,21 +87,21 @@ public class AssignmentController {
         assignmentService.updateAssignment(userDetails.getUserId(), assignmentId, requestDto);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("과제 공고를 성공적으로 수정하였습니다.")
+                APIResponse.ok("과제 공고를 성공적으로 수정하였습니다.")
         );
     }
 
 
     @DeleteMapping("/{assignmentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteAssignment(
+    public ResponseEntity<APIResponse<Void>> deleteAssignment(
             @PathVariable Long assignmentId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         assignmentService.deleteAssignment(userDetails.getUserId(), assignmentId);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("과제 공고를 성공적으로 삭제하였습니다.")
+                APIResponse.ok("과제 공고를 성공적으로 삭제하였습니다.")
         );
     }
 

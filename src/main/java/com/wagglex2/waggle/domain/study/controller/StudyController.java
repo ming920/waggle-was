@@ -1,7 +1,7 @@
 package com.wagglex2.waggle.domain.study.controller;
 
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
 import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
@@ -22,22 +22,22 @@ public class StudyController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Long>> createStudy(
+    public ResponseEntity<APIResponse<Long>> createStudy(
             @RequestBody @Valid StudyCreationRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Long studyId = studyService.createStudy(requestDto, userDetails.getUserId());
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("스터디 공고를 성공적으로 등록하였습니다.", studyId));
+                .body(APIResponse.ok("스터디 공고를 성공적으로 등록하였습니다.", studyId));
     }
 
     @GetMapping("/{studyId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<StudyResponseDto>> getStudy(@PathVariable Long studyId) {
+    public ResponseEntity<APIResponse<StudyResponseDto>> getStudy(@PathVariable Long studyId) {
         StudyResponseDto responseDto = studyService.getStudy(studyId);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("스터디 공고를 성공적으로 조회하였습니다.", responseDto)
+                APIResponse.ok("스터디 공고를 성공적으로 조회하였습니다.", responseDto)
         );
     }
 }

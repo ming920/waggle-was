@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.bookmark.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto;
@@ -23,19 +23,19 @@ public class BookmarkController {
 
     @PostMapping("/recruitments/{recruitmentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Long>> createBookmark(
+    public ResponseEntity<APIResponse<Long>> createBookmark(
             @PathVariable("recruitmentId") Long recruitmentId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long bookmarkId = bookmarkService.createBookmark(userDetails.getUserId(), recruitmentId);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("공고를 찜 목록에 성공적으로 추가하였습니다.", bookmarkId));
+                .body(APIResponse.ok("공고를 찜 목록에 성공적으로 추가하였습니다.", bookmarkId));
     }
 
     @GetMapping("/projects")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Page<ProjectSummaryResponseDto>>> getBookmarkedProjectSummariesByUserId(
+    public ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getBookmarkedProjectSummariesByUserId(
             @PageableDefault(size = 9) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -43,20 +43,20 @@ public class BookmarkController {
                 bookmarkService.getBookmarkedProjectsByUserId(userDetails.getUserId(), pageable);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("프로젝트 공고 찜 목록을 성공적으로 조회하였습니다.", bookmarkedProjects)
+                APIResponse.ok("프로젝트 공고 찜 목록을 성공적으로 조회하였습니다.", bookmarkedProjects)
         );
     }
 
     @DeleteMapping("/{bookmarkId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteBookmark(
+    public ResponseEntity<APIResponse<Void>> deleteBookmark(
             @PathVariable("bookmarkId") Long bookmarkId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         bookmarkService.deleteBookmark(userDetails.getUserId(), bookmarkId);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("공고를 찜 목록에서 성공적으로 삭제하였습니다.")
+                APIResponse.ok("공고를 찜 목록에서 성공적으로 삭제하였습니다.")
         );
     }
 }

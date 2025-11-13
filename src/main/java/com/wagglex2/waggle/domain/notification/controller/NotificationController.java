@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.notification.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.notification.dto.response.NotificationResponseDto;
@@ -25,7 +25,7 @@ public class NotificationController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Page<NotificationResponseDto>>> getMyNotificationsByCategory(
+    public ResponseEntity<APIResponse<Page<NotificationResponseDto>>> getMyNotificationsByCategory(
             @RequestParam(value = "category", required = false) RecruitmentCategory category,
             @PageableDefault(size = 5) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -44,23 +44,23 @@ public class NotificationController {
 
         String message = (category != null ? category.getDesc() + " 알림을" : "전체 알림을") + " 성공적으로 조회하였습니다.";
 
-        return ResponseEntity.ok(ApiResponse.ok(message, notifications));
+        return ResponseEntity.ok(APIResponse.ok(message, notifications));
     }
 
     @DeleteMapping("{notificationId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteById(
+    public ResponseEntity<APIResponse<Void>> deleteById(
             @PathVariable("notificationId") Long notificationId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         notificationService.deleteById(userDetails.getUserId(), notificationId);
 
-        return ResponseEntity.ok(ApiResponse.ok("알림이 성공적으로 삭제되었습니다."));
+        return ResponseEntity.ok(APIResponse.ok("알림이 성공적으로 삭제되었습니다."));
     }
 
     @DeleteMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteAll(
+    public ResponseEntity<APIResponse<Void>> deleteAll(
             @RequestParam(value = "category", required = false) RecruitmentCategory category,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -68,6 +68,6 @@ public class NotificationController {
 
         String message = (category != null ? category.getDesc() + " 알림을" : "전체 알림을") + " 성공적으로 삭제하였습니다.";
 
-        return ResponseEntity.ok(ApiResponse.ok(message));
+        return ResponseEntity.ok(APIResponse.ok(message));
     }
 }

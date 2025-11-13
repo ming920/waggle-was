@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.team.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-
-import java.beans.PropertyEditorSupport;
 
 @RestController
 @RequestMapping("/api/v1/teams")
@@ -44,7 +41,7 @@ public class TeamController {
      */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Page<TeamResponseDto>>> getMyTeamByCategory(
+    public ResponseEntity<APIResponse<Page<TeamResponseDto>>> getMyTeamByCategory(
             @RequestParam(value = "category", defaultValue = "PROJECT") RecruitmentCategory category,
             @RequestParam(value = "status", defaultValue = "RECRUITING") RecruitmentStatus status,
             @AuthenticationPrincipal CustomUserDetails userDetails,
@@ -63,6 +60,6 @@ public class TeamController {
         );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("팀 조회에 성공했습니다.", data));
+                .body(APIResponse.ok("팀 조회에 성공했습니다.", data));
     }
 }

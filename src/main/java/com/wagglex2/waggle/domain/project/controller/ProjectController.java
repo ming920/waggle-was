@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.project.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -36,28 +36,28 @@ public class ProjectController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Long>> createProject(
+    public ResponseEntity<APIResponse<Long>> createProject(
             @RequestBody @Valid ProjectCreationRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         Long projectId = projectService.createProject(userDetails.getUserId(), requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("프로젝트 공고를 성공적으로 등록하였습니다.", projectId));
+                .body(APIResponse.ok("프로젝트 공고를 성공적으로 등록하였습니다.", projectId));
     }
 
     @GetMapping("/{projectId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<ProjectDetailResponseDto>> getProject(@PathVariable Long projectId) {
+    public ResponseEntity<APIResponse<ProjectDetailResponseDto>> getProject(@PathVariable Long projectId) {
         ProjectDetailResponseDto responseDto = projectService.getProject(projectId);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("프로젝트 공고를 성공적으로 조회하였습니다.", responseDto)
+                APIResponse.ok("프로젝트 공고를 성공적으로 조회하였습니다.", responseDto)
         );
     }
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Page<ProjectSummaryResponseDto>>> getProjectSummaries(
+    public ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getProjectSummaries(
             @RequestParam(value = "q", required = false) String keywords,
             @RequestParam(value = "purpose", required = false) ProjectPurpose purpose,
             @RequestParam(value = "positions", required = false) List<PositionType> positions,
@@ -81,13 +81,13 @@ public class ProjectController {
                 projectService.getProjectSummaries(condition, pageable);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("프로젝트 공고 목록을 성공적으로 조회하였습니다.", projectSummaries)
+                APIResponse.ok("프로젝트 공고 목록을 성공적으로 조회하였습니다.", projectSummaries)
         );
     }
 
     @PutMapping("/{projectId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> updateProject(
+    public ResponseEntity<APIResponse<Void>> updateProject(
             @PathVariable Long projectId,
             @RequestBody @Valid ProjectUpdateRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -95,20 +95,20 @@ public class ProjectController {
         projectService.updateProject(userDetails.getUserId(), projectId, requestDto);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("프로젝트 공고를 성공적으로 수정하였습니다.")
+                APIResponse.ok("프로젝트 공고를 성공적으로 수정하였습니다.")
         );
     }
 
     @DeleteMapping("/{projectId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteProject(
+    public ResponseEntity<APIResponse<Void>> deleteProject(
             @PathVariable Long projectId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         projectService.deleteProject(userDetails.getUserId(), projectId);
 
         return ResponseEntity.ok(
-                ApiResponse.ok("프로젝트 공고를 성공적으로 삭제하였습니다.")
+                APIResponse.ok("프로젝트 공고를 성공적으로 삭제하였습니다.")
         );
     }
 }

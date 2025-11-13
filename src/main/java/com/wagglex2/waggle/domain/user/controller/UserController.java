@@ -2,7 +2,7 @@ package com.wagglex2.waggle.domain.user.controller;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.dto.response.PageResponse;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
@@ -19,7 +19,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -50,7 +49,7 @@ public class UserController {
      * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/username/check")
-    public ResponseEntity<ApiResponse<Boolean>> existsByUsername(
+    public ResponseEntity<APIResponse<Boolean>> existsByUsername(
             @RequestParam
             @Pattern(regexp = "^[a-zA-Z0-9_]{4,20}$", message = "아이디는 4-20자의 영문, 숫자, 언더스코어만 가능합니다.")
             String username
@@ -59,10 +58,10 @@ public class UserController {
 
         if (exists) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.ok("이미 사용 중인 아이디입니다.", true));
+                    .body(APIResponse.ok("이미 사용 중인 아이디입니다.", true));
         } else {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.ok("사용 가능한 아이디입니다.", false));
+                    .body(APIResponse.ok("사용 가능한 아이디입니다.", false));
         }
     }
 
@@ -73,7 +72,7 @@ public class UserController {
      * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/email/check")
-    public ResponseEntity<ApiResponse<Boolean>> existsByEmail(
+    public ResponseEntity<APIResponse<Boolean>> existsByEmail(
             @RequestParam
             @NotBlank(message = "이메일이 누락되었습니다.")
             @Email(message = "올바른 이메일 형식이 아닙니다.")
@@ -84,10 +83,10 @@ public class UserController {
 
         if (exists) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.ok("이미 사용 중인 이메일입니다.", true));
+                    .body(APIResponse.ok("이미 사용 중인 이메일입니다.", true));
         } else {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.ok("사용 가능한 이메일입니다.", false));
+                    .body(APIResponse.ok("사용 가능한 이메일입니다.", false));
         }
     }
 
@@ -98,7 +97,7 @@ public class UserController {
      * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/nickname/check")
-    public ResponseEntity<ApiResponse<Boolean>> existsByNickname(
+    public ResponseEntity<APIResponse<Boolean>> existsByNickname(
             @RequestParam
             @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,10}$", message = "닉네임은 2-10자의 영문, 한글, 숫자만 입력할 수 있습니다.")
             String nickname
@@ -106,10 +105,10 @@ public class UserController {
         boolean exists = userService.existsByNickname(nickname);
         if (exists) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.ok("이미 사용 중인 닉네임입니다.", true));
+                    .body(APIResponse.ok("이미 사용 중인 닉네임입니다.", true));
         } else {
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponse.ok("사용 가능한 닉네임입니다.", false));
+                    .body(APIResponse.ok("사용 가능한 닉네임입니다.", false));
         }
     }
 
@@ -130,14 +129,14 @@ public class UserController {
      */
     @PostMapping("/me/password-change")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> passwordChange(
+    public ResponseEntity<APIResponse<Void>> passwordChange(
             @Valid @RequestBody PasswordRequestDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         userService.changePassword(userDetails.getUserId(), dto);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("비밀번호 변경에 성공했습니다."));
+                .body(APIResponse.ok("비밀번호 변경에 성공했습니다."));
     }
 
     /**
@@ -155,13 +154,13 @@ public class UserController {
      */
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserResponseDto>> getMe(
+    public ResponseEntity<APIResponse<UserResponseDto>> getMe(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         UserResponseDto data = userService.getUserInfo(userDetails.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("회원정보를 불러오는데 성공했습니다.", data));
+                .body(APIResponse.ok("회원정보를 불러오는데 성공했습니다.", data));
     }
 
     /**
@@ -172,7 +171,7 @@ public class UserController {
      *   <li>Spring Security의 {@code @AuthenticationPrincipal}을 통해 인증된 사용자 정보(CustomUserDetails) 획득</li>
      *   <li>수정 요청 DTO({@link UserUpdateRequestDto})를 기반으로 {@code userService.updateUserInfo()} 호출</li>
      *   <li>엔티티 업데이트 후 {@link UserResponseDto}로 변환</li>
-     *   <li>{@link ApiResponse} 래핑을 통해 최신 사용자 정보 반환</li>
+     *   <li>{@link APIResponse} 래핑을 통해 최신 사용자 정보 반환</li>
      * </ol>
      *
      * @param userDetails 현재 인증된 사용자 정보 (CustomUserDetails)
@@ -181,14 +180,14 @@ public class UserController {
      */
     @PatchMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserResponseDto>> updateMe(
+    public ResponseEntity<APIResponse<UserResponseDto>> updateMe(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody UserUpdateRequestDto dto
     ) {
         UserResponseDto data = userService.updateUserInfo(userDetails.getUserId(), dto);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("회원정보를 수정하는데 성공했습니다.", data));
+                .body(APIResponse.ok("회원정보를 수정하는데 성공했습니다.", data));
     }
 
     /**
@@ -206,11 +205,11 @@ public class UserController {
      * @param userDetails 인증된 사용자 정보 (Spring Security Principal)
      * @param dto         탈퇴 요청 DTO (비밀번호 포함)
      * @param response    HTTP 응답 객체 (쿠키 만료 처리용)
-     * @return {@link ApiResponse} 성공 메시지 (200 OK)
+     * @return {@link APIResponse} 성공 메시지 (200 OK)
      */
     @DeleteMapping("/me/withdraw")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> withdraw(
+    public ResponseEntity<APIResponse<Void>> withdraw(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody WithdrawRequestDto dto,
             HttpServletResponse response
@@ -220,7 +219,7 @@ public class UserController {
         addCookie(response, "", REFRESH_TOKEN_COOKIE_NAME, 0);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("회원탈퇴에 성공했습니다."));
+                .body(APIResponse.ok("회원탈퇴에 성공했습니다."));
     }
 
     /**
@@ -232,7 +231,7 @@ public class UserController {
      *   <li>Spring MVC가 요청 파라미터({@code page}, {@code size}, {@code sort})를 {@link Pageable} 객체로 자동 변환한다.</li>
      *   <li>{@code reviewService.getReviewsByRevieweeId()}를 호출해 해당 사용자가 받은 리뷰를 조회한다.</li>
      *   <li>서비스 계층에서 조회 결과를 {@link PageResponse}<{@link ReviewResponseDto}> 형태로 변환하여 반환한다.</li>
-     *   <li>컨트롤러는 이를 {@link ApiResponse}로 감싸 200 OK 응답을 반환한다.</li>
+     *   <li>컨트롤러는 이를 {@link APIResponse}로 감싸 200 OK 응답을 반환한다.</li>
      * </ol>
      *
      * <p><b>요청 파라미터 예시:</b></p>
@@ -243,12 +242,12 @@ public class UserController {
      *
      * @param userId   리뷰 대상 사용자의 고유 ID (경로 변수)
      * @param pageable 페이징 및 정렬 정보 (기본값: size=5, sort=createdAt, direction=DESC)
-     * @return 받은 리뷰 목록을 포함한 {@link ApiResponse} (200 OK)
+     * @return 받은 리뷰 목록을 포함한 {@link APIResponse} (200 OK)
      * @throws BusinessException 대상 사용자가 존재하지 않을 경우 {@link ErrorCode#USER_NOT_FOUND} 발생
      */
     @GetMapping("/{userId}/reviews/received")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<PageResponse<ReviewResponseDto>>> getReviews(
+    public ResponseEntity<APIResponse<PageResponse<ReviewResponseDto>>> getReviews(
             @PathVariable(name = "userId") Long userId,
             @PageableDefault(
                     size = 5,
@@ -263,7 +262,7 @@ public class UserController {
         PageResponse<ReviewResponseDto> data = reviewService.getReviewsByRevieweeId(userId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("리뷰 조회에 성공했습니다.", data));
+                .body(APIResponse.ok("리뷰 조회에 성공했습니다.", data));
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.auth.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
 import com.wagglex2.waggle.domain.auth.dto.request.EmailRequestDto;
@@ -10,6 +10,10 @@ import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.response.TokenPair;
 import com.wagglex2.waggle.domain.auth.service.AuthService;
 import com.wagglex2.waggle.domain.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +26,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "Auth", description = "인증 관련 API (로그인/로그아웃/회원가입/토큰 재발급)")
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -34,20 +39,22 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
 
-    /**
-     * 회원가입 이메일 인증을 위한 인증번호를 발송한다.
-     *
-     * @param dto 인증번호를 받을 사용자 이메일
-     * @return ApiResponse(Void) — 성공 시 "이메일 전송에 성공했습니다."
-     */
+    @Operation(
+            summary = "회원가입 이메일 인증코드 발송",
+            description = "입력된 이메일 주소로 회원가입용 인증번호를 발송합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "이메일 전송 성공"),
+            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
+    })
     @PostMapping("/email/code")
-    public ResponseEntity<ApiResponse<Void>> sendEmailAuthCode(
+    public ResponseEntity<APIResponse<Void>> sendEmailAuthCode(
             @Valid @RequestBody EmailRequestDto dto
             ) {
         authService.sendAuthCode(dto.email());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("이메일 전송에 성공했습니다."));
+                .body(APIResponse.ok("이메일 전송에 성공했습니다."));
     }
 
     /**
@@ -57,13 +64,13 @@ public class AuthController {
      * @return ApiResponse(Void) — 성공 시 "이메일 인증이 완료되었습니다."
      */
     @PostMapping("/email/verify")
-    public ResponseEntity<ApiResponse<Void>> verifyAuthCode(
+    public ResponseEntity<APIResponse<Void>> verifyAuthCode(
             @Valid @RequestBody EmailVerificationRequestDto dto
     ) {
         authService.verifyCode(dto.email(), dto.inputCode());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("이메일 인증이 완료되었습니다."));
+                .body(APIResponse.ok("이메일 인증이 완료되었습니다."));
     }
 
     /**
@@ -82,13 +89,13 @@ public class AuthController {
      * @see UserService#signUp(SignUpRequestDto)
      */
     @PostMapping("/sign-up")
-    public ResponseEntity<ApiResponse<Long>> signUp(
+    public ResponseEntity<APIResponse<Long>> signUp(
             @Valid @RequestBody SignUpRequestDto dto
     ) {
         Long userId = userService.signUp(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("회원가입에 성공했습니다.", userId));
+                .body(APIResponse.ok("회원가입에 성공했습니다.", userId));
     }
 
     /**
@@ -109,7 +116,7 @@ public class AuthController {
      * @see AuthService#login(SignInRequestDto)
      */
     @PostMapping("/sign-in")
-    public ResponseEntity<ApiResponse<Void>> signIn(
+    public ResponseEntity<APIResponse<Void>> signIn(
             @Valid @RequestBody SignInRequestDto dto,
             HttpServletResponse response
     ) {
@@ -128,12 +135,12 @@ public class AuthController {
         );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("로그인에 성공했습니다."));
+                .body(APIResponse.ok("로그인에 성공했습니다."));
     }
 
     @PostMapping("/sign-out")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> signOut(HttpServletResponse response,
+    public ResponseEntity<APIResponse<Void>> signOut(HttpServletResponse response,
                                                      @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long userId = userDetails.getUserId();
@@ -153,7 +160,7 @@ public class AuthController {
         log.info("로그아웃 성공 : userId = {}", userId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("로그아웃에 성공했습니다."));
+                .body(APIResponse.ok("로그아웃에 성공했습니다."));
     }
 
     /**
@@ -172,7 +179,7 @@ public class AuthController {
      * @return ApiResponse(Void) — 성공 시 "토큰 재발급에 성공했습니다."
      */
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<Void>> refreshToken(
+    public ResponseEntity<APIResponse<Void>> refreshToken(
             @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
             HttpServletResponse response
     ) {
@@ -190,7 +197,7 @@ public class AuthController {
         );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("토큰 재발급에 성공했습니다."));
+                .body(APIResponse.ok("토큰 재발급에 성공했습니다."));
     }
 
     /**
