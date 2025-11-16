@@ -5,10 +5,12 @@ import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.bookmark.entity.Bookmark;
 import com.wagglex2.waggle.domain.bookmark.repository.BookmarkRepository;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
+import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.service.RecruitmentService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto;
 import com.wagglex2.waggle.domain.project.service.ProjectService;
+import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,15 +37,20 @@ public class BookmarkServiceImpl implements BookmarkService {
     @Transactional
     @Override
     public Long createBookmark(@P("userId") Long userId, Long recruitmentId) {
+        User user = userService.findById(userId);
+        BaseRecruitment recruitment = recruitmentService.findById(recruitmentId);
+
+        // 타 대학 공고를 찜하려는 경우
+        if (user.getUniversity() != recruitment.getUser().getUniversity()) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_CROSS_UNIVERSITY_RECRUITMENT);
+        }
+
         // 이미 찜한 경우
         if (bookmarkRepository.existsByUserIdAndRecruitmentId(userId, recruitmentId)) {
             throw new BusinessException(ErrorCode.ALREADY_BOOKMARKED);
         }
 
-        Bookmark newBookmark = new Bookmark(
-                userService.findById(userId),
-                recruitmentService.findById(recruitmentId)
-        );
+        Bookmark newBookmark = new Bookmark(user, recruitment);
 
         return bookmarkRepository.save(newBookmark).getId();
     }
