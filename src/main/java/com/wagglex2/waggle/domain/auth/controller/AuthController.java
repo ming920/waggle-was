@@ -11,6 +11,7 @@ import com.wagglex2.waggle.domain.auth.dto.response.TokenPair;
 import com.wagglex2.waggle.domain.auth.service.AuthService;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,8 +66,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "이메일 전송에 성공했습니다.",
-                                                        "data": null
+                                                        "message": "이메일 전송에 성공했습니다."
                                                     }
                                                     """
                                     )
@@ -85,8 +85,13 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "VALIDATION_FAILED",
-                                                        "message": "올바른 이메일 형식이 아닙니다.",
-                                                        "data": null
+                                                        "message": "요청 값이 유효하지 않습니다.",
+                                                        "data": [
+                                                            {
+                                                                "field": "email",
+                                                                "message": "올바른 이메일 형식이 아닙니다."
+                                                            }
+                                                        ]
                                                     }
                                                     """
                                     )
@@ -105,8 +110,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "INTERNAL_ERROR",
-                                                        "message": "서버 오류가 발생했습니다.",
-                                                        "data": null
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
@@ -135,7 +139,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "인증 성공",
+                    description = "이메일 인증번호 검증 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -144,8 +148,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "이메일 인증이 완료되었습니다.",
-                                                        "data": null
+                                                        "message": "이메일 인증이 완료되었습니다."
                                                     }
                                                     """
                                     )
@@ -164,8 +167,13 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "VALIDATION_FAILED",
-                                                        "message": "인증번호는 숫자 6자리여야 합니다.",
-                                                        "data": null
+                                                        "message": "요청 값이 유효하지 않습니다.",
+                                                        "data": [
+                                                            {
+                                                                "field": "inputCode",
+                                                                "message": "인증번호는 숫자 6자리여야 합니다."
+                                                            }
+                                                        ]
                                                     }
                                                     """
                                     )
@@ -184,8 +192,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "INTERNAL_ERROR",
-                                                        "message": "서버 오류가 발생했습니다.",
-                                                        "data": null
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
@@ -210,7 +217,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "인증 성공",
+                    description = "회원가입 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -235,12 +242,29 @@ public class AuthController {
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "아이디(username) 누락",
+                                            name = "아이디(username), 닉네임 누락",
                                             value = """
                                                     {
                                                         "code": "VALIDATION_FAILED",
-                                                        "message": "아이디가 누락되었습니다.",
-                                                        "data": null
+                                                        "message": "요청 값이 유효하지 않습니다.",
+                                                        "data": [
+                                                            {
+                                                                "field": "nickname",
+                                                                "message": "닉네임이 누락되었습니다."
+                                                            },
+                                                            {
+                                                                "field": "username",
+                                                                "message": "아이디는 4-20자의 영문, 숫자, 언더스코어만 가능합니다."
+                                                            },
+                                                            {
+                                                                "field": "nickname",
+                                                                "message": "닉네임은 2-10자의 영문, 한글, 숫자만 입력할 수 있습니다."
+                                                            },
+                                                            {
+                                                                "field": "username",
+                                                                "message": "아이디가 누락되었습니다."
+                                                            }
+                                                        ]
                                                     }
                                                     """
                                     )
@@ -259,8 +283,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "DUPLICATED_USERNAME",
-                                                        "message": "이미 가입된 아이디입니다.",
-                                                        "data": null
+                                                        "message": "이미 가입된 아이디입니다."
                                                     }
                                                     """
                                     )
@@ -279,8 +302,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "INTERNAL_ERROR",
-                                                        "message": "서버 오류가 발생했습니다.",
-                                                        "data": null
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
@@ -310,7 +332,21 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "인증 성공",
+                    description = "로그인 성공",
+                    headers = {
+                            @Header(
+                                    name = "Authorization",
+                                    description = "Bearer {accessToken}",
+                                    schema = @Schema(type = "string"),
+                                    example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                            ),
+                            @Header(
+                                    name = "Set-Cookie",
+                                    description = "refreshToken (HttpOnly, Secure, SameSite=Lax)",
+                                    schema = @Schema(type = "string"),
+                                    example = "refreshToken=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=604800"
+                            )
+                    },
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -319,8 +355,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "로그인에 성공했습니다.",
-                                                        "data": null
+                                                        "message": "로그인에 성공했습니다."
                                                     }
                                                     """
                                     )
@@ -335,12 +370,17 @@ public class AuthController {
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "아이디 미입력",
+                                            name = "비밀번호 미입력",
                                             value = """
                                                     {
                                                         "code": "VALIDATION_FAILED",
-                                                        "message": "아이디를 입력하세요.",
-                                                        "data": null
+                                                        "message": "요청 값이 유효하지 않습니다.",
+                                                        "data": [
+                                                            {
+                                                                "field": "password",
+                                                                "message": "비밀번호를 입력하세요."
+                                                            }
+                                                        ]
                                                     }
                                                     """
                                     )
@@ -359,8 +399,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "INVALID_CREDENTIALS",
-                                                        "message": "아이디 또는 비밀번호가 올바르지 않습니다.",
-                                                        "data": null
+                                                        "message": "아이디 또는 비밀번호가 올바르지 않습니다."
                                                     }
                                                     """
                                     )
@@ -379,8 +418,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "INTERNAL_ERROR",
-                                                        "message": "서버 오류가 발생했습니다.",
-                                                        "data": null
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
@@ -422,7 +460,15 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "인증 성공",
+                    description = "로그아웃 성공",
+                    headers = {
+                            @Header(
+                                    name = "Set-Cookie",
+                                    description = "refreshToken (HttpOnly, Secure, SameSite=Lax)",
+                                    schema = @Schema(type = "string"),
+                                    example = "refreshToken=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0"
+                            )
+                    },
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -431,8 +477,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "로그아웃에 성공했습니다.",
-                                                        "data": null
+                                                        "message": "로그아웃에 성공했습니다."
                                                     }
                                                     """
                                     )
@@ -451,8 +496,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "INTERNAL_ERROR",
-                                                        "message": "서버 오류가 발생했습니다.",
-                                                        "data": null
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
@@ -487,7 +531,7 @@ public class AuthController {
 
 
     @Operation(
-            summary = "Token 재발급",
+            summary = "토큰 재발급",
             description = """
                     Refresh Token을 사용해 Refresh/Access Token을 재발급한다.
                     쿠키에서 Refresh Token을 추출하고 새로운 Refresh Token을 쿠키로 설정하고
@@ -497,7 +541,21 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "인증 성공",
+                    description = "토큰 재발급 성공",
+                    headers = {
+                            @Header(
+                                    name = "Authorization",
+                                    description = "Bearer {accessToken}",
+                                    schema = @Schema(type = "string"),
+                                    example = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                            ),
+                            @Header(
+                                    name = "Set-Cookie",
+                                    description = "refreshToken (HttpOnly, Secure, SameSite=Lax)",
+                                    schema = @Schema(type = "string"),
+                                    example = "refreshToken=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=604800"
+                            )
+                    },
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -506,8 +564,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "토큰 재발급에 성공했습니다.",
-                                                        "data": null
+                                                        "message": "토큰 재발급에 성공했습니다."
                                                     }
                                                     """
                                     )
@@ -526,8 +583,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "REFRESH_TOKEN_NOT_FOUND",
-                                                        "message": "리프레시 토큰을 찾을 수 없습니다.",
-                                                        "data": null
+                                                        "message": "리프레시 토큰을 찾을 수 없습니다."
                                                     }
                                                     """
                                     )
@@ -546,8 +602,7 @@ public class AuthController {
                                             value = """
                                                     {
                                                         "code": "INTERNAL_ERROR",
-                                                        "message": "서버 오류가 발생했습니다.",
-                                                        "data": null
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
