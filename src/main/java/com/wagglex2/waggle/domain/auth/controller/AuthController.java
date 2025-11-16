@@ -11,6 +11,9 @@ import com.wagglex2.waggle.domain.auth.dto.response.TokenPair;
 import com.wagglex2.waggle.domain.auth.service.AuthService;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,11 +44,75 @@ public class AuthController {
 
     @Operation(
             summary = "회원가입 이메일 인증코드 발송",
-            description = "입력된 이메일 주소로 회원가입용 인증번호를 발송합니다."
+            description = """
+                    입력된 이메일 주소로 6자리 인증번호를 발송한다.
+                    
+                    처리 순서:
+                    1) 랜덤 6자리 인증번호 생성
+                    2) Redis에 EMAIL:{email} 형태로 저장 (TTL: 3분)
+                    3) 사용자 이메일로 인증코드 전송
+                    """
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "이메일 전송 성공"),
-            @ApiResponse(responseCode = "500", description = "서버 오류 발생")
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "이메일 전송 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "이메일 전송에 성공했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 이메일 형식",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "잘못된 이메일 예시",
+                                            value = """
+                                                    {
+                                                        "code": "VALIDATION_FAILED",
+                                                        "message": "올바른 이메일 형식이 아닙니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생, 이메일 발송 실패, Redis 연결 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "서버 오류 발생",
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     })
     @PostMapping("/email/code")
     public ResponseEntity<APIResponse<Void>> sendEmailAuthCode(
@@ -57,12 +124,75 @@ public class AuthController {
                 .body(APIResponse.ok("이메일 전송에 성공했습니다."));
     }
 
-    /**
-     * 사용자가 입력한 인증번호를 검증한다.
-     *
-     * @param dto 이메일과 인증번호를 담은 DTO
-     * @return ApiResponse(Void) — 성공 시 "이메일 인증이 완료되었습니다."
-     */
+
+    @Operation(
+            summary = "사용자 이메일 인증번호 검증",
+            description = """
+                    사용자가 입력한 6자리 인증번호를 검증한다.
+                    이메일 수정하지 못하도록 이메일도 같이 보낸다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "인증 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "이메일 인증이 완료되었습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "이메일/인증번호 누락, 패턴 불일치, 인증번호 만료/불일치",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "인증번호 패턴 불일치",
+                                            value = """
+                                                    {
+                                                        "code": "VALIDATION_FAILED",
+                                                        "message": "인증번호는 숫자 6자리여야 합니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생, Redis 연결 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "서버 오류 발생",
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     @PostMapping("/email/verify")
     public ResponseEntity<APIResponse<Void>> verifyAuthCode(
             @Valid @RequestBody EmailVerificationRequestDto dto
@@ -73,21 +203,91 @@ public class AuthController {
                 .body(APIResponse.ok("이메일 인증이 완료되었습니다."));
     }
 
-    /**
-     * 회원가입 요청을 처리한다.
-     *
-     * <p>처리 순서:</p>
-     * <ol>
-     *     <li>요청 DTO를 {@code @Valid}로 검증</li>
-     *     <li>검증 성공 시 {@link UserService#signUp(SignUpRequestDto)} 호출</li>
-     *     <li>생성된 사용자 ID 반환</li>
-     *     <li>HTTP 상태코드 {@code 201 Created}와 함께 ApiResponse로 응답</li>
-     * </ol>
-     *
-     * @param dto 회원가입 요청 DTO
-     * @return 회원가입 성공 메시지와 생성된 사용자 ID를 포함한 응답
-     * @see UserService#signUp(SignUpRequestDto)
-     */
+
+    @Operation(
+            summary = "회원가입 요청"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "인증 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "회원가입에 성공했습니다.",
+                                                        "data": 1
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "필수값 누락, 패턴 불일치, 비밀번호/비밀번호 재입력 불일치",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "아이디(username) 누락",
+                                            value = """
+                                                    {
+                                                        "code": "VALIDATION_FAILED",
+                                                        "message": "아이디가 누락되었습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "아이디/이메일/닉네임 중복",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "아이디 중복",
+                                            value = """
+                                                    {
+                                                        "code": "DUPLICATED_USERNAME",
+                                                        "message": "이미 가입된 아이디입니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "서버 오류 발생",
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     @PostMapping("/sign-up")
     public ResponseEntity<APIResponse<Long>> signUp(
             @Valid @RequestBody SignUpRequestDto dto
@@ -98,23 +298,96 @@ public class AuthController {
                 .body(APIResponse.ok("회원가입에 성공했습니다.", userId));
     }
 
-    /**
-     * 로그인 요청을 처리한다.
-     *
-     * <p>처리 순서:</p>
-     * <ol>
-     *     <li>요청 DTO를 {@code @Valid}로 검증</li>
-     *     <li>{@link AuthService#login(SignInRequestDto)} 호출 → Access Token 및 Refresh Token 발급</li>
-     *     <li>Access Token을 HTTP 응답 헤더 {@code Authorization}에 추가</li>
-     *     <li>Refresh Token을 HttpOnly 쿠키로 추가</li>
-     *     <li>HTTP 상태코드 {@code 200 OK}와 함께 ApiResponse로 응답</li>
-     * </ol>
-     *
-     * @param dto      로그인 요청 DTO (username, password)
-     * @param response HttpServletResponse (헤더 및 쿠키 추가용)
-     * @return 로그인 성공 메시지를 포함한 응답
-     * @see AuthService#login(SignInRequestDto)
-     */
+
+    @Operation(
+            summary = "로그인 요청",
+            description = """
+                    로그인에 성공하면 Access Token 및 Refresh Token을 발급한다.
+                    Access Token은 HTTP 응답 헤더(Authorization)애 추가한다.
+                    Refresh Token은 HttpOnly 쿠키로 추가한다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "인증 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "로그인에 성공했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "아이디/비밀번호 미입력",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "아이디 미입력",
+                                            value = """
+                                                    {
+                                                        "code": "VALIDATION_FAILED",
+                                                        "message": "아이디를 입력하세요.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "아이디/비밀번호 불일치",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "아이디/비밀번호 불일치",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_CREDENTIALS",
+                                                        "message": "아이디 또는 비밀번호가 올바르지 않습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "서버 오류 발생",
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     @PostMapping("/sign-in")
     public ResponseEntity<APIResponse<Void>> signIn(
             @Valid @RequestBody SignInRequestDto dto,
@@ -138,6 +411,55 @@ public class AuthController {
                 .body(APIResponse.ok("로그인에 성공했습니다."));
     }
 
+
+    @Operation(
+            summary = "로그아웃 요청",
+            description = """
+                    Redis에서 userId에 해당하는 Refresh Token을 삭제한다.
+                    Refresh Token에 빈 값을 넣고 Cookie를 설정한다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "인증 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "로그아웃에 성공했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "서버 오류 발생",
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     @PostMapping("/sign-out")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<APIResponse<Void>> signOut(HttpServletResponse response,
@@ -163,21 +485,76 @@ public class AuthController {
                 .body(APIResponse.ok("로그아웃에 성공했습니다."));
     }
 
-    /**
-     * Refresh Token을 사용해 새로운 Access/Refresh Token을 재발급한다.
-     *
-     * <p>처리 순서:</p>
-     * <ol>
-     *   <li>쿠키에서 Refresh Token 추출</li>
-     *   <li>AuthService를 통해 토큰 재발급</li>
-     *   <li>새로운 토큰을 쿠키로 설정</li>
-     *   <li>성공 응답 반환</li>
-     * </ol>
-     *
-     * @param refreshToken 쿠키에 담긴 Refresh Token
-     * @param response     새로운 토큰을 담아 보낼 HTTP 응답
-     * @return ApiResponse(Void) — 성공 시 "토큰 재발급에 성공했습니다."
-     */
+
+    @Operation(
+            summary = "Token 재발급",
+            description = """
+                    Refresh Token을 사용해 Refresh/Access Token을 재발급한다.
+                    쿠키에서 Refresh Token을 추출하고 새로운 Refresh Token을 쿠키로 설정하고
+                    새로운 AccessToken을 헤더에 추가한다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "인증 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "토큰 재발급에 성공했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "Refresh Token 찾을 수 없음, 유효하지 않음, 타입 불일치, 불일치, 만료",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Refresh Token 찾을 수 없음",
+                                            value = """
+                                                    {
+                                                        "code": "REFRESH_TOKEN_NOT_FOUND",
+                                                        "message": "리프레시 토큰을 찾을 수 없습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생, Redis 연결 실패",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "서버 오류 발생",
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다.",
+                                                        "data": null
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
     @PostMapping("/refresh")
     public ResponseEntity<APIResponse<Void>> refreshToken(
             @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
