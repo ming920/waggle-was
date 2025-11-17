@@ -823,21 +823,13 @@ public interface UserControllerDocs {
 
 
     @Operation(
-            summary = "회원 ",
-            description = "현재 로그인한 사용자를 탈퇴한다. 본인 확인 인증을 위해 비밀번호로 검증한다."
+            summary = "특정 사용자 리뷰 조회",
+            description = "특정 사용자가 받은 리뷰 목록을 조건에 따라 페이지네이션 방식으로 조회한다."
     )
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "회원탈퇴 성공",
-                    headers = {
-                            @Header(
-                                    name = "Set-Cookie",
-                                    description = "refreshToken (HttpOnly, Secure, SameSite=Lax)",
-                                    schema = @Schema(type = "string"),
-                                    example = "refreshToken=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0"
-                            )
-                    },
+                    description = "리뷰 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -846,26 +838,32 @@ public interface UserControllerDocs {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "회원탈퇴에 성공했습니다."
-                                                    }
-                                                    """
-                                    )
-                            }
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "400",
-                    description = "비밀번호 누락 및 크기 초과, 비밀번호 불일치",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
-                            examples = {
-                                    @ExampleObject(
-                                            name = "비밀번호 불일치",
-                                            value = """
-                                                    {
-                                                        "code": "MISMATCHED_PASSWORD",
-                                                        "message": "비밀번호와 비밀번호 확인이 일치하지 않습니다."
+                                                        "message": "리뷰 조회에 성공했습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "content": "리뷰 test13"
+                                                                },
+                                                                {
+                                                                    "content": "리뷰 test12"
+                                                                },
+                                                                {
+                                                                    "content": "리뷰 test11"
+                                                                },
+                                                                {
+                                                                    "content": "리뷰 test9"
+                                                                },
+                                                                {
+                                                                    "content": "리뷰 test8"
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 5,
+                                                                "number": 0,
+                                                                "totalElements": 13,
+                                                                "totalPages": 3
+                                                            }
+                                                        }
                                                     }
                                                     """
                                     )
@@ -902,24 +900,6 @@ public interface UserControllerDocs {
                                                     {
                                                         "code": "USER_NOT_FOUND",
                                                         "message": "사용자를 찾을 수 없습니다."
-                                                    }
-                                                    """
-                                    )
-                            }
-                    )
-            ),
-            @ApiResponse(
-                    responseCode = "409",
-                    description = "이미 탈퇴한 회원",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
-                            examples = {
-                                    @ExampleObject(
-                                            value = """
-                                                    {
-                                                        "code": "ALREADY_WITHDRAWN_USER",
-                                                        "message": "이미 탈퇴한 회원입니다."
                                                     }
                                                     """
                                     )

@@ -209,6 +209,7 @@ public class UserController implements UserControllerDocs {
 
     /**
      * 특정 사용자가 <b>받은 리뷰 목록</b>을 페이지네이션 방식으로 조회한다.
+     * TODO Page sort parameter 화이트리스트 구현
      *
      * <p><b>처리 흐름:</b></p>
      * <ol>
