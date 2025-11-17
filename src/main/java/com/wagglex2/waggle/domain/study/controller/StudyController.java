@@ -40,17 +40,4 @@ public class StudyController {
                 APIResponse.ok("스터디 공고를 성공적으로 조회하였습니다.", responseDto)
         );
     }
-
-    @DeleteMapping("/{studyId}")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteStudy(
-            @PathVariable Long studyId,
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        studyService.deleteStudy(userDetails.getUserId(), studyId);
-        return ResponseEntity.ok(
-                ApiResponse.ok("스터디 공고를 성공적으로 삭제하였습니다.")
-        );
-    }
-
 }
