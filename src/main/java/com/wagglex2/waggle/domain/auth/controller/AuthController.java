@@ -1,8 +1,9 @@
 package com.wagglex2.waggle.domain.auth.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
+import com.wagglex2.waggle.domain.auth.controller.docs.AuthControllerDocs;
 import com.wagglex2.waggle.domain.auth.dto.request.EmailRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.EmailVerificationRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.SignInRequestDto;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
-public class AuthController {
+public class AuthController implements AuthControllerDocs {
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
 
@@ -34,82 +35,41 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
 
-    /**
-     * 회원가입 이메일 인증을 위한 인증번호를 발송한다.
-     *
-     * @param dto 인증번호를 받을 사용자 이메일
-     * @return ApiResponse(Void) — 성공 시 "이메일 전송에 성공했습니다."
-     */
     @PostMapping("/email/code")
-    public ResponseEntity<ApiResponse<Void>> sendEmailAuthCode(
+    public ResponseEntity<APIResponse<Void>> sendEmailAuthCode(
             @Valid @RequestBody EmailRequestDto dto
             ) {
         authService.sendAuthCode(dto.email());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("이메일 전송에 성공했습니다."));
+                .body(APIResponse.ok("이메일 전송에 성공했습니다."));
     }
 
-    /**
-     * 사용자가 입력한 인증번호를 검증한다.
-     *
-     * @param dto 이메일과 인증번호를 담은 DTO
-     * @return ApiResponse(Void) — 성공 시 "이메일 인증이 완료되었습니다."
-     */
+
     @PostMapping("/email/verify")
-    public ResponseEntity<ApiResponse<Void>> verifyAuthCode(
+    public ResponseEntity<APIResponse<Void>> verifyAuthCode(
             @Valid @RequestBody EmailVerificationRequestDto dto
     ) {
         authService.verifyCode(dto.email(), dto.inputCode());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("이메일 인증이 완료되었습니다."));
+                .body(APIResponse.ok("이메일 인증이 완료되었습니다."));
     }
 
-    /**
-     * 회원가입 요청을 처리한다.
-     *
-     * <p>처리 순서:</p>
-     * <ol>
-     *     <li>요청 DTO를 {@code @Valid}로 검증</li>
-     *     <li>검증 성공 시 {@link UserService#signUp(SignUpRequestDto)} 호출</li>
-     *     <li>생성된 사용자 ID 반환</li>
-     *     <li>HTTP 상태코드 {@code 201 Created}와 함께 ApiResponse로 응답</li>
-     * </ol>
-     *
-     * @param dto 회원가입 요청 DTO
-     * @return 회원가입 성공 메시지와 생성된 사용자 ID를 포함한 응답
-     * @see UserService#signUp(SignUpRequestDto)
-     */
+
     @PostMapping("/sign-up")
-    public ResponseEntity<ApiResponse<Long>> signUp(
+    public ResponseEntity<APIResponse<Long>> signUp(
             @Valid @RequestBody SignUpRequestDto dto
     ) {
         Long userId = userService.signUp(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("회원가입에 성공했습니다.", userId));
+                .body(APIResponse.ok("회원가입에 성공했습니다.", userId));
     }
 
-    /**
-     * 로그인 요청을 처리한다.
-     *
-     * <p>처리 순서:</p>
-     * <ol>
-     *     <li>요청 DTO를 {@code @Valid}로 검증</li>
-     *     <li>{@link AuthService#login(SignInRequestDto)} 호출 → Access Token 및 Refresh Token 발급</li>
-     *     <li>Access Token을 HTTP 응답 헤더 {@code Authorization}에 추가</li>
-     *     <li>Refresh Token을 HttpOnly 쿠키로 추가</li>
-     *     <li>HTTP 상태코드 {@code 200 OK}와 함께 ApiResponse로 응답</li>
-     * </ol>
-     *
-     * @param dto      로그인 요청 DTO (username, password)
-     * @param response HttpServletResponse (헤더 및 쿠키 추가용)
-     * @return 로그인 성공 메시지를 포함한 응답
-     * @see AuthService#login(SignInRequestDto)
-     */
+
     @PostMapping("/sign-in")
-    public ResponseEntity<ApiResponse<Void>> signIn(
+    public ResponseEntity<APIResponse<Void>> signIn(
             @Valid @RequestBody SignInRequestDto dto,
             HttpServletResponse response
     ) {
@@ -128,12 +88,13 @@ public class AuthController {
         );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("로그인에 성공했습니다."));
+                .body(APIResponse.ok("로그인에 성공했습니다."));
     }
+
 
     @PostMapping("/sign-out")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> signOut(HttpServletResponse response,
+    public ResponseEntity<APIResponse<Void>> signOut(HttpServletResponse response,
                                                      @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long userId = userDetails.getUserId();
@@ -153,26 +114,12 @@ public class AuthController {
         log.info("로그아웃 성공 : userId = {}", userId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("로그아웃에 성공했습니다."));
+                .body(APIResponse.ok("로그아웃에 성공했습니다."));
     }
 
-    /**
-     * Refresh Token을 사용해 새로운 Access/Refresh Token을 재발급한다.
-     *
-     * <p>처리 순서:</p>
-     * <ol>
-     *   <li>쿠키에서 Refresh Token 추출</li>
-     *   <li>AuthService를 통해 토큰 재발급</li>
-     *   <li>새로운 토큰을 쿠키로 설정</li>
-     *   <li>성공 응답 반환</li>
-     * </ol>
-     *
-     * @param refreshToken 쿠키에 담긴 Refresh Token
-     * @param response     새로운 토큰을 담아 보낼 HTTP 응답
-     * @return ApiResponse(Void) — 성공 시 "토큰 재발급에 성공했습니다."
-     */
+
     @PostMapping("/refresh")
-    public ResponseEntity<ApiResponse<Void>> refreshToken(
+    public ResponseEntity<APIResponse<Void>> refreshToken(
             @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
             HttpServletResponse response
     ) {
@@ -190,7 +137,7 @@ public class AuthController {
         );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("토큰 재발급에 성공했습니다."));
+                .body(APIResponse.ok("토큰 재발급에 성공했습니다."));
     }
 
     /**

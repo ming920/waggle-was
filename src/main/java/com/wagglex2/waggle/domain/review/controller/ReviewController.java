@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.review.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.dto.response.PageResponse;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewCreationRequestDto;
@@ -36,14 +36,14 @@ public class ReviewController {
      */
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Long>> createReview(
+    public ResponseEntity<APIResponse<Long>> createReview(
             @Valid @RequestBody ReviewCreationRequestDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long reviewId = reviewService.createReview(userDetails.getUserId(), dto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("리뷰 작성에 성공했습니다.", reviewId));
+                .body(APIResponse.ok("리뷰 작성에 성공했습니다.", reviewId));
     }
 
     /**
@@ -57,11 +57,11 @@ public class ReviewController {
      *
      * @param userDetails 현재 인증된 사용자 정보
      * @param pageable    페이지 정보 (기본값: size=5, sort=createdAt, direction=DESC)
-     * @return 내가 작성한 리뷰 목록을 포함한 {@link ApiResponse} (200 OK)
+     * @return 내가 작성한 리뷰 목록을 포함한 {@link APIResponse} (200 OK)
      */
     @GetMapping("/me/written")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<PageResponse<ReviewResponseDto>>> getMyWrittenReviews(
+    public ResponseEntity<APIResponse<PageResponse<ReviewResponseDto>>> getMyWrittenReviews(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(
                     size = 5,
@@ -75,7 +75,7 @@ public class ReviewController {
         );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("내가 작성한 리뷰 조회에 성공했습니다.", data));
+                .body(APIResponse.ok("내가 작성한 리뷰 조회에 성공했습니다.", data));
     }
 
     /**
@@ -83,11 +83,11 @@ public class ReviewController {
      *
      * @param userDetails 현재 인증된 사용자 정보
      * @param pageable    페이지 정보 (기본값: size=5, sort=createdAt, direction=DESC)
-     * @return 받은 리뷰 목록을 포함한 {@link ApiResponse} (200 OK)
+     * @return 받은 리뷰 목록을 포함한 {@link APIResponse} (200 OK)
      */
     @GetMapping("/me/received")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<PageResponse<ReviewResponseDto>>> getMyReceivedReviews(
+    public ResponseEntity<APIResponse<PageResponse<ReviewResponseDto>>> getMyReceivedReviews(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(
                     size = 5,
@@ -101,7 +101,7 @@ public class ReviewController {
         );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("내가 받은 리뷰 조회에 성공했습니다.", data));
+                .body(APIResponse.ok("내가 받은 리뷰 조회에 성공했습니다.", data));
     }
 
     /**
@@ -117,7 +117,7 @@ public class ReviewController {
      */
     @PatchMapping("/me/written/{reviewId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Long>> updateReview(
+    public ResponseEntity<APIResponse<Long>> updateReview(
             @PathVariable Long reviewId,
             @Valid @RequestBody ReviewUpdateRequestDto dto,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -130,7 +130,7 @@ public class ReviewController {
                 );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("리뷰 수정에 성공했습니다.", data));
+                .body(APIResponse.ok("리뷰 수정에 성공했습니다.", data));
     }
 
 
@@ -149,7 +149,7 @@ public class ReviewController {
      */
     @DeleteMapping("/me/written/{reviewId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteReview(
+    public ResponseEntity<APIResponse<Void>> deleteReview(
             @PathVariable Long reviewId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
@@ -159,6 +159,6 @@ public class ReviewController {
         );
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("리뷰 삭제에 성공했습니다."));
+                .body(APIResponse.ok("리뷰 삭제에 성공했습니다."));
     }
 }

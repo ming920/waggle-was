@@ -2,7 +2,7 @@ package com.wagglex2.waggle.common.controller;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.response.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,17 +24,17 @@ public class GlobalExceptionHandler {
      * 클라이언트에게 HTTP 상태 코드와 ErrorCode, 메시지를 전달한다.
      *
      * @param ex {@link BusinessException}
-     * @return {@link ResponseEntity} - {@link ApiResponse}를 포함한 에러 응답
+     * @return {@link ResponseEntity} - {@link APIResponse}를 포함한 에러 응답
      * @author 오재민
      */
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBusinessException(BusinessException ex) {
+    public ResponseEntity<APIResponse<Void>> handleBusinessException(BusinessException ex) {
         HttpStatus httpStatus = ex.getErrorCode().getHttpStatus();
         String code = ex.getErrorCode().getCode();
         String message = ex.getMessage();
 
         return ResponseEntity.status(httpStatus)
-                .body(ApiResponse.error(code, message));
+                .body(APIResponse.error(code, message));
     }
 
     /**
@@ -46,11 +46,11 @@ public class GlobalExceptionHandler {
      * </p>
      *
      * @param ex {@link MethodArgumentNotValidException}
-     * @return {@link ResponseEntity} - {@link ApiResponse}를 포함한 Validation 실패 응답
+     * @return {@link ResponseEntity} - {@link APIResponse}를 포함한 Validation 실패 응답
      * @author 오재민
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<List<ValidationError>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<APIResponse<List<ValidationError>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ValidationError> errorInfo = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(ErrorCode.VALIDATION_FAILED, errorInfo));
+                .body(APIResponse.error(ErrorCode.VALIDATION_FAILED, errorInfo));
     }
 
     /**
@@ -69,13 +69,13 @@ public class GlobalExceptionHandler {
      * </p>
      *
      * @param ex {@link MissingServletRequestParameterException} - 누락된 요청 파라미터 정보 포함
-     * @return {@link ResponseEntity} - {@link ApiResponse}를 포함한 에러 응답
+     * @return {@link ResponseEntity} - {@link APIResponse}를 포함한 에러 응답
      * @author 오재민
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<ApiResponse<String>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
+    public ResponseEntity<APIResponse<String>> handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(ErrorCode.REQUIRED_FIELD_MISSING, ex.getParameterName()));
+                .body(APIResponse.error(ErrorCode.REQUIRED_FIELD_MISSING, ex.getParameterName()));
     }
       
     /** 컨트롤러에서 전달된 파라미터 타입이 예상과 다른 경우 발생하는 예외를 처리
@@ -89,11 +89,11 @@ public class GlobalExceptionHandler {
      * </ul>
      *
      * @param ex {@link MethodArgumentTypeMismatchException}
-     * @return {@link ResponseEntity} - {@link ApiResponse}를 포함한 타입 불일치 실패 응답
+     * @return {@link ResponseEntity} - {@link APIResponse}를 포함한 타입 불일치 실패 응답
      * @author 오재민
      */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ApiResponse<String>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<APIResponse<String>> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         String message = String.format(
                 "쿼리 파라미터 '%s'의 값 '%s'이(가) 유효하지 않습니다.",
                 ex.getName(),
@@ -101,6 +101,6 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ApiResponse.error(ErrorCode.INVALID_ENUM_VALUE, message));
+                .body(APIResponse.error(ErrorCode.INVALID_ENUM_VALUE, message));
     }
 }

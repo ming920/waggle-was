@@ -2,7 +2,7 @@ package com.wagglex2.waggle.common.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wagglex2.waggle.common.error.ErrorCode;
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,14 +30,14 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
             AccessDeniedException accessDeniedException
     ) throws IOException, ServletException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        ApiResponse<Void> apiResponse;
+        APIResponse<Void> apiResponse;
 
         // 401 - 익명 사용자
         if (auth == null || auth instanceof AnonymousAuthenticationToken) {
-            apiResponse = ApiResponse.error(ErrorCode.UNAUTHORIZED);
+            apiResponse = APIResponse.error(ErrorCode.UNAUTHORIZED);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         } else { // 403 - 권한 부족
-            apiResponse = ApiResponse.error(ErrorCode.FORBIDDEN);
+            apiResponse = APIResponse.error(ErrorCode.FORBIDDEN);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
 

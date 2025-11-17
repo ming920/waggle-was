@@ -2,7 +2,7 @@ package com.wagglex2.waggle.common.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wagglex2.waggle.common.error.ErrorCode;
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,7 +30,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-        ApiResponse<Void> apiResponse = ApiResponse.error(ErrorCode.UNAUTHORIZED);
+        APIResponse<Void> apiResponse = APIResponse.error(ErrorCode.UNAUTHORIZED);
         response.getWriter().write(objectMapper.writeValueAsString(apiResponse));
     }
 }

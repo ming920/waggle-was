@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.team_member.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +28,11 @@ public class TeamMemberController {
      *
      * @param teamId     삭제 대상 멤버가 속한 팀의 식별자
      * @param memberId   삭제할 팀 멤버의 식별자
-     * @return 성공 메시지를 담은 {@link ApiResponse}
+     * @return 성공 메시지를 담은 {@link APIResponse}
      */
     @DeleteMapping("/{memberId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Void>> deleteMember(
+    public ResponseEntity<APIResponse<Void>> deleteMember(
             @PathVariable Long teamId,
             @PathVariable Long memberId,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -41,6 +41,6 @@ public class TeamMemberController {
         teamMemberService.removeMember(teamId, userDetails.getUserId(), memberId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("팀 멤버 삭제에 성공했습니다."));
+                .body(APIResponse.ok("팀 멤버 삭제에 성공했습니다."));
     }
 }
