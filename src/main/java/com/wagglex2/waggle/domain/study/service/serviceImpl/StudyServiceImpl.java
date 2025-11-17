@@ -10,6 +10,8 @@ import com.wagglex2.waggle.domain.study.service.StudyService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,5 +43,21 @@ public class StudyServiceImpl implements StudyService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
 
         return StudyResponseDto.fromEntity(study);
+    }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void deleteStudy(@P("userId") Long userId, Long studyId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
+
+        // 권한 검증
+        if (!userId.equals(study.getUser().getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        // 논리적 삭제
+        study.cancel();
     }
 }
