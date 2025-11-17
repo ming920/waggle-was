@@ -4,7 +4,6 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
-import com.wagglex2.waggle.domain.common.dto.response.PageResponse;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.review.service.ReviewService;
 import com.wagglex2.waggle.domain.user.controller.docs.UserControllerDocs;
@@ -15,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -215,7 +215,6 @@ public class UserController implements UserControllerDocs {
      *   <li>요청 경로의 {@code userId}로 대상 사용자 존재 여부를 확인한다. 존재하지 않을 경우 {@link BusinessException} 발생.</li>
      *   <li>Spring MVC가 요청 파라미터({@code page}, {@code size}, {@code sort})를 {@link Pageable} 객체로 자동 변환한다.</li>
      *   <li>{@code reviewService.getReviewsByRevieweeId()}를 호출해 해당 사용자가 받은 리뷰를 조회한다.</li>
-     *   <li>서비스 계층에서 조회 결과를 {@link PageResponse}<{@link ReviewResponseDto}> 형태로 변환하여 반환한다.</li>
      *   <li>컨트롤러는 이를 {@link APIResponse}로 감싸 200 OK 응답을 반환한다.</li>
      * </ol>
      *
@@ -232,7 +231,7 @@ public class UserController implements UserControllerDocs {
      */
     @GetMapping("/{userId}/reviews/received")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<APIResponse<PageResponse<ReviewResponseDto>>> getReviews(
+    public ResponseEntity<APIResponse<Page<ReviewResponseDto>>> getReviews(
             @PathVariable(name = "userId") Long userId,
             @PageableDefault(
                     size = 5,
@@ -244,7 +243,7 @@ public class UserController implements UserControllerDocs {
             throw new BusinessException(ErrorCode.USER_NOT_FOUND);
         }
 
-        PageResponse<ReviewResponseDto> data = reviewService.getReviewsByRevieweeId(userId, pageable);
+        Page<ReviewResponseDto> data = reviewService.getReviewsByRevieweeId(userId, pageable);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.ok("리뷰 조회에 성공했습니다.", data));

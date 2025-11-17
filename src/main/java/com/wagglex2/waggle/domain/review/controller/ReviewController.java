@@ -2,7 +2,6 @@ package com.wagglex2.waggle.domain.review.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
-import com.wagglex2.waggle.domain.common.dto.response.PageResponse;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewCreationRequestDto;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewUpdateRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
@@ -10,6 +9,7 @@ import com.wagglex2.waggle.domain.review.service.ReviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -61,7 +61,7 @@ public class ReviewController {
      */
     @GetMapping("/me/written")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<APIResponse<PageResponse<ReviewResponseDto>>> getMyWrittenReviews(
+    public ResponseEntity<APIResponse<Page<ReviewResponseDto>>> getMyWrittenReviews(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(
                     size = 5,
@@ -69,7 +69,7 @@ public class ReviewController {
                     direction = Sort.Direction.DESC
             ) Pageable pageable
     ) {
-        PageResponse<ReviewResponseDto> data = reviewService.getReviewsByReviewerId(
+        Page<ReviewResponseDto> data = reviewService.getReviewsByReviewerId(
                 userDetails.getUserId(),
                 pageable
         );
@@ -87,7 +87,7 @@ public class ReviewController {
      */
     @GetMapping("/me/received")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<APIResponse<PageResponse<ReviewResponseDto>>> getMyReceivedReviews(
+    public ResponseEntity<APIResponse<Page<ReviewResponseDto>>> getMyReceivedReviews(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PageableDefault(
                     size = 5,
@@ -95,7 +95,7 @@ public class ReviewController {
                     direction = Sort.Direction.DESC
             ) Pageable pageable
     ) {
-        PageResponse<ReviewResponseDto> data = reviewService.getReviewsByRevieweeId(
+        Page<ReviewResponseDto> data = reviewService.getReviewsByRevieweeId(
                 userDetails.getUserId(),
                 pageable
         );
