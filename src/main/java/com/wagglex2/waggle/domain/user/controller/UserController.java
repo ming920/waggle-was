@@ -7,16 +7,12 @@ import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.dto.response.PageResponse;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.review.service.ReviewService;
-import com.wagglex2.waggle.domain.user.dto.request.PasswordRequestDto;
-import com.wagglex2.waggle.domain.user.dto.request.UserUpdateRequestDto;
-import com.wagglex2.waggle.domain.user.dto.request.WithdrawRequestDto;
+import com.wagglex2.waggle.domain.user.controller.docs.UserControllerDocs;
+import com.wagglex2.waggle.domain.user.dto.request.*;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -27,15 +23,13 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-@Validated
 @Slf4j
-public class UserController {
+public class UserController implements UserControllerDocs {
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
 
@@ -44,17 +38,15 @@ public class UserController {
 
     /**
      * 아이디 중복 여부를 검사한다.
+     * 검사할 사용자 로그인 ID (영문, 숫자, 언더스코어 4~20자)
      *
-     * @param username 검사할 사용자 로그인 ID (영문, 숫자, 언더스코어 4~20자)
      * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/username/check")
     public ResponseEntity<APIResponse<Boolean>> existsByUsername(
-            @RequestParam
-            @Pattern(regexp = "^[a-zA-Z0-9_]{4,20}$", message = "아이디는 4-20자의 영문, 숫자, 언더스코어만 가능합니다.")
-            String username
-    ) {
-        boolean exists = userService.existsByUsername(username);
+            @RequestBody @Valid UsernameCheckRequestDto dto
+            ) {
+        boolean exists = userService.existsByUsername(dto.username());
 
         if (exists) {
             return ResponseEntity.status(HttpStatus.OK)
@@ -68,18 +60,14 @@ public class UserController {
     /**
      * 이메일 중복 여부를 검사한다.
      *
-     * @param email 검사할 사용자 이메일
      * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/email/check")
     public ResponseEntity<APIResponse<Boolean>> existsByEmail(
-            @RequestParam
-            @NotBlank(message = "이메일이 누락되었습니다.")
-            @Email(message = "올바른 이메일 형식이 아닙니다.")
-            String email
-    ) {
+            @RequestBody @Valid EmailCheckRequestDto dto
+            ) {
 
-        boolean exists = userService.existsByEmail(email);
+        boolean exists = userService.existsByEmail(dto.email());
 
         if (exists) {
             return ResponseEntity.status(HttpStatus.OK)
@@ -93,16 +81,13 @@ public class UserController {
     /**
      * 닉네임 중복 여부를 검사한다.
      *
-     * @param nickname 검사할 사용자 닉네임
      * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/nickname/check")
     public ResponseEntity<APIResponse<Boolean>> existsByNickname(
-            @RequestParam
-            @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,10}$", message = "닉네임은 2-10자의 영문, 한글, 숫자만 입력할 수 있습니다.")
-            String nickname
+            @RequestBody @Valid NicknameCheckRequestDto dto
     ) {
-        boolean exists = userService.existsByNickname(nickname);
+        boolean exists = userService.existsByNickname(dto.nickname());
         if (exists) {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(APIResponse.ok("이미 사용 중인 닉네임입니다.", true));
