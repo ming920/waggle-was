@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -278,7 +279,8 @@ public interface UserControllerDocs {
 
     @Operation(
             summary = "비밀번호 변경",
-            description = "기존 비밀번호, 새 비밀번호, 확인 비밀번호를 검증 후 처리한다."
+            description = "기존 비밀번호, 새 비밀번호, 확인 비밀번호를 검증 후 처리한다.",
+            security = @SecurityRequirement(name = "Bearer Token")
     )
     @ApiResponses({
             @ApiResponse(
@@ -292,8 +294,7 @@ public interface UserControllerDocs {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "비밀번호 변경에 성공했습니다.",
-                                                        "data": true
+                                                        "message": "비밀번호 변경에 성공했습니다."
                                                     }
                                                     """
                                     )
@@ -416,7 +417,8 @@ public interface UserControllerDocs {
 
     @Operation(
             summary = "회원정보 조회",
-            description = "현재 로그인한 사용자의 정보를 조회한다."
+            description = "현재 로그인한 사용자의 정보를 조회한다.",
+            security = @SecurityRequirement(name = "Bearer Token")
     )
     @ApiResponses({
             @ApiResponse(
@@ -526,7 +528,8 @@ public interface UserControllerDocs {
 
     @Operation(
             summary = "회원정보 조회",
-            description = "현재 로그인한 사용자의 정보를 조회한다."
+            description = "현재 로그인한 사용자의 정보를 조회한다.",
+            security = @SecurityRequirement(name = "Bearer Token")
     )
     @ApiResponses({
             @ApiResponse(
@@ -693,7 +696,8 @@ public interface UserControllerDocs {
 
     @Operation(
             summary = "회원탈퇴",
-            description = "현재 로그인한 사용자를 탈퇴한다. 본인 확인 인증을 위해 비밀번호로 검증한다."
+            description = "현재 로그인한 사용자를 탈퇴한다. 본인 확인 인증을 위해 비밀번호로 검증한다.",
+            security = @SecurityRequirement(name = "Bearer Token")
     )
     @ApiResponses({
             @ApiResponse(
@@ -824,7 +828,8 @@ public interface UserControllerDocs {
 
     @Operation(
             summary = "특정 사용자 리뷰 조회",
-            description = "특정 사용자가 받은 리뷰 목록을 조건에 따라 페이지네이션 방식으로 조회한다."
+            description = "특정 사용자가 받은 리뷰 목록을 조건에 따라 페이지네이션 방식으로 조회한다.",
+            security = @SecurityRequirement(name = "Bearer Token")
     )
     @ApiResponses({
             @ApiResponse(
