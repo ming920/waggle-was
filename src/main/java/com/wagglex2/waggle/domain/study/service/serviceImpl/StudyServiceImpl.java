@@ -2,7 +2,9 @@ package com.wagglex2.waggle.domain.study.service.serviceImpl;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
+import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
+import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
 import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.repository.StudyRepository;
@@ -10,6 +12,8 @@ import com.wagglex2.waggle.domain.study.service.StudyService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,4 +46,25 @@ public class StudyServiceImpl implements StudyService {
 
         return StudyResponseDto.fromEntity(study);
     }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void updateStudy(
+            @P("userId") Long userId, Long studyId, StudyUpdateRequestDto updateDto
+    ) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
+
+        if (!userId.equals(study.getUser().getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        if (study.getStatus() == RecruitmentStatus.CANCELED) {
+            return;
+        }
+
+        study.update(updateDto);
+    }
+
 }
