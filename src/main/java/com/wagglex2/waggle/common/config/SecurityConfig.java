@@ -49,6 +49,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
@@ -57,7 +58,7 @@ public class SecurityConfig {
                                 "/swagger.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/api/v1/api-docs/**",   // springdoc.api-docs.path 에 맞춰 허용
+                                "/api/v1/api-docs/**",
                                 "/api-docs/**",
                                 "/api/v1/auth/sign-in",
                                 "/api/v1/auth/sign-up",
@@ -79,7 +80,6 @@ public class SecurityConfig {
                         .accessDeniedHandler(customAccessDeniedHandler)
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
                 )
-                .csrf(AbstractHttpConfigurer::disable)// API 서버이므로 CSRF 비활성화
                 .build();
     }
 
@@ -87,17 +87,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOriginPatterns(
-                List.of(
-                        "http://localhost:5173",
-                        "http://127.0.0.1:5173"
-                )
-        );
+        config.addAllowedOriginPattern("*");
 
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
         config.setExposedHeaders(List.of("Authorization"));
+        config.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
