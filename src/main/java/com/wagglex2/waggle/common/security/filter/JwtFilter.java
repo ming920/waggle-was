@@ -43,13 +43,13 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         try {
-            String uri = request.getRequestURI();
-
             // 프론트가 브라우저면 preflight 요청은 바로 통과
             if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
                 filterChain.doFilter(request, response);
                 return;
             }
+
+            String uri = request.getRequestURI();
 
             // 1. 화이트리스트는 그냥 통과
             if (isWhiteListed(uri)) {
