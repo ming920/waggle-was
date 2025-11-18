@@ -10,6 +10,7 @@ import com.wagglex2.waggle.domain.application.dto.response.ApplicationSimpleResp
 import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.repository.ApplicationRepository;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
+import com.wagglex2.waggle.domain.application.type.ApplicationStatus;
 import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.service.RecruitmentService;
@@ -19,11 +20,19 @@ import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.project.entity.Project;
 import com.wagglex2.waggle.domain.study.entity.Study;
+import com.wagglex2.waggle.domain.team.entity.Team;
+import com.wagglex2.waggle.domain.team.service.TeamService;
+import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
+import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
@@ -32,11 +41,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ApplicationServiceImpl implements ApplicationService {
 
     private final ApplicationRepository applicationRepository;
     private final UserService userService;
     private final RecruitmentService recruitmentService;
+    private final TeamService teamService;
 
     @PreAuthorize("#userId == authentication.principal.userId")
     @Transactional
@@ -81,6 +92,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         };
     }
 
+    @Override
+    public Application findById(Long id) {
+        return applicationRepository.findById(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.APPLICATION_NOT_FOUND));
+    }
+
     @PreAuthorize("#userId == authentication.principal.userId")
     @Override
     public Page<ApplicationCommonResponseDto> getAllByUserIdAndRecruitmentCategory(
@@ -104,6 +121,129 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // 과제 / 스터디 지원
         return applications.map(ApplicationSimpleResponseDto::fromEntity);
+    }
+
+    @PreAuthorize("#deciderId == authentication.principal.userId")
+    @Transactional
+    @Retryable(
+            retryFor = ObjectOptimisticLockingFailureException.class,
+            noRetryFor = BusinessException.class,
+            maxAttempts = 3
+    )
+    @Override
+    public void acceptApplication(@P("deciderId") Long deciderId, Long applicationId) {
+        Application application =
+                applicationRepository.findByIdAndNotDeletedWithRecruitmentAndAuthor(applicationId)
+                        .orElseThrow(() -> new BusinessException(ErrorCode.APPLICATION_NOT_FOUND));
+
+        BaseRecruitment recruitment = application.getRecruitment();
+
+        // 수락/거절 자격 확인(공고 작성자인지 확인)
+        if (!deciderId.equals(recruitment.getUser().getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_DECIDE_APPLICATION, "지원 수락 권한이 없습니다.");
+        }
+
+        // 이미 처리된 지원서인 경우
+        if (application.getStatus() != ApplicationStatus.SUBMITTED) {
+            throw new BusinessException(ErrorCode.ALREADY_PROCESSED_APPLICATION);
+        }
+
+        // 처리 로직
+        ParticipantInfo participantInfo = null;
+
+        switch (recruitment.getCategory()) {
+            case PROJECT -> {
+                Project project = (Project) recruitment;
+                participantInfo = project.getPositionInfoByRole(application.getPosition())
+                        .orElseThrow(() -> new BusinessException(ErrorCode.NOT_RECRUITING_POSITION))
+                        .getParticipantInfo();
+
+                // 지원한 포지션의 모집이 이미 완료된 경우
+                if (participantInfo.isFull()) {
+                    throw new BusinessException(ErrorCode.POSITION_FULL);
+                }
+            }
+            case ASSIGNMENT -> {
+                Assignment assignment = (Assignment) recruitment;
+                participantInfo = assignment.getParticipants();
+
+                // 모집이 이미 완료된 경우
+                if (participantInfo.isFull()) {
+                    throw new BusinessException(ErrorCode.TEAM_FULL);
+                }
+            }
+            case STUDY -> {
+                Study study = (Study) recruitment;
+                participantInfo = study.getParticipants();
+
+                // 모집이 이미 완료된 경우
+                if (participantInfo.isFull()) {
+                    throw new BusinessException(ErrorCode.TEAM_FULL);
+                }
+            }
+        }
+
+        application.accept();
+
+        // 참여 인원 업데이트
+        participantInfo.incrementCurrParticipants();
+
+        // 팀에 추가
+        Team team = teamService.findByRecruitmentId(recruitment.getId());
+        TeamMember newMember = new TeamMember(team, application.getApplicant(), TeamRole.MEMBER);
+        team.addMember(newMember);
+    }
+
+    @PreAuthorize("#deciderId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void rejectApplication(Long deciderId, Long applicationId) {
+        Application application =
+                applicationRepository.findByIdAndNotDeletedWithRecruitmentAndAuthor(applicationId)
+                        .orElseThrow(() -> new BusinessException(ErrorCode.APPLICATION_NOT_FOUND));
+
+        BaseRecruitment recruitment = application.getRecruitment();
+
+        // 수락/거절 자격 확인(공고 작성자인지 확인)
+        if (!deciderId.equals(recruitment.getUser().getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_DECIDE_APPLICATION, "지원 거절 권한이 없습니다.");
+        }
+
+        // 이미 처리된 지원서인 경우
+        if (application.getStatus() != ApplicationStatus.SUBMITTED) {
+            throw new BusinessException(ErrorCode.ALREADY_PROCESSED_APPLICATION);
+        }
+
+        // 처리 로직
+        application.reject();
+    }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void cancelApplication(Long userId, Long applicationId) {
+        Application application = findById(applicationId);
+
+        // 권한 검증
+        if (!userId.equals(application.getApplicant().getId())) {
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_APPLICATION);
+        }
+
+        // 이미 삭제 처리된 경우
+        if (application.isDeleted()) {
+            throw new BusinessException(ErrorCode.APPLICATION_NOT_FOUND);
+        }
+
+        // 논리적 삭제
+        application.delete();
+    }
+
+    @Transactional
+    @Override
+    public void closeApplicationsForClosedRecruitments() {
+        int updated = applicationRepository.closeApplicationsForClosedRecruitments();
+
+        log.info("[지원 상태 모집 종료 처리] 모집 종료 상태로 변경된 지원 건수: {}", updated);
     }
 
     private Long applyProject(User applicant, Project project, ApplicationProjectRequestDto requestDto) {
@@ -147,5 +287,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         Application newApplication = requestDto.toEntity(applicant, study);
 
         return applicationRepository.save(newApplication).getId();
+    }
+
+    /**
+     * 재시도 실패 시 처리
+     */
+    @Recover
+    protected void recover(ObjectOptimisticLockingFailureException e, Long deciderId, Long applicationId) {
+        throw new BusinessException(ErrorCode.TOO_MANY_REQUESTS);
     }
 }

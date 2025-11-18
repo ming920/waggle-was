@@ -30,7 +30,15 @@ import java.time.LocalDateTime;
  * @author 김민재
  */
 @Entity
-@Table(name = "team_members")
+@Table(
+        name = "team_members",
+        uniqueConstraints = {
+            @UniqueConstraint(
+                name = "uk_team_members_team_id_user_id",
+                columnNames = {"team_id", "user_id"}
+            )
+        }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)

@@ -1,5 +1,7 @@
 package com.wagglex2.waggle.domain.common.type;
 
+import com.wagglex2.waggle.common.error.ErrorCode;
+import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.common.dto.request.PositionInfoCreationRequestDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -38,5 +40,24 @@ public class ParticipantInfo {
 
     public boolean isFull() {
         return this.currParticipants >= this.maxParticipants;
+    }
+
+    public void incrementCurrParticipants() {
+        this.currParticipants++;
+    }
+
+    /**
+     * 현재 참여 인원을 1명 감소시킨다.
+     * <p>
+     * - 모집 인원 관리 로직의 핵심 메서드로, 팀원 강퇴 시 호출된다.<br>
+     * - 현재 인원(`currParticipants`)이 0 이하일 경우, 더 이상 감소할 수 없으므로 예외를 발생시킨다.<br>
+     * </p>
+     */
+    public void decreaseCurrParticipants() {
+        if (this.currParticipants <= 0) {
+            throw new BusinessException(ErrorCode.INVALID_MEMBER_COUNT);
+        }
+
+        this.currParticipants--;
     }
 }

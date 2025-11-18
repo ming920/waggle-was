@@ -27,6 +27,11 @@ public enum ErrorCode {
     INVALID_PAGE_NUMBER(HttpStatus.BAD_REQUEST, "INVALID_PAGE_NUMBER", "페이지 번호는 1 이상이어야 합니다"),
     INVALID_ENUM_VALUE(HttpStatus.BAD_REQUEST, "INVALID_ENUM_VALUE", "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요."),
     MISMATCHED_RECRUITMENT_CATEGORY(HttpStatus.BAD_REQUEST, "MISMATCHED_RECRUITMENT_CATEGORY", "지원하려는 공고의 카테고리가 요청한 카테고리와 일치하지 않습니다."),
+    INVALID_SORT_PROPERTY(HttpStatus.BAD_REQUEST, "INVALID_SORT_PROPERTY", "잘못된 정렬 기준입니다."),
+    INVALID_SORT_DIRECTION(HttpStatus.BAD_REQUEST, "INVALID_SORT_DIRECTION", "정렬 방향은 asc 또는 desc만 가능합니다."),
+    PAGE_SIZE_OUT_OF_RANGE(HttpStatus.BAD_REQUEST, "PAGE_SIZE_OUT_OF_RANGE", "페이지 크기는 1 이상이어야 합니다."),
+    PAGE_INDEX_OUT_OF_RANGE(HttpStatus.BAD_REQUEST, "PAGE_INDEX_OUT_OF_RANGE", "페이지 번호는 0 이상이어야 합니다."),
+    INVALID_MEMBER_COUNT(HttpStatus.BAD_REQUEST, "INVALID_MEMBER_COUNT", "현재 인원이 0명 이하일 때는 감소할 수 없습니다."),
 
     // 401
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다."),
@@ -49,6 +54,11 @@ public enum ErrorCode {
     CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT", "다른 사용자의 과제는 삭제할 수 없습니다."),
     CANNOT_APPLY_OWN_RECRUITMENT(HttpStatus.FORBIDDEN, "CANNOT_APPLY_OWN_RECRUITMENT", "본인 공고에는 지원할 수 없습니다."),
     FORBIDDEN_CROSS_UNIVERSITY_RECRUITMENT(HttpStatus.FORBIDDEN, "FORBIDDEN_CROSS_UNIVERSITY_RECRUITMENT", "타 대학의 공고입니다."),
+    FORBIDDEN_DECIDE_APPLICATION(HttpStatus.FORBIDDEN, "FORBIDDEN_DECIDE_APPLICATION", "지원 수락/거절 권한이 없습니다."),
+    CANNOT_DELETE_ANOTHER_USER_APPLICATION(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_APPLICATION", "다른 사용자의 지원은 취소할 수 없습니다."),
+    CANNOT_REMOVE_NOT_LEADER(HttpStatus.FORBIDDEN, "CANNOT_DELETE_NOT_LEADER", "리더만 멤버를 삭제할 수 있습니다."),
+    CANNOT_REMOVE_SELF(HttpStatus.FORBIDDEN, "CANNOT_DELETE_MYSELF", "자기 자신은 삭제할 수 없습니다."),
+    CANNOT_DELETE_ANOTHER_USER_NOTIFICATION(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_NOTIFICATION", "다른 사용자의 알림은 삭제할 수 없습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
@@ -61,6 +71,11 @@ public enum ErrorCode {
     SKILL_NOT_FOUND(HttpStatus.NOT_FOUND, "SKILL_NOT_FOUND", "기술 스택을 찾을 수 없습니다."),
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "REVIEW_NOT_FOUND", "리뷰를 찾을 수 없습니다."),
     BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "BOOKMARK_NOT_FOUND", "찜 정보를 찾을 수 없습니다."),
+    APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "APPLICATION_NOT_FOUND", "지원 정보를 찾을 수 없습니다."),
+    TEAM_NOT_FOUND(HttpStatus.NOT_FOUND, "TEAM_NOT_FOUND", "팀을 찾을 수 없습니다."),
+    LEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "LEADER_NOT_FOUND", "리더를 찾을 수 없습니다."),
+    TARGET_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "TARGET_MEMBER_NOT_FOUND", "삭제할 멤버를 찾을 수 없습니다."),
+    NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION_NOT_FOUND", "알림을 찾을 수 없습니다."),
 
     // 406
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT_ACCEPTABLE", "응답 가능한 미디어 타입이 없습니다."),
@@ -76,6 +91,8 @@ public enum ErrorCode {
     RECRUITMENT_FULL(HttpStatus.CONFLICT, "RECRUITMENT_FULL", "이미 모집이 완료된 공고입니다."),
     NOT_RECRUITING_POSITION(HttpStatus.CONFLICT, "NOT_RECRUITING_POSITION", "해당 포지션은 모집 대상이 아닙니다."),
     POSITION_FULL(HttpStatus.CONFLICT, "POSITION_FULL", "이미 모집이 완료된 포지션입니다."),
+    ALREADY_PROCESSED_APPLICATION(HttpStatus.CONFLICT, "ALREADY_PROCESSED_APPLICATION", "이미 처리된 지원서입니다."),
+    TEAM_FULL(HttpStatus.CONFLICT, "TEAM_FULL", "이미 모집이 완료되었습니다."),
 
     // 413
     PAYLOAD_TOO_LARGE(HttpStatus.PAYLOAD_TOO_LARGE, "PAYLOAD_TOO_LARGE", "요청 또는 파일 크기가 너무 큽니다."),

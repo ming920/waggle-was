@@ -1,6 +1,6 @@
 package com.wagglex2.waggle.domain.application.controller;
 
-import com.wagglex2.waggle.common.response.ApiResponse;
+import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.application.dto.request.ApplicationCommonRequestDto;
 import com.wagglex2.waggle.domain.application.dto.response.ApplicationCommonResponseDto;
@@ -28,7 +28,7 @@ public class ApplicationController {
 
     @PostMapping("/recruitments/{recruitmentId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Long>> submitProjectApplication(
+    public ResponseEntity<APIResponse<Long>> submitProjectApplication(
             @PathVariable("recruitmentId") Long recruitmentId,
             @RequestBody @Valid ApplicationCommonRequestDto requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -40,12 +40,12 @@ public class ApplicationController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.ok("지원서가 성공적으로 제출되었습니다.", applicationId));
+                .body(APIResponse.ok("지원서가 성공적으로 제출되었습니다.", applicationId));
     }
 
     @GetMapping("/me")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<Page<ApplicationCommonResponseDto>>> getMyApplicationByCategory(
+    public ResponseEntity<APIResponse<Page<ApplicationCommonResponseDto>>> getMyApplicationByCategory(
             @RequestParam("category") RecruitmentCategory category,
             @PageableDefault(size = 5) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -64,7 +64,42 @@ public class ApplicationController {
         );
 
         return ResponseEntity.ok(
-                ApiResponse.ok(category.getDesc() + " 공고 지원 내역을 성공적으로 조회하였습니다.", applications)
+                APIResponse.ok(category.getDesc() + " 공고 지원 내역을 성공적으로 조회하였습니다.", applications)
+        );
+    }
+
+    @PostMapping("{applicationId}/accept")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Void>> acceptApplication(
+            @PathVariable("applicationId") Long applicationId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        applicationService.acceptApplication(userDetails.getUserId(), applicationId);
+
+        return ResponseEntity.ok(APIResponse.ok("공고 지원 요청을 수락하였습니다."));
+    }
+
+    @PostMapping("{applicationId}/reject")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Void>> rejectApplication(
+            @PathVariable("applicationId") Long applicationId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        applicationService.rejectApplication(userDetails.getUserId(), applicationId);
+
+        return ResponseEntity.ok(APIResponse.ok("공고 지원 요청을 거절하였습니다."));
+    }
+
+    @DeleteMapping("{applicationId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Void>> cancelApplication(
+            @PathVariable("applicationId") Long applicationId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        applicationService.cancelApplication(userDetails.getUserId(), applicationId);
+
+        return ResponseEntity.ok(
+                APIResponse.ok("지원서가 성공적으로 삭제되었습니다.")
         );
     }
 }
