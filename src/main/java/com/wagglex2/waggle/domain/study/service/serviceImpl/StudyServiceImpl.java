@@ -35,14 +35,27 @@ public class StudyServiceImpl implements StudyService {
 
     @Transactional
     @Override
-    public StudyResponseDto getStudy(Long studyId) {
-        int updated = studyRepository.increaseViewCount(studyId);
-        if (updated == 0) {
+    public StudyResponseDto getStudy(Long viewerId, Long studyId) {
+        Study study = studyRepository.findWithAllById(studyId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
+
+        // 삭제 여부 확인
+        if (study.getStatus() == RecruitmentStatus.CANCELED) {
             throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
         }
 
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
+        User viewer = userService.findById(viewerId);
+
+        // 타 대학 공고를 조회하려는 경우
+        if (viewer.getUniversity() != study.getUser().getUniversity()) {
+            throw new BusinessException(ErrorCode.FORBIDDEN_CROSS_UNIVERSITY_RECRUITMENT);
+        }
+
+        int updated = studyRepository.increaseViewCount(studyId);
+
+        if (updated == 0) {
+            throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
+        }
 
         return StudyResponseDto.fromEntity(study);
     }
