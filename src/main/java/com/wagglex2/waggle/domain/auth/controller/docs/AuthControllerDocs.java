@@ -299,9 +299,9 @@ public interface AuthControllerDocs {
                             ),
                             @Header(
                                     name = "Set-Cookie",
-                                    description = "refreshToken (HttpOnly, Secure, SameSite=Lax)",
+                                    description = "refreshToken (HttpOnly, Secure, SameSite=None)",
                                     schema = @Schema(type = "string"),
-                                    example = "refreshToken=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=604800"
+                                    example = "refreshToken=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800"
                             )
                     },
                     content = @Content(
@@ -403,9 +403,9 @@ public interface AuthControllerDocs {
                     headers = {
                             @Header(
                                     name = "Set-Cookie",
-                                    description = "refreshToken (HttpOnly, Secure, SameSite=Lax)",
+                                    description = "refreshToken (HttpOnly, Secure, SameSite=None)",
                                     schema = @Schema(type = "string"),
-                                    example = "refreshToken=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0"
+                                    example = "refreshToken=; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=0"
                             )
                     },
                     content = @Content(
@@ -470,9 +470,9 @@ public interface AuthControllerDocs {
                             ),
                             @Header(
                                     name = "Set-Cookie",
-                                    description = "refreshToken (HttpOnly, Secure, SameSite=Lax)",
+                                    description = "refreshToken (HttpOnly, Secure, SameSite=None)",
                                     schema = @Schema(type = "string"),
-                                    example = "refreshToken=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=604800"
+                                    example = "refreshToken=eyJhbGc...; Path=/; HttpOnly; Secure; SameSite=None; Max-Age=604800"
                             )
                     },
                     content = @Content(

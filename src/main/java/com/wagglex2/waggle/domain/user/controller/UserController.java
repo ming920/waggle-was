@@ -272,7 +272,7 @@ public class UserController {
      * <ul>
      *   <li><b>HttpOnly</b>: true (JS에서 접근 불가, XSS 방어)</li>
      *   <li><b>Secure</b>: true (HTTPS에서만 전송)</li>
-     *   <li><b>SameSite</b>: Lax (기본 CSRF 방어)</li>
+     *   <li><b>SameSite</b>: None (기본 CSRF 방어)</li>
      *   <li><b>Path</b>: "/" (애플리케이션 전역에서 사용 가능)</li>
      *   <li><b>Max-Age</b>: 토큰 만료 시간(초)</li>
      * </ul>
@@ -291,7 +291,7 @@ public class UserController {
         ResponseCookie cookie = ResponseCookie.from(cookieName, token)
                 .httpOnly(true)
                 .secure(true)
-                .sameSite("Lax")
+                .sameSite("None")
                 .path("/")
                 .maxAge(maxAge)
                 .build();
