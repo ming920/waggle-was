@@ -22,6 +22,13 @@ import java.util.UUID;
 @Slf4j
 public class S3ServiceImpl implements S3Service {
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("jpg", "jpeg", "png");
+    private static final List<String> ALLOWED_CONTENT_TYPES = Arrays.asList(
+            "image/jpeg",
+            "image/jpg",
+            "image/png"
+    );
+    private static final byte[] JPEG_SIGNATURE = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+    private static final byte[] PNG_SIGNATURE = {(byte) 0x89, 0x50, 0x4E, 0x47};
     private static final long MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB 제한
     private final S3Client s3Client;
 
@@ -40,10 +47,13 @@ public class S3ServiceImpl implements S3Service {
         // 파일 유효성 검증
         validateFile(file);
 
+        // folderPath 검증 및 정규화
+        String normalizedFolderPath = validateAndNormalizeFolderPath(folderPath);
+
         // 경로 : waggle-image-bucket/user-profile-images/{username}/{uuid}.확장자
         String extension = getFileExtension(file.getOriginalFilename());
         String fileName = UUID.randomUUID().toString() + "." + extension;
-        String s3Key = folderPath + "/" + fileName;
+        String s3Key = normalizedFolderPath + "/" + fileName;
 
         try {
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -122,5 +132,70 @@ public class S3ServiceImpl implements S3Service {
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
             throw new BusinessException(ErrorCode.INVALID_FILE_FORMAT);
         }
+
+        // Content-Type 검증
+        String contentType = file.getContentType();
+        if (contentType == null || !ALLOWED_CONTENT_TYPES.contains(contentType.toLowerCase())) {
+            throw new BusinessException(ErrorCode.INVALID_FILE_FORMAT);
+        }
+
+        // Magic Byte 검증
+        validateMagicByte(file, extension);
+    }
+
+    private void validateMagicByte(MultipartFile file, String extension) {
+        try {
+            byte[] header = new byte[4];
+            int bytesRead = file.getInputStream().read(header);
+            
+            if (bytesRead < 3) {
+                throw new BusinessException(ErrorCode.INVALID_FILE_FORMAT);
+            }
+            
+            boolean isValid = false;
+            if (extension.equals("jpg") || extension.equals("jpeg")) {
+                isValid = header[0] == JPEG_SIGNATURE[0] && 
+                         header[1] == JPEG_SIGNATURE[1] && 
+                         header[2] == JPEG_SIGNATURE[2];
+            } else if (extension.equals("png")) {
+                if (bytesRead < 4) {
+                    throw new BusinessException(ErrorCode.INVALID_FILE_FORMAT);
+                }
+                isValid = header[0] == PNG_SIGNATURE[0] && 
+                         header[1] == PNG_SIGNATURE[1] && 
+                         header[2] == PNG_SIGNATURE[2] && 
+                         header[3] == PNG_SIGNATURE[3];
+            }
+            
+            if (!isValid) {
+                throw new BusinessException(ErrorCode.INVALID_FILE_FORMAT);
+            }
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.INVALID_FILE_FORMAT);
+        }
+    }
+
+    private String validateAndNormalizeFolderPath(String folderPath) {
+        if (folderPath == null || folderPath.isBlank()) {
+            throw new BusinessException(ErrorCode.INVALID_REQUEST);
+        }
+    
+        // 경로 탐색 공격 방지
+        if (folderPath.contains("..")) {
+            throw new BusinessException(ErrorCode.INVALID_REQUEST);
+        }
+    
+        // 연속된 슬래시를 하나로 통합
+        String normalized = folderPath.replaceAll("/+", "/");
+        
+        // 앞뒤 슬래시 제거
+        if (normalized.startsWith("/")) {
+            normalized = normalized.substring(1);
+        }
+        if (normalized.endsWith("/")) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+    
+        return normalized;
     }
 }

@@ -253,43 +253,100 @@ public class UserServiceImpl implements UserService {
         log.info("회원 탈퇴 성공 : userId = {}", userId);
     }
 
+    /**
+     * 현재 로그인한 사용자의 프로필 이미지를 업로드한다.
+     *
+     * <p>처리 순서:</p>
+     * <ol>
+     *   <li>사용자 엔티티 조회 및 기존 이미지 URL 저장</li>
+     *   <li>S3에 새 이미지 업로드 (트랜잭션 밖)</li>
+     *   <li>DB에 새 이미지 URL 업데이트 (트랜잭션 안)</li>
+     *   <li>기존 이미지 삭제 (트랜잭션 밖, 실패해도 롤백하지 않음)</li>
+     *   <li>업데이트된 사용자 정보 조회 후 반환</li>
+     * </ol>
+     *
+     * @param userId 업로드할 사용자 ID
+     * @param file   업로드할 이미지 파일
+     * @return 업로드된 사용자 정보를 담은 UserResponseDto
+     */
     @Override
-    @Transactional
     @PreAuthorize("#userId == authentication.principal.userId")
     public UserResponseDto uploadProfileImage(Long userId, MultipartFile file) {
-        User user = findByIdWithSkills(userId);
+        User user = findById(userId);
 
-        // 기존 이미지가 있고 기본 이미지가 아니면 삭제
-        if (user.getProfileImageUrl() != null &&
-        !user.getProfileImageUrl().equals(defaultProfileImageUrl)) {
-            s3Service.deleteImage(user.getProfileImageUrl());
-        }
+        String oldImageUrl = user.getProfileImageUrl();
 
         // 새 이미지 업로드
-        String folderPath = "user-profile-images/" + user.getUsername();
+        String folderPath = "user-profile-images/" + user.getId();
         String imageUrl = s3Service.uploadImage(file, folderPath);
 
-        // 엔티티 업데이트
-        user.updateProfileImageUrl(imageUrl);
+        // 엔티티 업데이트 (트랜잭션 안)
+        updateProfileImage(userId, imageUrl);
 
-        return UserResponseDto.from(user, defaultProfileImageUrl);
+        deleteOldProfileImage(oldImageUrl);
+
+        User updatedUser = findByIdWithSkills(userId);
+        return UserResponseDto.from(updatedUser, defaultProfileImageUrl);
     }
 
-    @Override
+    /**
+     * 사용자의 프로필 이미지 URL을 DB에 업데이트한다.
+     *
+     * <p>트랜잭션 안에서만 실행되며, S3 작업은 포함하지 않는다.</p>
+     *
+     * @param userId      업데이트할 사용자 ID
+     * @param newImageUrl 새로운 프로필 이미지 URL
+     */
     @Transactional
+    protected void updateProfileImage(Long userId, String newImageUrl) {
+        User user = findById(userId);
+        user.updateProfileImageUrl(newImageUrl);
+    }
+
+    /**
+     * 기존 프로필 이미지를 S3에서 삭제한다.
+     *
+     * <p>삭제 실패 시에도 예외를 던지지 않고 로그만 남긴다.
+     * 트랜잭션 밖에서 실행되며, 롤백되지 않는다.</p>
+     *
+     * @param oldImageUrl 삭제할 기존 이미지 URL
+     */
+    protected void deleteOldProfileImage(String oldImageUrl) {
+        if (oldImageUrl == null || oldImageUrl.equals(defaultProfileImageUrl)) {
+            return;
+        }
+        try {
+            s3Service.deleteImage(oldImageUrl);
+        } catch (Exception e) {
+            log.error("기존 프로필 이미지 삭제 실패: {}", oldImageUrl, e);
+        }
+    }
+
+    /**
+     * 현재 로그인한 사용자의 프로필 이미지를 삭제하고 기본 이미지로 변경한다.
+     *
+     * <p>처리 순서:</p>
+     * <ol>
+     *   <li>사용자 엔티티 조회 및 기존 이미지 URL 저장</li>
+     *   <li>DB에 기본 이미지 URL로 업데이트 (트랜잭션 안)</li>
+     *   <li>기존 이미지 삭제 (트랜잭션 밖, 실패해도 롤백하지 않음)</li>
+     *   <li>업데이트된 사용자 정보 조회 후 반환</li>
+     * </ol>
+     *
+     * @param userId 삭제할 사용자 ID
+     * @return 기본 이미지로 변경된 사용자 정보를 담은 UserResponseDto
+     */
+    @Override
     @PreAuthorize("#userId == authentication.principal.userId")
     public UserResponseDto deleteProfileImage(Long userId) {
-        User user = findByIdWithSkills(userId);
+        User user = findById(userId);
 
-        // 기존 이미지가 있고 기본 이미지가 아니면 삭제
-        if (user.getProfileImageUrl() != null &&
-                !user.getProfileImageUrl().equals(defaultProfileImageUrl)) {
-            s3Service.deleteImage(user.getProfileImageUrl());
-        }
+        String oldImageUrl = user.getProfileImageUrl();
 
-        // 기본 이미지로 변경
-        user.updateProfileImageUrl(defaultProfileImageUrl);
+        updateProfileImage(userId, defaultProfileImageUrl);
+        deleteOldProfileImage(oldImageUrl);
 
-        return UserResponseDto.from(user, defaultProfileImageUrl);
+        User updatedUser = findByIdWithSkills(userId);
+        return UserResponseDto.from(updatedUser, defaultProfileImageUrl);
     }
 }
