@@ -8,4 +8,5 @@ public interface StudyService {
     Long createStudy(StudyCreationRequestDto studyCreationRequestDto, Long userId);
     StudyResponseDto getStudy(Long studyId);
     void updateStudy(Long userId, Long studyId, StudyUpdateRequestDto updateDto);
+    void deleteStudy(Long userId, Long studyId);
 }
