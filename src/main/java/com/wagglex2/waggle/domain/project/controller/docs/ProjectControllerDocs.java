@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -35,6 +36,7 @@ public interface ProjectControllerDocs {
     @Operation(
             summary = "프로젝트 공고 등록",
             description = "프로젝트 공고를 등록한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "**프로젝트 공고 작성 내용**",
                     required = true,
@@ -153,6 +155,7 @@ public interface ProjectControllerDocs {
     @Operation(
             summary = "프로젝트 공고 상세 조회",
             description = "프로젝트 공고 1건을 상세 조회한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
             parameters = {
                   @Parameter(
                           name = "projectId",
@@ -286,6 +289,7 @@ public interface ProjectControllerDocs {
                     - `/projects?positions=Back-END` (O)
                     - `/projects?positions=backend` (X)
                     """,
+            security = @SecurityRequirement(name = "Bearer Token"),
             parameters = {
                     @Parameter(
                             name = "q",
@@ -553,6 +557,7 @@ public interface ProjectControllerDocs {
     @Operation(
             summary = "프로젝트 공고 수정",
             description = "본인이 작성한 프로젝트 공고 1건을 수정한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
             parameters = {
                     @Parameter(
                             name = "projectId",
@@ -698,6 +703,7 @@ public interface ProjectControllerDocs {
     @Operation(
             summary = "프로젝트 공고 삭제",
             description = "본인이 작성한 프로젝트 공고 1건을 삭제한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
             parameters = {
                     @Parameter(
                             name = "projectId",

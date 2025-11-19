@@ -17,7 +17,6 @@ import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
 import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
 import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
-import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
