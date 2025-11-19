@@ -41,6 +41,7 @@ public interface UserControllerDocs {
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
+                                            name = "이미 사용 중인 아이디",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -50,6 +51,7 @@ public interface UserControllerDocs {
                                                     """
                                     ),
                                     @ExampleObject(
+                                            name = "사용 가능한 아이디",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -124,6 +126,7 @@ public interface UserControllerDocs {
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
+                                            name = "이미 사용 중인 이메일",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -133,6 +136,7 @@ public interface UserControllerDocs {
                                                     """
                                     ),
                                     @ExampleObject(
+                                            name = "사용 가능한 이메일",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -207,6 +211,7 @@ public interface UserControllerDocs {
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
+                                            name = "이미 사용 중인 닉네임",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -216,6 +221,7 @@ public interface UserControllerDocs {
                                                     """
                                     ),
                                     @ExampleObject(
+                                            name = "사용 가능한 닉네임",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
