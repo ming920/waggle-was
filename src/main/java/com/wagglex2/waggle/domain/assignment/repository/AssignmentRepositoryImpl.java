@@ -3,6 +3,7 @@ package com.wagglex2.waggle.domain.assignment.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentSearchCondition;
@@ -41,11 +42,17 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      *     </ol>
      */
     @Override
-    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(AssignmentSearchCondition condition, Pageable pageable) {
+    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(Long viewerId, AssignmentSearchCondition condition, Pageable pageable) {
         BooleanBuilder where = new BooleanBuilder()
                 .and(eqStatus(condition.status()))
                 .and(containsAnyKeyword(condition.keywords()))
-                .and(containsAnyGrade(condition.grades()));
+                .and(containsAnyGrade(condition.grades()))
+                .and(assignment.user.university.eq(  // 같은 대학의 공고만을 조회
+                        JPAExpressions
+                                .select(user.university)
+                                .from(user)
+                                .where(user.id.eq(viewerId))
+                ));
 
         // 조건 에 맞는 모든 Assignment 공고 id 조회
         List<Long> assignmentIds = queryFactory
@@ -119,7 +126,7 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      */
     private BooleanExpression eqStatus(RecruitmentStatus status) {
         if (status == null || status == RecruitmentStatus.CANCELED)
-            return null;
+            return assignment.status.ne(RecruitmentStatus.CANCELED);
         return assignment.status.eq(status);
     }
 

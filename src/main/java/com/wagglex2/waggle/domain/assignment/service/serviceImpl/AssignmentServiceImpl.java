@@ -78,10 +78,11 @@ public class AssignmentServiceImpl implements AssignmentService {
 
     @Override
     public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(
+            Long viewerId,
             AssignmentSearchCondition condition,
             Pageable pageable
     ) {
-        return assignmentRepository.getAssignmentSummaries(condition, pageable);
+        return assignmentRepository.getAssignmentSummaries(viewerId, condition, pageable);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
