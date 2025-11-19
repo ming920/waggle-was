@@ -656,15 +656,15 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "**권한 없음**",
+                    description = "**다른 사용자의 프로젝트 공고를 수정하려는 경우**",
                     content = @Content(
                             mediaType = "application/json",
                             examples = {
                                     @ExampleObject(
                                             value = """
                                                     {
-                                                        "code": "FORBIDDEN",
-                                                        "message": "접근 권한이 없습니다."
+                                                        "code": "CANNOT_UPDATE_ANOTHER_USER_PROJECT",
+                                                        "message": "다른 사용자의 프로젝트 공고는 수정할 수 없습니다."
                                                     }
                                                     """
                                     )
@@ -728,15 +728,15 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "**권한 없음**",
+                    description = "**다른 사용자의 프로젝트 공고를 삭제하려는 경우**",
                     content = @Content(
                             mediaType = "application/json",
                             examples = {
                                     @ExampleObject(
                                             value = """
                                                     {
-                                                        "code": "FORBIDDEN",
-                                                        "message": "접근 권한이 없습니다."
+                                                        "code": "CANNOT_DELETE_ANOTHER_USER_PROJECT",
+                                                        "message": "다른 사용자의 프로젝트 공고는 삭제할 수 없습니다."
                                                     }
                                                     """
                                     )

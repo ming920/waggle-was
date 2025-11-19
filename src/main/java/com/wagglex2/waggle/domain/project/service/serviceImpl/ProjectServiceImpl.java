@@ -124,7 +124,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 권한 검증
         if (!userId.equals(project.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_UPDATE_ANOTHER_USER_PROJECT);
         }
 
         // 삭제 여부 검증
@@ -144,7 +144,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 권한 검증
         if (!userId.equals(project.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_PROJECT);
         }
 
         // 논리적 삭제
