@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -394,7 +395,8 @@ public interface AuthControllerDocs {
             description = """
                     Redis에서 userId에 해당하는 Refresh Token을 삭제한다.
                     Refresh Token에 빈 값을 넣고 Cookie를 설정한다.
-                    """
+                    """,
+            security = @SecurityRequirement(name = "Bearer Token")
     )
     @ApiResponses({
             @ApiResponse(
@@ -417,6 +419,24 @@ public interface AuthControllerDocs {
                                                     {
                                                         "code": "SUCCESS",
                                                         "message": "로그아웃에 성공했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
                                                     }
                                                     """
                                     )

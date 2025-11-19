@@ -2,7 +2,6 @@ package com.wagglex2.waggle.domain.review.service.serviceImpl;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
-import com.wagglex2.waggle.domain.common.dto.response.PageResponse;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewCreationRequestDto;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewUpdateRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
@@ -75,23 +74,20 @@ public class ReviewServiceImpl implements ReviewService {
      *   <li>컨트롤러에서 전달된 {@link Pageable} 객체를 기반으로 페이징 및 정렬 조건을 설정한다.</li>
      *   <li>{@code revieweeId}에 해당하는 리뷰를 {@link ReviewRepository#findByRevieweeIdAndStatus(Long, ReviewStatus, Pageable)}로 조회한다.</li>
      *   <li>조회된 {@link Review} 엔티티를 {@link ReviewResponseDto}로 변환한다.</li>
-     *   <li>변환된 결과({@link Page}<{@link ReviewResponseDto}>)를 {@link PageResponse} 형태로 감싸 반환한다.</li>
      * </ol>
      *
      * @param revieweeId 리뷰 대상 사용자의 고유 ID
      * @param pageable   페이징 및 정렬 정보 (page, size, sort 등)
-     * @return 페이지 정보와 함께 {@link ReviewResponseDto} 목록을 담은 {@link PageResponse} 객체
+     * @return 페이지 정보와 함께 {@link ReviewResponseDto}
      */
     @Override
-    public PageResponse<ReviewResponseDto> getReviewsByRevieweeId(Long revieweeId, Pageable pageable) {
-        Page<ReviewResponseDto> page = reviewRepository.findByRevieweeIdAndStatus(
+    public Page<ReviewResponseDto> getReviewsByRevieweeId(Long revieweeId, Pageable pageable) {
+        return reviewRepository.findByRevieweeIdAndStatus(
                         revieweeId,
                         ReviewStatus.ACTIVE,
                         pageable
                 )
                 .map(ReviewResponseDto::from);
-
-        return PageResponse.from(page);
     }
 
     /**
@@ -102,23 +98,20 @@ public class ReviewServiceImpl implements ReviewService {
      *   <li>컨트롤러에서 전달된 {@link Pageable} 객체를 기반으로 페이징 및 정렬 조건을 설정한다.</li>
      *   <li>{@code reviewerId}에 해당하는 리뷰를 {@link ReviewRepository#findByReviewerIdAndStatus(Long, ReviewStatus, Pageable)}로 조회한다.</li>
      *   <li>조회된 {@link Review} 엔티티를 {@link ReviewResponseDto}로 변환한다.</li>
-     *   <li>변환된 결과({@link Page}<{@link ReviewResponseDto}>)를 {@link PageResponse} 형태로 감싸 반환한다.</li>
      * </ol>
      *
      * @param reviewerId 리뷰 작성 사용자의 고유 ID
      * @param pageable   페이징 및 정렬 정보 (page, size, sort 등)
-     * @return 페이지 정보와 함께 {@link ReviewResponseDto} 목록을 담은 {@link PageResponse} 객체
+     * @return 페이지 정보와 함께 {@link ReviewResponseDto}
      */
     @Override
-    public PageResponse<ReviewResponseDto> getReviewsByReviewerId(Long reviewerId, Pageable pageable) {
-        Page<ReviewResponseDto> page = reviewRepository.findByReviewerIdAndStatus(
+    public Page<ReviewResponseDto> getReviewsByReviewerId(Long reviewerId, Pageable pageable) {
+        return reviewRepository.findByReviewerIdAndStatus(
                         reviewerId,
                         ReviewStatus.ACTIVE,
                         pageable
                 )
                 .map(ReviewResponseDto::from);
-
-        return PageResponse.from(page);
     }
 
 
