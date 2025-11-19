@@ -75,6 +75,10 @@ public class StudyServiceImpl implements StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
 
+        if (study.getStatus() == RecruitmentStatus.CANCELED) {
+            throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
+        }
+        
         // 권한 검증
         if (!userId.equals(study.getUser().getId())) {
             throw new BusinessException(ErrorCode.FORBIDDEN);
