@@ -98,6 +98,11 @@ public class AssignmentServiceImpl implements AssignmentService {
         Assignment assignment = assignmentRepository.findById(assignmentId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND));
 
+        // 이미 삭제 처리되었는지 확인
+        if (assignment.getStatus() == RecruitmentStatus.CANCELED) {
+            throw new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND);
+        }
+
         // 권한 검증
         if (!userId.equals(assignment.getUser().getId())) {
             throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT);
