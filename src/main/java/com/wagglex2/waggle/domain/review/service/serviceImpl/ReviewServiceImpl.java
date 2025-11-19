@@ -132,11 +132,11 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = findById(reviewId);
 
         if (!userId.equals(review.getReviewer().getId())) {
-            throw new BusinessException(ErrorCode.NOT_UPDATE_ANOTHER_USER_REVIEW);
+            throw new BusinessException(ErrorCode.CANNOT_UPDATE_ANOTHER_USER_REVIEW);
         }
 
         if (review.getStatus() != ReviewStatus.ACTIVE) {
-            throw new BusinessException(ErrorCode.NOT_UPDATE_NOT_ACTIVE_REVIEW);
+            throw new BusinessException(ErrorCode.CANNOT_UPDATE_NOT_ACTIVE_REVIEW);
         }
 
         review.update(dto);
@@ -167,11 +167,11 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = findById(reviewId);
 
         if (!userId.equals(review.getReviewer().getId())) {
-            throw new BusinessException(ErrorCode.NOT_DELETE_ANOTHER_USER_REVIEW);
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_REVIEW);
         }
 
         if (review.getStatus() != ReviewStatus.ACTIVE) {
-            throw new BusinessException(ErrorCode.NOT_DELETE_NOT_ACTIVE_REVIEW);
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_NOT_ACTIVE_REVIEW);
         }
 
         review.delete();
