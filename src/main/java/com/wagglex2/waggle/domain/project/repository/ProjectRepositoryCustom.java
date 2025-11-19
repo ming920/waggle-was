@@ -18,7 +18,7 @@ public interface ProjectRepositoryCustom {
      * @param pageable  페이징 및 정렬 정보 ({@link org.springframework.data.domain.Pageable})
      * @return 조건에 맞는 프로젝트 요약 DTO 페이지 ({@link org.springframework.data.domain.Page}&lt;{@link ProjectSummaryResponseDto}&gt;)
      */
-    Page<ProjectSummaryResponseDto> getProjectSummaries(ProjectSearchCondition condition, Pageable pageable);
+    Page<ProjectSummaryResponseDto> getProjectSummaries(Long viewerId, ProjectSearchCondition condition, Pageable pageable);
 
     /**
      * 주어진 Project ID 목록에 해당하는 프로젝트 요약 정보를 조회한다.

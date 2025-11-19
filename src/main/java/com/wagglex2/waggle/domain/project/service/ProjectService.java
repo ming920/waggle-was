@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProjectService {
     Long createProject(Long userId, ProjectCreationRequestDto projectCreationRequestDto);
     ProjectDetailResponseDto getProject(Long viewerId, Long projectId);
-    Page<ProjectSummaryResponseDto> getProjectSummaries(ProjectSearchCondition condition, Pageable pageable);
+    Page<ProjectSummaryResponseDto> getProjectSummaries(Long viewerId, ProjectSearchCondition condition, Pageable pageable);
     List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds);
     void updateProject(Long userId, Long projectId, ProjectUpdateRequestDto updateDto);
     void deleteProject(Long userId, Long projectId);

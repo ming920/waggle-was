@@ -3,6 +3,7 @@ package com.wagglex2.waggle.domain.project.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wagglex2.waggle.domain.common.type.*;
@@ -42,14 +43,20 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      *     </ol>
      */
     @Override
-    public Page<ProjectSummaryResponseDto> getProjectSummaries(ProjectSearchCondition condition, Pageable pageable) {
+    public Page<ProjectSummaryResponseDto> getProjectSummaries(Long viewerId, ProjectSearchCondition condition, Pageable pageable) {
         // where문 조건
         BooleanBuilder builder = new BooleanBuilder()
                 .and(eqPurpose(condition.purpose()))
                 .and(eqStatus(condition.status()))
                 .and(containsAnyKeyword(condition.keywords()))
                 .and(containsAnyPosition(condition.positions()))
-                .and(containsAnySkill(condition.skills()));
+                .and(containsAnySkill(condition.skills()))
+                .and(project.user.university.eq(  // 같은 대학의 공고만을 조회
+                        JPAExpressions
+                                .select(user.university)
+                                .from(user)
+                                .where(user.id.eq(viewerId))
+                ));
 
         // 조건에 맞는 모든 Project 공고 id 조회
         List<Long> projectIds = queryFactory
@@ -130,7 +137,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      */
     private BooleanExpression eqStatus(RecruitmentStatus status) {
         if (status == null || status == RecruitmentStatus.CANCELED) {
-            return null;
+            return project.status.ne(RecruitmentStatus.CANCELED);
         }
 
         return project.status.eq(status);
