@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.wagglex2.waggle.domain.common.querydsl.RecruitmentSearchMatcher;
 import com.wagglex2.waggle.domain.common.type.*;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectSearchCondition;
 import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto;
@@ -146,19 +147,12 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     /**
      * 제목(title) 또는 내용(content)에 키워드 중 하나라도 포함되는 조건 생성
      */
-    private BooleanBuilder containsAnyKeyword(Set<String> keywords) {
-        if (keywords == null || keywords.isEmpty()) {
-            return null;
-        }
-
-        BooleanBuilder builder = new BooleanBuilder();
-        keywords.forEach(keyword ->
-                builder
-                        .or(project.title.containsIgnoreCase(keyword))
-                        .or(project.content.containsIgnoreCase(keyword))
+    private BooleanExpression containsAnyKeyword(Set<String> keywords) {
+        return RecruitmentSearchMatcher.match(
+                keywords,
+                project.title,
+                project.content
         );
-
-        return builder;
     }
 
     /**
