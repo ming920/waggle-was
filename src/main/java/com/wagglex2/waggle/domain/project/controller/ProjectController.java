@@ -6,6 +6,7 @@ import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.common.type.Skill;
 import com.wagglex2.waggle.domain.common.util.KomoranUtil;
+import com.wagglex2.waggle.domain.project.controller.docs.ProjectControllerDocs;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectCreationRequestDto;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectSearchCondition;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectUpdateRequestDto;
@@ -30,7 +31,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/projects")
 @RequiredArgsConstructor
-public class ProjectController {
+public class ProjectController implements ProjectControllerDocs {
     private final ProjectService projectService;
     private final KomoranUtil komoranUtil;
 

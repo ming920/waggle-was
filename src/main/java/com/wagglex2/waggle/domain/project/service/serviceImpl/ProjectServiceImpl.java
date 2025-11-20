@@ -17,7 +17,6 @@ import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
 import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
 import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
-import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -124,7 +123,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 권한 검증
         if (!userId.equals(project.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_UPDATE_ANOTHER_USER_PROJECT);
         }
 
         // 삭제 여부 검증
@@ -144,7 +143,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 권한 검증
         if (!userId.equals(project.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_PROJECT);
         }
 
         // 논리적 삭제
