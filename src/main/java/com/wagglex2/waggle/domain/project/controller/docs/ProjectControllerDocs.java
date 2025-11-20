@@ -172,6 +172,7 @@ public interface ProjectControllerDocs {
                     description = "**프로젝트 공고 상세 조회 성공**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -260,6 +261,7 @@ public interface ProjectControllerDocs {
                     description = "**해당 프로젝트 공고를 찾을 수 없는 경우**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -352,6 +354,7 @@ public interface ProjectControllerDocs {
                     description = "**프로젝트 공고 목록 조회 성공**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             name = "/projects?page=4&size=3&purpose=contest",
@@ -529,6 +532,7 @@ public interface ProjectControllerDocs {
                     description = "**요청 값이 유효하지 않은 경우**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             name = "/projects?page=5&size=3&purpose=banana",
@@ -620,6 +624,7 @@ public interface ProjectControllerDocs {
                     description = "**프로젝트 공고 수정 성공**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -637,6 +642,7 @@ public interface ProjectControllerDocs {
                     description = "**입력 값이 유효하지 않은 경우**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             name = "현재 참가 인원이 모집 인원보다 많은 경우",
@@ -664,6 +670,7 @@ public interface ProjectControllerDocs {
                     description = "**다른 사용자의 프로젝트 공고를 수정하려는 경우**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -681,6 +688,7 @@ public interface ProjectControllerDocs {
                     description = "**해당 프로젝트 공고를 찾을 수 없는 경우**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -720,6 +728,7 @@ public interface ProjectControllerDocs {
                     description = "**프로젝트 공고 삭제 성공**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -737,6 +746,7 @@ public interface ProjectControllerDocs {
                     description = "**다른 사용자의 프로젝트 공고를 삭제하려는 경우**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -754,6 +764,7 @@ public interface ProjectControllerDocs {
                     description = "**해당 프로젝트 공고를 찾을 수 없는 경우**",
                     content = @Content(
                             mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
