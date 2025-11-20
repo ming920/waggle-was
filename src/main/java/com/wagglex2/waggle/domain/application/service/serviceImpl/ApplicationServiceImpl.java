@@ -81,7 +81,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         }
 
         // 동일한 공고에 중복 지원한 경우
-        if (applicationRepository.existsByApplicantIdAndRecruitmentId(userId, recruitmentId)) {
+        if (applicationRepository.existsByApplicantIdAndRecruitmentIdAndIsDeletedFalse(userId, recruitmentId)) {
             throw new BusinessException(ErrorCode.ALREADY_APPLIED_RECRUITMENT);
         }
 

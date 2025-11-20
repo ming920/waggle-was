@@ -18,15 +18,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-@Table(
-        name = "applications",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_applications_applicant_id_recruitment_id",
-                        columnNames = {"applicant_id", "recruitment_id"}
-                ),
-        }
-)
+@Table(name = "applications")
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
