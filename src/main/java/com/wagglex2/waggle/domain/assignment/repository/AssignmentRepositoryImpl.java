@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentSearchCondition;
 import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentSummaryResponseDto;
+import com.wagglex2.waggle.domain.common.querydsl.RecruitmentSearchMatcher;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -106,11 +107,6 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
                                 assignment.department,
                                 assignment.lecture,
                                 assignment.lectureCode,
-                                Projections.constructor(
-                                        com.wagglex2.waggle.domain.common.dto.response.ParticipantInfoResponseDto.class,
-                                        assignment.participants.currParticipants,
-                                        assignment.participants.maxParticipants
-                                ),
                                 set(assignment.grades.any())
                         ))
                 );
@@ -133,15 +129,12 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
     /**
      * 제목(title) 또는 내용(content)에 키워드 중 하나라도 포함되는 조건 생성
      */
-    private BooleanBuilder containsAnyKeyword(Set<String> keywords) {
-        if (keywords == null || keywords.isEmpty())
-            return null;
-        BooleanBuilder builder = new BooleanBuilder();
-        keywords.forEach(keyword ->
-                builder.or(assignment.title.containsIgnoreCase(keyword))
-                        .or(assignment.content.containsIgnoreCase(keyword))
+    private BooleanExpression containsAnyKeyword(Set<String> keywords) {
+        return RecruitmentSearchMatcher.match(
+                keywords,
+                assignment.title,
+                assignment.content
         );
-        return builder;
     }
 
     /**
