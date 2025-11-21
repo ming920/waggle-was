@@ -123,8 +123,8 @@ public class ProjectServiceImpl implements ProjectService {
      * @return 입력 ID 순서에 맞춘 {@code List<ProjectSummaryResponseDto>}
      */
     @Override
-    public List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds) {
-        return projectRepository.getProjectSummariesByIds(projectIds);
+    public List<ProjectSummaryResponseDto> getProjectSummariesByIds(Long viewerId, List<Long> projectIds) {
+        return projectRepository.getProjectSummariesByIds(viewerId, projectIds);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

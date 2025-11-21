@@ -86,7 +86,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         // targetIds에 해당하는 프로젝트 공고 정보 조회
         List<ProjectSummaryResponseDto> projectSummaries =
-                projectService.getProjectSummariesByIds(targetIds.getContent());
+                projectService.getProjectSummariesByIds(userId, targetIds.getContent());
 
         return new PageImpl<>(projectSummaries, pageable, targetIds.getTotalElements());
     }

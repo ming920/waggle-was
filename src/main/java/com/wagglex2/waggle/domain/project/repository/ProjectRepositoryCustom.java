@@ -26,5 +26,5 @@ public interface ProjectRepositoryCustom {
      * @param projectIds 조회할 Project ID 목록
      * @return 입력 순서에 맞춘 {@code List<ProjectSummaryResponseDto>}
      */
-    List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds);
+    List<ProjectSummaryResponseDto> getProjectSummariesByIds(Long viewerId, List<Long> projectIds);
 }

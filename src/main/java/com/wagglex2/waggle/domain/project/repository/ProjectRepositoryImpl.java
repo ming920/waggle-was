@@ -21,6 +21,7 @@ import java.util.*;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.set;
+import static com.wagglex2.waggle.domain.bookmark.entity.QBookmark.bookmark;
 import static com.wagglex2.waggle.domain.project.entity.QProject.project;
 import static com.wagglex2.waggle.domain.user.entity.QUser.user;
 
@@ -44,7 +45,11 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      *     </ol>
      */
     @Override
-    public Page<ProjectSummaryResponseDto> getProjectSummaries(Long viewerId, ProjectSearchCondition condition, Pageable pageable) {
+    public Page<ProjectSummaryResponseDto> getProjectSummaries(
+            Long viewerId,
+            ProjectSearchCondition condition,
+            Pageable pageable
+    ) {
         // where문 조건
         BooleanBuilder builder = new BooleanBuilder()
                 .and(eqPurpose(condition.purpose()))
@@ -70,7 +75,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                 .fetch();
 
         // 해당 id의 Project 공고 조회
-        List<ProjectSummaryResponseDto> content = getProjectSummariesByIds(projectIds);
+        List<ProjectSummaryResponseDto> content = getProjectSummariesByIds(viewerId, projectIds);
 
         // 조건을 만족하는 모든 프로젝트 엔티티의 개수를 구하는 쿼리
         // 페이지의 총 개수를 제공하기 위함
@@ -89,12 +94,20 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      * @return 입력 순서에 맞춘 {@code List<ProjectSummaryResponseDto>}
      */
     @Override
-    public List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds) {
+    public List<ProjectSummaryResponseDto> getProjectSummariesByIds(
+            Long viewerId,
+            List<Long> projectIds
+    ) {
         // 해당 id에 대한 Project 정보 조회
         // collection 데이터를 group by로 묶어서 가져오기 위함
         Map<Long, ProjectSummaryResponseDto> responseDtoMap = queryFactory
                 .from(project)
                 .innerJoin(project.user, user)
+                .leftJoin(bookmark)
+                .on(
+                        bookmark.user.id.eq(viewerId)
+                                .and(bookmark.recruitment.id.eq(project.id))
+                )
                 .where(project.id.in(projectIds))
                 .transform(
                         groupBy(project.id).as(Projections.constructor(
@@ -111,7 +124,9 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                                 project.purpose,
                                 project.meetingType,
                                 set(project.positions.any().position),
-                                set(project.skills)
+                                set(project.skills),
+                                bookmark.id.isNotNull(),
+                                bookmark.id
                         ))
                 );
 
