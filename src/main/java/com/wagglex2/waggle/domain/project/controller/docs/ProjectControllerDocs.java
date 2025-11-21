@@ -182,7 +182,7 @@ public interface ProjectControllerDocs {
                                                         "code": "SUCCESS",
                                                         "message": "프로젝트 공고를 성공적으로 조회하였습니다.",
                                                         "data": {
-                                                            "id": 142,
+                                                            "id": 141,
                                                             "authorId": 5,
                                                             "authorNickname": "새우깡",
                                                             "category": {
@@ -250,7 +250,8 @@ public interface ProjectControllerDocs {
                                                             "period": {
                                                                 "startDate": "2025-12-25",
                                                                 "endDate": "2026-03-20"
-                                                            }
+                                                            },
+                                                            "bookmarked": false
                                                         }
                                                     }
                                                     """
@@ -435,7 +436,8 @@ public interface ProjectControllerDocs {
                                                                     "purpose": {
                                                                         "desc": "공모전",
                                                                         "name": "CONTEST"
-                                                                    }
+                                                                    },
+                                                                    "bookmarked": false
                                                                 },
                                                                 {
                                                                     "id": 23,
@@ -487,7 +489,8 @@ public interface ProjectControllerDocs {
                                                                     "purpose": {
                                                                         "desc": "공모전",
                                                                         "name": "CONTEST"
-                                                                    }
+                                                                    },
+                                                                    "bookmarked": false
                                                                 },
                                                                 {
                                                                     "id": 19,
@@ -535,7 +538,9 @@ public interface ProjectControllerDocs {
                                                                     "purpose": {
                                                                         "desc": "공모전",
                                                                         "name": "CONTEST"
-                                                                    }
+                                                                    },
+                                                                    "bookmarkId": 19,
+                                                                    "bookmarked": true
                                                                 }
                                                             ],
                                                             "page": {
