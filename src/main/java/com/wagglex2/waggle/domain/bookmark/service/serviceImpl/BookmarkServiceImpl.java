@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -53,6 +54,11 @@ public class BookmarkServiceImpl implements BookmarkService {
         Bookmark newBookmark = new Bookmark(user, recruitment);
 
         return bookmarkRepository.save(newBookmark).getId();
+    }
+
+    @Override
+    public Optional<Long> findIdByUserIdAndRecruitmentId(Long userId, Long recruitmentId) {
+        return bookmarkRepository.findIdByUserIdAndRecruitmentId(userId, recruitmentId);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
