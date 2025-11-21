@@ -25,9 +25,10 @@ public class ProjectSummaryResponseDto extends BaseRecruitmentSummaryResponseDto
             University university, RecruitmentCategory category, String title,
             LocalDateTime deadline, RecruitmentStatus status,
             ProjectPurpose projectPurpose, MeetingType meetingType,
-            Set<PositionType> positions, Set<Skill> skills
+            Set<PositionType> positions, Set<Skill> skills,
+            boolean isBookmarked, Long bookmarkId
     ) {
-        super(id, authorId, authorNickname, university, category, title, deadline, status);
+        super(id, authorId, authorNickname, university, category, title, deadline, status, isBookmarked, bookmarkId);
         this.purpose = projectPurpose;
         this.meetingType = meetingType;
         this.positions = Set.copyOf(positions);
