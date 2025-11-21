@@ -53,6 +53,7 @@ public class StudyServiceImpl implements StudyService {
     public void updateStudy(
             @P("userId") Long userId, Long studyId, StudyUpdateRequestDto updateDto
     ) {
+        updateDto.validate();
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
 
@@ -67,4 +68,23 @@ public class StudyServiceImpl implements StudyService {
         study.update(updateDto);
     }
 
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void deleteStudy(@P("userId") Long userId, Long studyId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
+
+        if (study.getStatus() == RecruitmentStatus.CANCELED) {
+            throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
+        }
+        
+        // 권한 검증
+        if (!userId.equals(study.getUser().getId())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        // 논리적 삭제
+        study.cancel();
+    }
 }
