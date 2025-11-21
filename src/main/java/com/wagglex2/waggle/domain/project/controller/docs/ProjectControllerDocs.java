@@ -174,7 +174,7 @@ public interface ProjectControllerDocs {
                     description = "**프로젝트 공고 상세 조회 성공**",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = ProjectDetailResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -376,7 +376,9 @@ public interface ProjectControllerDocs {
                     description = "**프로젝트 공고 목록 조회 성공**",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ProjectSummaryResponseDto.class)
+                            ),
                             examples = {
                                     @ExampleObject(
                                             name = "/projects?page=4&size=3&purpose=contest",
