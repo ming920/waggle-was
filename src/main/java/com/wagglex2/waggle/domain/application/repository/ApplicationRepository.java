@@ -58,7 +58,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
         SELECT a
         FROM Application a
         JOIN FETCH a.recruitment r
-        JOIN FETCH r.user
+        JOIN FETCH a.applicant
         LEFT JOIN FETCH a.skills
         WHERE r.id in :recruitmentIds
         AND a.status = com.wagglex2.waggle.domain.application.type.ApplicationStatus.SUBMITTED
