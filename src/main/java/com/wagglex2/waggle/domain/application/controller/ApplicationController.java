@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.application.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.application.controller.docs.ApplicationControllerDocs;
 import com.wagglex2.waggle.domain.application.dto.request.ApplicationCommonRequestDto;
 import com.wagglex2.waggle.domain.application.dto.response.ApplicationCommonResponseDto;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/applications")
 @RequiredArgsConstructor
-public class ApplicationController {
+public class ApplicationController implements ApplicationControllerDocs {
 
     private final ApplicationService applicationService;
 
@@ -40,7 +41,7 @@ public class ApplicationController {
         );
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(APIResponse.ok("지원서가 성공적으로 제출되었습니다.", applicationId));
+                .body(APIResponse.ok("지원서를 성공적으로 제출하였습니다.", applicationId));
     }
 
     @GetMapping("/me")
@@ -99,7 +100,7 @@ public class ApplicationController {
         applicationService.cancelApplication(userDetails.getUserId(), applicationId);
 
         return ResponseEntity.ok(
-                APIResponse.ok("지원서가 성공적으로 삭제되었습니다.")
+                APIResponse.ok("지원을 성공적으로 취소/삭제하였습니다.")
         );
     }
 }
