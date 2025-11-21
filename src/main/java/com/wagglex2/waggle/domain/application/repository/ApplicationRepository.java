@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface ApplicationRepository extends JpaRepository<Application, Long> {
 
-    boolean existsByApplicantIdAndRecruitmentId(Long applicantId, Long recruitmentId);
+    boolean existsByApplicantIdAndRecruitmentIdAndIsDeletedFalse(Long applicantId, Long recruitmentId);
 
     /**
      * 조회 시 Application과 연관된 Recruitment 및 Recruitment의 User를 즉시 로딩
