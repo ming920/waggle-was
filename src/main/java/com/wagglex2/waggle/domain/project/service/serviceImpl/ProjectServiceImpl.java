@@ -2,6 +2,11 @@ package com.wagglex2.waggle.domain.project.service.serviceImpl;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
+import com.wagglex2.waggle.common.validator.PageableValidator;
+import com.wagglex2.waggle.domain.application.dto.response.AppContentProjectResponseDto;
+import com.wagglex2.waggle.domain.application.entity.Application;
+import com.wagglex2.waggle.domain.application.service.ApplicationService;
+import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectCreationRequestDto;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectSearchCondition;
@@ -19,6 +24,7 @@ import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -26,14 +32,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
+
+    private static final Set<String> PROJECT_SORT_FIELDS = Set.of("createdAt");
     private final ProjectRepository projectRepository;
     private final UserService userService;
     private final TeamService teamService;
+    private final ApplicationService applicationService;
+    private final PageableValidator pageableValidator;
 
     @Transactional
     @Override
@@ -102,6 +115,59 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds) {
         return projectRepository.getProjectSummariesByIds(projectIds);
+    }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Override
+    public Page<RecruitmentWithAppsResponseDto> getAllByUserId(
+            @P("userId") Long userId,
+            Pageable pageable
+    ) {
+        pageableValidator.validate(pageable);
+        pageableValidator.validateSort(pageable, PROJECT_SORT_FIELDS);
+
+        Page<Project> projects = projectRepository.findAllByUserId(userId, pageable);
+
+        // 공고 ID 목록
+        List<Long> projectIds = projects.stream()
+                .map(Project::getId)
+                .toList();
+
+        // 공고 ID로 application 전체 조회
+        List<Application> applications = applicationService.findAllByRecruitmentIds(projectIds);
+
+        // 공고ID -> applications 매핑 Map 생성
+        Map<Long, List<Application>> appsByRecruitmentId = applications.stream()
+                .collect(Collectors.groupingBy(
+                        app -> app.getRecruitment().getId())
+                );
+
+        // DTO 조합
+        List<RecruitmentWithAppsResponseDto> content = projects.stream()
+                .map(p -> new RecruitmentWithAppsResponseDto(
+                        p.getId(),
+                        p.getTitle(),
+                        p.getDeadline(),
+                        appsByRecruitmentId.getOrDefault(
+                                        p.getId(),
+                                        List.of()
+                                ).stream()
+                                .map(a -> new AppContentProjectResponseDto(
+                                        a.getId(),
+                                        a.getApplicant().getId(),
+                                        a.getApplicant().getNickname(),
+                                        a.getMeetingType(),
+                                        a.getGrade(),
+                                        a.getContent(),
+                                        a.getCreatedAt(),
+                                        a.getPosition(),
+                                        a.getSkills()
+                                ))
+                                .toList()
+                ))
+                .toList();
+
+        return new PageImpl<>(content, pageable, projects.getTotalElements());
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
