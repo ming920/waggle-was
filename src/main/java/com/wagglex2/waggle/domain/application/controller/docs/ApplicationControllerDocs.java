@@ -4,10 +4,13 @@ import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.application.dto.request.ApplicationCommonRequestDto;
 import com.wagglex2.waggle.domain.application.dto.response.ApplicationCommonResponseDto;
+import com.wagglex2.waggle.domain.application.dto.response.ApplicationProjectResponseDto;
+import com.wagglex2.waggle.domain.application.dto.response.ApplicationSimpleResponseDto;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -334,7 +337,14 @@ public interface ApplicationControllerDocs {
                             """,
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            array = @ArraySchema(
+                                    schema = @Schema(
+                                            anyOf = {
+                                                    ApplicationProjectResponseDto.class,
+                                                    ApplicationSimpleResponseDto.class
+                                            }
+                                    )
+                            ),
                             examples = {
                                     @ExampleObject(
                                             name = "프로젝트 공고 지원 내역",
