@@ -8,6 +8,7 @@ import com.wagglex2.waggle.domain.application.dto.response.ApplicationCommonResp
 import com.wagglex2.waggle.domain.application.dto.response.ApplicationProjectResponseDto;
 import com.wagglex2.waggle.domain.application.dto.response.ApplicationSimpleResponseDto;
 import com.wagglex2.waggle.domain.application.entity.Application;
+import com.wagglex2.waggle.domain.application.event.ApplicationProcessedEvent;
 import com.wagglex2.waggle.domain.application.repository.ApplicationRepository;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.application.type.ApplicationStatus;
@@ -18,6 +19,7 @@ import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
 import com.wagglex2.waggle.domain.common.type.PositionParticipantInfo;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
+import com.wagglex2.waggle.domain.notification.type.NotificationType;
 import com.wagglex2.waggle.domain.project.entity.Project;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.team.entity.Team;
@@ -28,6 +30,7 @@ import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -48,6 +51,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final UserService userService;
     private final RecruitmentService recruitmentService;
     private final TeamService teamService;
+    private final ApplicationEventPublisher publisher;
 
     @PreAuthorize("#userId == authentication.principal.userId")
     @Transactional
@@ -85,11 +89,21 @@ public class ApplicationServiceImpl implements ApplicationService {
             throw new BusinessException(ErrorCode.ALREADY_APPLIED_RECRUITMENT);
         }
 
-        return switch (recruitment.getCategory()) {
+        Long applicationId = switch (recruitment.getCategory()) {
             case PROJECT -> applyProject(applicant, (Project) recruitment, (ApplicationProjectRequestDto) requestDto);
             case ASSIGNMENT -> applyAssignment(applicant, (Assignment) recruitment, requestDto);
             case STUDY -> applyStudy(applicant, (Study) recruitment, requestDto);
         };
+
+        // 이벤트 발행
+        publisher.publishEvent(new ApplicationProcessedEvent(
+                applicant.getId(),
+                recruitment.getUser().getId(),
+                applicationId,
+                NotificationType.APPLICATION_SUBMITTED
+        ));
+
+        return applicationId;
     }
 
     @Override
@@ -192,6 +206,14 @@ public class ApplicationServiceImpl implements ApplicationService {
         Team team = teamService.findByRecruitmentId(recruitment.getId());
         TeamMember newMember = new TeamMember(team, application.getApplicant(), TeamRole.MEMBER);
         team.addMember(newMember);
+
+        // 이벤트 발행
+        publisher.publishEvent(new ApplicationProcessedEvent(
+                deciderId,
+                application.getApplicant().getId(),
+                applicationId,
+                NotificationType.APPLICATION_ACCEPTED
+        ));
     }
 
     @PreAuthorize("#deciderId == authentication.principal.userId")
@@ -216,6 +238,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // 처리 로직
         application.reject();
+
+        // 이벤트 발행
+        publisher.publishEvent(new ApplicationProcessedEvent(
+                deciderId,
+                application.getApplicant().getId(),
+                applicationId,
+                NotificationType.APPLICATION_REJECTED
+        ));
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
