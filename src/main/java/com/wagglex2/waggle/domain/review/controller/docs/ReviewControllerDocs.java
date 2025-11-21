@@ -30,7 +30,25 @@ public interface ReviewControllerDocs {
 
     @Operation(
             summary = "리뷰 작성",
-            security = @SecurityRequirement(name = "Bearer Token")
+            security = @SecurityRequirement(name = "Bearer Token"),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "리뷰 작성 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ReviewCreationRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "userTargetId" : 5,
+                                                        "content" : "리뷰 test"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -408,6 +426,23 @@ public interface ReviewControllerDocs {
                             example = "1"
                     )
             },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "리뷰 수정 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ReviewUpdateRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "content": "후기 내용 수정 test입니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
             security = @SecurityRequirement(name = "Bearer Token")
     )
     @ApiResponses({
