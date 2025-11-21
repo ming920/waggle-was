@@ -14,6 +14,7 @@ import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentSummaryRespo
 import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
+import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.team.entity.Team;
@@ -36,6 +37,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -44,6 +47,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final AssignmentRepository assignmentRepository;
     private final UserService userService;
     private final TeamService teamService;
+    private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
 
@@ -87,7 +91,14 @@ public class AssignmentServiceImpl implements AssignmentService {
             throw new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND);
         }
 
-        return AssignmentDetailResponseDto.fromEntity(assignment);
+        Optional<Long> bookmarkIdOptional =
+                bookmarkService.findIdByUserIdAndRecruitmentId(viewerId, assignmentId);
+
+        return AssignmentDetailResponseDto.fromEntity(
+                assignment,
+                bookmarkIdOptional.isPresent(),
+                bookmarkIdOptional.orElse(null)
+        );
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto
 import com.wagglex2.waggle.domain.project.service.ProjectService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -26,13 +26,24 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
     private final UserService userService;
     private final RecruitmentService recruitmentService;
     private final ProjectService projectService;
+
+    public BookmarkServiceImpl(
+            BookmarkRepository bookmarkRepository,
+            UserService userService,
+            RecruitmentService recruitmentService,
+            @Lazy ProjectService projectService
+    ) {
+        this.bookmarkRepository = bookmarkRepository;
+        this.userService = userService;
+        this.recruitmentService = recruitmentService;
+        this.projectService = projectService;
+    }
 
     @PreAuthorize("#userId == authentication.principal.userId")
     @Transactional

@@ -7,6 +7,7 @@ import com.wagglex2.waggle.domain.application.dto.response.AppContentSimpleRespo
 import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
+import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
@@ -30,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -37,6 +40,7 @@ public class StudyServiceImpl implements StudyService {
     private static final Set<String> STUDY_SORT_FIELDS = Set.of("createdAt");
     private final StudyRepository studyRepository;
     private final UserService userService;
+    private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
 
@@ -73,7 +77,14 @@ public class StudyServiceImpl implements StudyService {
             throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
         }
 
-        return StudyResponseDto.fromEntity(study);
+        Optional<Long> bookmarkIdOptional =
+                bookmarkService.findIdByUserIdAndRecruitmentId(viewerId, studyId);
+
+        return StudyResponseDto.fromEntity(
+                study,
+                bookmarkIdOptional.isPresent(),
+                bookmarkIdOptional.orElse(null)
+        );
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

@@ -7,6 +7,7 @@ import com.wagglex2.waggle.domain.application.dto.response.AppContentProjectResp
 import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
+import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectCreationRequestDto;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectSearchCondition;
@@ -35,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -45,6 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectRepository projectRepository;
     private final UserService userService;
     private final TeamService teamService;
+    private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
 
@@ -89,7 +92,14 @@ public class ProjectServiceImpl implements ProjectService {
             throw new BusinessException(ErrorCode.PROJECT_NOT_FOUND);
         }
 
-        return ProjectDetailResponseDto.fromEntity(project);
+        Optional<Long> bookmarkIdOptional =
+                bookmarkService.findIdByUserIdAndRecruitmentId(viewerId, projectId);
+
+        return ProjectDetailResponseDto.fromEntity(
+                project,
+                bookmarkIdOptional.isPresent(),
+                bookmarkIdOptional.orElse(null)
+        );
     }
 
     @Override
