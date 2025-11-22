@@ -31,7 +31,7 @@ public interface NotificationControllerDocs {
 
     @Operation(
             summary = "알림 조회",
-            description = "나에게 온 전체/카테고리별 알림을 최신순으로 조회한다.",
+            description = "사용자별로 수신한 전체/카테고리별 알림을 최신순으로 조회한다.",
             security = @SecurityRequirement(name = "Bearer Token"),
             parameters = {
                     @Parameter(

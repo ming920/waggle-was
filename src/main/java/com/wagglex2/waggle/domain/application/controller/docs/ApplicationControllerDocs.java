@@ -37,7 +37,7 @@ public interface ApplicationControllerDocs {
             parameters = {
                     @Parameter(
                             name = "recruitmentId",
-                            description = "지원하려는 공고 ID (카테고리 구분 없음)",
+                            description = "지원하려는 공고 ID",
                             required = true,
                             in = ParameterIn.PATH,
                             example = "221"
@@ -93,7 +93,7 @@ public interface ApplicationControllerDocs {
             @ApiResponse(
                     responseCode = "200",
                     description = """
-                                  공고 지원 성공
+                                  공고 지원 성공<br>
                                   data: 지원 ID
                                   """,
                     content = @Content(

@@ -84,7 +84,10 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "프로젝트 공고 등록 성공",
+                    description = """
+                            프로젝트 공고 등록 성공<br>
+                            data: 프로젝트 공고 ID
+                            """,
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -760,6 +763,234 @@ public interface ProjectControllerDocs {
                                             name = "/projects?positions=front-end&skills=react,vue_js",
                                             description = "`/projects?positions=front-end&skills=react,vue_js`",
                                             value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "프로젝트 공고 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 148,
+                                                                    "authorId": 35,
+                                                                    "authorNickname": "우주멋쟁이123",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "웹 애플리케이션 개발 프로젝트",
+                                                                    "deadline": "2025-12-31",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온/오프라인",
+                                                                        "name": "HYBRID"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "풀스택",
+                                                                            "name": "FULL_STACK"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Java",
+                                                                            "name": "JAVA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "TypeScript",
+                                                                            "name": "TYPESCRIPT"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "토이 프로젝트",
+                                                                        "name": "TOY_PROJECT"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                },
+                                                                {
+                                                                    "id": 23,
+                                                                    "authorId": 20,
+                                                                    "authorNickname": "우주멋쟁이",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "졸업작품 팀원 모집합니다",
+                                                                    "deadline": "2025-10-25",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온라인",
+                                                                        "name": "ONLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Java",
+                                                                            "name": "JAVA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 5,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 3,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "토스 주관 공모전 팀원 구합니다. (추가 모집)",
+                                                                    "deadline": "2025-12-30",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Vue.js",
+                                                                            "name": "VUE_JS"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Django",
+                                                                            "name": "DJANGO"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 3,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 1,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "카카오 해커톤 팀원 구합니다.",
+                                                                    "deadline": "2025-10-11",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온/오프라인",
+                                                                        "name": "HYBRID"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "해커톤",
+                                                                        "name": "HACKATHON"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 9,
+                                                                "number": 0,
+                                                                "totalElements": 4,
+                                                                "totalPages": 1
+                                                            }
+                                                        }
+                                                    }
                                                     """
                                     )
                             }
@@ -773,7 +1004,7 @@ public interface ProjectControllerDocs {
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "/projects?page=5&size=3&purpose=banana",
+                                            name = "enum 조건이 잘못된 값인 경우",
                                             description = "`/projects?page=5&size=3&purpose=banana`",
                                             value = """
                                                     {
