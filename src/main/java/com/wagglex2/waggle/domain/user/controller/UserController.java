@@ -4,6 +4,7 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.review.service.ReviewService;
 import com.wagglex2.waggle.domain.user.controller.docs.UserControllerDocs;
@@ -96,6 +97,18 @@ public class UserController implements UserControllerDocs {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(APIResponse.ok("사용 가능한 닉네임입니다.", false));
         }
+    }
+
+    @PatchMapping("/basic-info")
+    public ResponseEntity<APIResponse<Void>> updateBasicInfo(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody @Valid UserBasicInfoRequestDto dto
+            ) {
+
+        userService.updateBasicInfo(userDetails.getUserId(), dto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(APIResponse.ok("기본 정보 입력에 성공했습니다."));
     }
 
     /**

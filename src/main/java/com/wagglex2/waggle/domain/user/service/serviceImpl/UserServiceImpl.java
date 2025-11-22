@@ -4,6 +4,7 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.service.S3Service;
 import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.PasswordRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.UserUpdateRequestDto;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
@@ -111,6 +112,22 @@ public class UserServiceImpl implements UserService {
 
         User user = dto.toEntity(passwordEncoder);
         return userRepository.save(user).getId();
+    }
+
+    @Override
+    @Transactional
+    public void updateBasicInfo(Long id, UserBasicInfoRequestDto dto) {
+
+        User user = findById(id);
+
+        user.updateGrade(dto.grade());
+        user.updatePosition(dto.position());
+        user.updateSkills(dto.skills());
+        user.updateShortIntro(dto.shortIntro());
+
+        if (user.getStatus() == UserStatus.INCOMPLETED) {
+            user.updateStatus(UserStatus.ACTIVE);
+        }
     }
 
     /**
