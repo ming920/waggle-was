@@ -31,12 +31,15 @@ public interface NotificationControllerDocs {
 
     @Operation(
             summary = "알림 조회",
-            description = "나에게 온 알림을 최신순으로 조회한다.",
+            description = "나에게 온 전체/카테고리별 알림을 최신순으로 조회한다.",
             security = @SecurityRequirement(name = "Bearer Token"),
             parameters = {
                     @Parameter(
                             name = "category",
-                            description = "조회하려는 알림의 공고 카테고리",
+                            description = """
+                                    조회하려는 알림의 공고 카테고리<br>
+                                    미지정 시, 전체 알림 조회
+                                    """,
                             in = ParameterIn.QUERY
                     ),
                     @Parameter(
@@ -69,6 +72,7 @@ public interface NotificationControllerDocs {
                             examples = {
                                     @ExampleObject(
                                             name = "전체 알림",
+                                            description = "`/notifications`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -136,6 +140,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "프로젝트 알림",
+                                            description = "`/notifications?category=project`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -167,6 +172,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "과제 알림",
+                                            description = "`/notifications?category=assignment`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -198,6 +204,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "스터디 알림",
+                                            description = "`/notifications?category=study`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -241,6 +248,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "알림 없음",
+                                            description = "`/notifications`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -267,6 +275,8 @@ public interface NotificationControllerDocs {
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
                             examples = @ExampleObject(
+                                    name = "카테고리 값이 잘못된 경우",
+                                    description = "`/notifications?category=apple`",
                                     value = """
                                             {
                                                 "code": "INVALID_ENUM_VALUE",
@@ -460,6 +470,7 @@ public interface NotificationControllerDocs {
                             examples = {
                                     @ExampleObject(
                                             name = "전체 알림",
+                                            description = "`/notifications`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -469,6 +480,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "프로젝트 알림",
+                                            description = "`/notifications?category=project`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -478,6 +490,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "과제 알림",
+                                            description = "`/notifications?category=assignment`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -487,6 +500,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "스터디 알림",
+                                            description = "`/notifications?category=study`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -495,6 +509,25 @@ public interface NotificationControllerDocs {
                                                     """
                                     )
                             }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 값이 유효하지 않은 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = @ExampleObject(
+                                    name = "카테고리 값이 잘못된 경우",
+                                    description = "`/notifications?category=apple`",
+                                    value = """
+                                            {
+                                                "code": "INVALID_ENUM_VALUE",
+                                                "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
+                                                "data": "쿼리 파라미터 'category'의 값 'apple'이(가) 유효하지 않습니다."
+                                            }
+                                            """
+                            )
                     )
             ),
             @ApiResponse(
