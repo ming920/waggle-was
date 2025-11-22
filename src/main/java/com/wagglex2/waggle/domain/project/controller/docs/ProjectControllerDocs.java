@@ -147,6 +147,42 @@ public interface ProjectControllerDocs {
                                     )
                             }
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
             )
     })
     ResponseEntity<APIResponse<Long>> createProject(
@@ -260,6 +296,24 @@ public interface ProjectControllerDocs {
                     )
             ),
             @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
                     responseCode = "403",
                     description = "타 대학 공고인 경우",
                     content = @Content(
@@ -288,6 +342,24 @@ public interface ProjectControllerDocs {
                                                     {
                                                         "code": "PROJECT_NOT_FOUND",
                                                         "message": "프로젝트 공고를 찾을 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
@@ -713,6 +785,42 @@ public interface ProjectControllerDocs {
                                     )
                             }
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
             )
     })
     ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getProjectSummaries(
@@ -737,7 +845,7 @@ public interface ProjectControllerDocs {
                     @Parameter(
                             name = "page",
                             description = """
-                                    **조회하려는 내 프로젝트 공고 목록 페이지**<br>
+                                    조회하려는 내 프로젝트 공고 목록 페이지<br>
                                     기본값: 0 (0부터 시작)
                                     """,
                             in = ParameterIn.QUERY
@@ -745,7 +853,7 @@ public interface ProjectControllerDocs {
                     @Parameter(
                             name = "size",
                             description = """
-                                    **조회하려는 내 프로젝트 공고 개수**<br>
+                                    조회하려는 내 프로젝트 공고 개수<br>
                                     기본값: 5
                                     """,
                             in = ParameterIn.QUERY
@@ -755,7 +863,7 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "**내 프로젝트 공고 목록 조회 성공**",
+                    description = "내 프로젝트 공고 목록 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -862,7 +970,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "**인증 필요**",
+                    description = "인증 필요",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -880,7 +988,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "500",
-                    description = "**서버 오류 발생**",
+                    description = "서버 오류 발생",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -1262,6 +1370,24 @@ public interface ProjectControllerDocs {
                     )
             ),
             @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
                     responseCode = "403",
                     description = "다른 사용자의 프로젝트 공고를 수정하려는 경우",
                     content = @Content(
@@ -1297,6 +1423,24 @@ public interface ProjectControllerDocs {
                             }
                     )
             ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     })
     ResponseEntity<APIResponse<Void>> updateProject(
             @PathVariable Long projectId,
@@ -1331,6 +1475,24 @@ public interface ProjectControllerDocs {
                                                     {
                                                         "code": "SUCCESS",
                                                         "message": "프로젝트 공고를 성공적으로 삭제하였습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
                                                     }
                                                     """
                                     )
@@ -1373,6 +1535,24 @@ public interface ProjectControllerDocs {
                             }
                     )
             ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     })
     ResponseEntity<APIResponse<Void>> deleteProject(
             @PathVariable Long projectId,
