@@ -41,7 +41,7 @@ public class UserController implements UserControllerDocs {
      * 아이디 중복 여부를 검사한다.
      * 검사할 사용자 로그인 ID (영문, 숫자, 언더스코어 4~20자)
      *
-     * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
+     * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/username/check")
     public ResponseEntity<APIResponse<Boolean>> existsByUsername(
@@ -61,7 +61,7 @@ public class UserController implements UserControllerDocs {
     /**
      * 이메일 중복 여부를 검사한다.
      *
-     * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
+     * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/email/check")
     public ResponseEntity<APIResponse<Boolean>> existsByEmail(
@@ -82,7 +82,7 @@ public class UserController implements UserControllerDocs {
     /**
      * 닉네임 중복 여부를 검사한다.
      *
-     * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
+     * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/nickname/check")
     public ResponseEntity<APIResponse<Boolean>> existsByNickname(
@@ -111,7 +111,6 @@ public class UserController implements UserControllerDocs {
      *
      * @param dto         비밀번호 변경 요청 DTO (기존 비밀번호, 새 비밀번호, 확인 비밀번호 포함)
      * @param userDetails 현재 인증된 사용자 정보
-     * @return ApiResponse<Void> — 성공 메시지를 담은 OK(200) 응답
      */
     @PostMapping("/me/password-change")
     @PreAuthorize("isAuthenticated()")
@@ -252,6 +251,42 @@ public class UserController implements UserControllerDocs {
     }
 
     /**
+     * 현재 로그인한 사용자의 프로필 이미지를 업로드한다.
+     *
+     * @param userDetails 현재 인증된 사용자 정보
+     * @param file        업로드할 이미지 파일
+     * @return 업로드된 사용자 정보를 담은 응답
+     */
+    @PostMapping("/me/profile-image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<UserResponseDto>> uploadProfileImage(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam("file") MultipartFile file
+    ) {
+        UserResponseDto data = userService.uploadProfileImage(userDetails.getUserId(), file);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(APIResponse.ok("프로필 이미지 업로드에 성공했습니다.", data));
+    }
+
+    /**
+     * 현재 로그인한 사용자의 프로필 이미지를 삭제하고 기본 이미지로 변경한다.
+     *
+     * @param userDetails 현재 인증된 사용자 정보
+     * @return 기본 이미지로 변경된 사용자 정보를 담은 응답
+     */
+    @DeleteMapping("/me/profile-image")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<UserResponseDto>> deleteProfileImage(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        UserResponseDto data = userService.deleteProfileImage(userDetails.getUserId());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(APIResponse.ok("프로필 이미지가 기본 이미지로 변경되었습니다.", data));
+    }
+
+    /**
      * 주어진 토큰을 응답 쿠키에 설정한다.
      *
      * <p>설정 옵션:</p>
@@ -283,41 +318,5 @@ public class UserController implements UserControllerDocs {
                 .build();
 
         response.addHeader("Set-Cookie", cookie.toString());
-    }
-
-    /**
-     * 현재 로그인한 사용자의 프로필 이미지를 업로드한다.
-     *
-     * @param userDetails 현재 인증된 사용자 정보
-     * @param file        업로드할 이미지 파일
-     * @return 업로드된 사용자 정보를 담은 응답
-     */
-    @PostMapping("/me/profile-image")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserResponseDto>> uploadProfileImage(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam("file") MultipartFile file
-    ) {
-        UserResponseDto data = userService.uploadProfileImage(userDetails.getUserId(), file);
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("프로필 이미지 업로드에 성공했습니다.", data));
-    }
-
-    /**
-     * 현재 로그인한 사용자의 프로필 이미지를 삭제하고 기본 이미지로 변경한다.
-     *
-     * @param userDetails 현재 인증된 사용자 정보
-     * @return 기본 이미지로 변경된 사용자 정보를 담은 응답
-     */
-    @DeleteMapping("/me/profile-image")
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserResponseDto>> deleteProfileImage(
-            @AuthenticationPrincipal CustomUserDetails userDetails
-    ) {
-        UserResponseDto data = userService.deleteProfileImage(userDetails.getUserId());
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("프로필 이미지가 기본 이미지로 변경되었습니다.", data));
     }
 }
