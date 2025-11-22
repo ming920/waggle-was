@@ -27,7 +27,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "공고 지원", description = "공고 지원 관련 API")
+@Tag(name = "Application(공고 지원)", description = "공고 지원 관련 API")
 public interface ApplicationControllerDocs {
 
     @Operation(
