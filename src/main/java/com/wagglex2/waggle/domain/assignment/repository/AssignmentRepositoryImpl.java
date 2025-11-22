@@ -3,10 +3,12 @@ package com.wagglex2.waggle.domain.assignment.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentSearchCondition;
 import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentSummaryResponseDto;
+import com.wagglex2.waggle.domain.common.querydsl.RecruitmentSearchMatcher;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -41,11 +43,17 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      *     </ol>
      */
     @Override
-    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(AssignmentSearchCondition condition, Pageable pageable) {
+    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(Long viewerId, AssignmentSearchCondition condition, Pageable pageable) {
         BooleanBuilder where = new BooleanBuilder()
                 .and(eqStatus(condition.status()))
                 .and(containsAnyKeyword(condition.keywords()))
-                .and(containsAnyGrade(condition.grades()));
+                .and(containsAnyGrade(condition.grades()))
+                .and(assignment.user.university.eq(  // 같은 대학의 공고만을 조회
+                        JPAExpressions
+                                .select(user.university)
+                                .from(user)
+                                .where(user.id.eq(viewerId))
+                ));
 
         // 조건 에 맞는 모든 Assignment 공고 id 조회
         List<Long> assignmentIds = queryFactory
@@ -99,11 +107,6 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
                                 assignment.department,
                                 assignment.lecture,
                                 assignment.lectureCode,
-                                Projections.constructor(
-                                        com.wagglex2.waggle.domain.common.dto.response.ParticipantInfoResponseDto.class,
-                                        assignment.participants.currParticipants,
-                                        assignment.participants.maxParticipants
-                                ),
                                 set(assignment.grades.any())
                         ))
                 );
@@ -119,22 +122,19 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      */
     private BooleanExpression eqStatus(RecruitmentStatus status) {
         if (status == null || status == RecruitmentStatus.CANCELED)
-            return null;
+            return assignment.status.ne(RecruitmentStatus.CANCELED);
         return assignment.status.eq(status);
     }
 
     /**
      * 제목(title) 또는 내용(content)에 키워드 중 하나라도 포함되는 조건 생성
      */
-    private BooleanBuilder containsAnyKeyword(Set<String> keywords) {
-        if (keywords == null || keywords.isEmpty())
-            return null;
-        BooleanBuilder builder = new BooleanBuilder();
-        keywords.forEach(keyword ->
-                builder.or(assignment.title.containsIgnoreCase(keyword))
-                        .or(assignment.content.containsIgnoreCase(keyword))
+    private BooleanExpression containsAnyKeyword(Set<String> keywords) {
+        return RecruitmentSearchMatcher.match(
+                keywords,
+                assignment.title,
+                assignment.content
         );
-        return builder;
     }
 
     /**

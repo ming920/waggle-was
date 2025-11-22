@@ -575,7 +575,8 @@ public interface ProjectControllerDocs {
             @RequestParam(value = "positions", required = false) List<PositionType> positions,
             @RequestParam(value = "skills", required = false) List<Skill> skills,
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
-            @PageableDefault(size = 9) Pageable pageable
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     );
 
     @Operation(

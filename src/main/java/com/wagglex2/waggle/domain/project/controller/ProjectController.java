@@ -69,7 +69,8 @@ public class ProjectController implements ProjectControllerDocs {
             @RequestParam(value = "positions", required = false) List<PositionType> positions,
             @RequestParam(value = "skills", required = false) List<Skill> skills,
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
-            @PageableDefault(size = 9) Pageable pageable
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Set<String> nouns = (keywords != null) ? komoranUtil.getNouns(keywords) : Set.of();
         Set<PositionType> positionSet = (positions != null) ? Set.copyOf(positions) : Set.of();
@@ -84,7 +85,7 @@ public class ProjectController implements ProjectControllerDocs {
         );
 
         Page<ProjectSummaryResponseDto> projectSummaries =
-                projectService.getProjectSummaries(condition, pageable);
+                projectService.getProjectSummaries(userDetails.getUserId(), condition, pageable);
 
         return ResponseEntity.ok(
                 APIResponse.ok("프로젝트 공고 목록을 성공적으로 조회하였습니다.", projectSummaries)

@@ -81,10 +81,11 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Page<ProjectSummaryResponseDto> getProjectSummaries(
+            Long viewerId,
             ProjectSearchCondition condition,
             Pageable pageable
     ) {
-        return projectRepository.getProjectSummaries(condition, pageable);
+        return projectRepository.getProjectSummaries(viewerId, condition, pageable);
     }
 
     /**

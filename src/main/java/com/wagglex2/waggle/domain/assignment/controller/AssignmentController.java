@@ -62,7 +62,8 @@ public class AssignmentController {
             @RequestParam(value = "q", required = false) String keywords,
             @RequestParam(value = "grades", required = false) Set<Integer> grades,
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
-            @PageableDefault(size = 9) Pageable pageable
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Set<String> nouns = (keywords != null) ? KomoranUtil.getNouns(keywords) : Set.of();
         Set<Integer> gradeSet = (grades != null) ? Set.copyOf(grades) : Set.of();
@@ -74,7 +75,7 @@ public class AssignmentController {
         );
 
         Page<AssignmentSummaryResponseDto> assignmentSummaries =
-                assignmentService.getAssignmentSummaries(condition, pageable);
+                assignmentService.getAssignmentSummaries(userDetails.getUserId(), condition, pageable);
 
         return ResponseEntity.ok(
                 APIResponse.ok("과제 공고 목록을 성공적으로 조회하였습니다.", assignmentSummaries)

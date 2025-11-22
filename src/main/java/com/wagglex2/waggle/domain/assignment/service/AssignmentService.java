@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 public interface AssignmentService {
     Long createAssignment(AssignmentCreationRequestDto assignmentCreationRequestDto, Long userId);
     AssignmentDetailResponseDto getAssignment(Long viewerId, Long assignmentId);
-    Page<AssignmentSummaryResponseDto> getAssignmentSummaries(AssignmentSearchCondition condition, Pageable pageable);
+    Page<AssignmentSummaryResponseDto> getAssignmentSummaries(Long viewerId, AssignmentSearchCondition condition, Pageable pageable);
     void updateAssignment(Long userId, Long assignmentId, AssignmentUpdateRequestDto updateDto);
     void deleteAssignment(Long userId, Long assignmentId);
 }
