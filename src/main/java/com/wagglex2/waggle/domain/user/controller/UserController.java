@@ -42,7 +42,7 @@ public class UserController implements UserControllerDocs {
      * 아이디 중복 여부를 검사한다.
      * 검사할 사용자 로그인 ID (영문, 숫자, 언더스코어 4~20자)
      *
-     * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
+     * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/username/check")
     public ResponseEntity<APIResponse<Boolean>> existsByUsername(
@@ -62,7 +62,7 @@ public class UserController implements UserControllerDocs {
     /**
      * 이메일 중복 여부를 검사한다.
      *
-     * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
+     * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/email/check")
     public ResponseEntity<APIResponse<Boolean>> existsByEmail(
@@ -83,7 +83,7 @@ public class UserController implements UserControllerDocs {
     /**
      * 닉네임 중복 여부를 검사한다.
      *
-     * @return ApiResponse(Boolean) — 중복이면 true, 사용 가능이면 false
+     * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
     @GetMapping("/nickname/check")
     public ResponseEntity<APIResponse<Boolean>> existsByNickname(
@@ -126,7 +126,6 @@ public class UserController implements UserControllerDocs {
      *
      * @param dto         비밀번호 변경 요청 DTO (기존 비밀번호, 새 비밀번호, 확인 비밀번호 포함)
      * @param userDetails 현재 인증된 사용자 정보
-     * @return ApiResponse<Void> — 성공 메시지를 담은 OK(200) 응답
      */
     @PostMapping("/me/password-change")
     @PreAuthorize("isAuthenticated()")
@@ -267,40 +266,6 @@ public class UserController implements UserControllerDocs {
     }
 
     /**
-     * 주어진 토큰을 응답 쿠키에 설정한다.
-     *
-     * <p>설정 옵션:</p>
-     * <ul>
-     *   <li><b>HttpOnly</b>: true (JS에서 접근 불가, XSS 방어)</li>
-     *   <li><b>Secure</b>: true (HTTPS에서만 전송)</li>
-     *   <li><b>SameSite</b>: None (기본 CSRF 방어)</li>
-     *   <li><b>Path</b>: "/" (애플리케이션 전역에서 사용 가능)</li>
-     *   <li><b>Max-Age</b>: 토큰 만료 시간(초)</li>
-     * </ul>
-     *
-     * @param response   HTTP 응답
-     * @param token      저장할 토큰 값
-     * @param cookieName 쿠키 이름
-     * @param maxAge     만료 시간(초)
-     */
-    private void addCookie(
-            HttpServletResponse response,
-            String token,
-            String cookieName,
-            long maxAge
-    ) {
-        ResponseCookie cookie = ResponseCookie.from(cookieName, token)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
-                .path("/")
-                .maxAge(maxAge)
-                .build();
-
-        response.addHeader("Set-Cookie", cookie.toString());
-    }
-
-    /**
      * 현재 로그인한 사용자의 프로필 이미지를 업로드한다.
      *
      * @param userDetails 현재 인증된 사용자 정보
@@ -334,5 +299,39 @@ public class UserController implements UserControllerDocs {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.ok("프로필 이미지가 기본 이미지로 변경되었습니다.", data));
+    }
+
+    /**
+     * 주어진 토큰을 응답 쿠키에 설정한다.
+     *
+     * <p>설정 옵션:</p>
+     * <ul>
+     *   <li><b>HttpOnly</b>: true (JS에서 접근 불가, XSS 방어)</li>
+     *   <li><b>Secure</b>: true (HTTPS에서만 전송)</li>
+     *   <li><b>SameSite</b>: None (기본 CSRF 방어)</li>
+     *   <li><b>Path</b>: "/" (애플리케이션 전역에서 사용 가능)</li>
+     *   <li><b>Max-Age</b>: 토큰 만료 시간(초)</li>
+     * </ul>
+     *
+     * @param response   HTTP 응답
+     * @param token      저장할 토큰 값
+     * @param cookieName 쿠키 이름
+     * @param maxAge     만료 시간(초)
+     */
+    private void addCookie(
+            HttpServletResponse response,
+            String token,
+            String cookieName,
+            long maxAge
+    ) {
+        ResponseCookie cookie = ResponseCookie.from(cookieName, token)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .maxAge(maxAge)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }
