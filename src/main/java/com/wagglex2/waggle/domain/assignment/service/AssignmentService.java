@@ -9,10 +9,14 @@ import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsRespons
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface AssignmentService {
     Long createAssignment(AssignmentCreationRequestDto assignmentCreationRequestDto, Long userId);
     AssignmentDetailResponseDto getAssignment(Long viewerId, Long assignmentId);
     Page<AssignmentSummaryResponseDto> getAssignmentSummaries(Long viewerId, AssignmentSearchCondition condition, Pageable pageable);
+    List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(Long viewerId, List<Long> assignmentIds);
+    Page<AssignmentSummaryResponseDto> getBookmarkedAssignmentsByUserId(Long userId, Pageable pageable);
     Page<RecruitmentWithAppsResponseDto> getAllByUserId(Long userId, Pageable pageable);
     void updateAssignment(Long userId, Long assignmentId, AssignmentUpdateRequestDto updateDto);
     void deleteAssignment(Long userId, Long assignmentId);
