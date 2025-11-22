@@ -24,6 +24,7 @@ import java.util.Set;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.set;
 import static com.wagglex2.waggle.domain.assignment.entity.QAssignment.assignment;
+import static com.wagglex2.waggle.domain.bookmark.entity.QBookmark.bookmark;
 import static com.wagglex2.waggle.domain.user.entity.QUser.user;
 
 /**
@@ -43,7 +44,11 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      *     </ol>
      */
     @Override
-    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(Long viewerId, AssignmentSearchCondition condition, Pageable pageable) {
+    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(
+            Long viewerId,
+            AssignmentSearchCondition condition,
+            Pageable pageable
+    ) {
         BooleanBuilder where = new BooleanBuilder()
                 .and(eqStatus(condition.status()))
                 .and(containsAnyKeyword(condition.keywords()))
@@ -66,7 +71,7 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
                 .fetch();
 
         // 해당 id의 Assignment 공고 조회
-        List<AssignmentSummaryResponseDto> content = getAssignmentSummariesByIds(assignmentIds);
+        List<AssignmentSummaryResponseDto> content = getAssignmentSummariesByIds(viewerId, assignmentIds);
 
         // 조건 만족하는 모든 과제 엔티티 개수를 구하는 쿼리
         // 페이지 총 개수를 제공하기 위함
@@ -85,12 +90,20 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      * @return 입력 순서에 맞춘 {@code List<AssignmentSummaryResponseDto>}
      */
     @Override
-    public List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(List<Long> assignmentIds) {
+    public List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(
+            Long viewerId,
+            List<Long> assignmentIds
+    ) {
         // 해당 id에 대한 Assignment 정보 조회
         // collection 데이터를 group by로 묶어서 가져오기 위함
         Map<Long, AssignmentSummaryResponseDto> responseDtoMap = queryFactory
                 .from(assignment)
                 .innerJoin(assignment.user, user)
+                .leftJoin(bookmark)
+                .on(
+                        bookmark.user.id.eq(viewerId)
+                                .and(bookmark.recruitment.id.eq(assignment.id))
+                )
                 .where(assignment.id.in(assignmentIds))
                 .transform(
                         groupBy(assignment.id).as(Projections.constructor(
@@ -107,7 +120,9 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
                                 assignment.department,
                                 assignment.lecture,
                                 assignment.lectureCode,
-                                set(assignment.grades.any())
+                                set(assignment.grades.any()),
+                                bookmark.id.isNotNull(),
+                                bookmark.id
                         ))
                 );
         // 최종 응답 데이터 (불변 리스트)

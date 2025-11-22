@@ -11,7 +11,6 @@ import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -32,9 +31,10 @@ public class ProjectDetailResponseDto extends BaseRecruitmentDetailResponseDto {
             University university, String title, String content, LocalDateTime deadline,
             LocalDateTime createdAt, RecruitmentStatus status, int viewCount,
             ProjectPurpose purpose, MeetingType meetingType, Set<PositionInfoResponseDto> positions,
-            Set<Skill> skills, Set<Integer> grades, PeriodResponseDto period
+            Set<Skill> skills, Set<Integer> grades, PeriodResponseDto period,
+            boolean isBookmarked, Long bookmarkId
     ) {
-        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount);
+        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
         this.purpose = purpose;
         this.meetingType = meetingType;
         this.positions = positions;
@@ -43,7 +43,7 @@ public class ProjectDetailResponseDto extends BaseRecruitmentDetailResponseDto {
         this.period = period;
     }
 
-    public static ProjectDetailResponseDto fromEntity(Project project) {
+    public static ProjectDetailResponseDto fromEntity(Project project, boolean isBookmarked, Long bookmarkId) {
         User author = project.getUser();
         PeriodResponseDto period = PeriodResponseDto.from(project.getPeriod());
         Set<Skill> skills = Set.copyOf(project.getSkills());
@@ -56,7 +56,8 @@ public class ProjectDetailResponseDto extends BaseRecruitmentDetailResponseDto {
                 project.getId(), author.getId(), author.getNickname(), project.getCategory(),
                 author.getUniversity(), project.getTitle(), project.getContent(), project.getDeadline(),
                 project.getCreatedAt(), project.getStatus(), project.getViewCount() + 1,
-                project.getPurpose(), project.getMeetingType(), positions, skills, grades, period
+                project.getPurpose(), project.getMeetingType(), positions, skills, grades, period,
+                isBookmarked, bookmarkId
         );
     }
 }

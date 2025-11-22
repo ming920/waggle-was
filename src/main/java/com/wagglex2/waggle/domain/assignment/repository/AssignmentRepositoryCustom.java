@@ -26,5 +26,5 @@ public interface AssignmentRepositoryCustom {
      * @param assignmentIds 조회할 Assignment ID 목록
      * @return 입력 순서에 맞춘 {@code List<AssignmentSummaryResponseDto>}
      */
-    List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(List<Long> assignmentIds);
+    List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(Long viewerId, List<Long> assignmentIds);
 }
