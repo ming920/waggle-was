@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.assignment.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.util.KomoranUtil;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentCreationRequestDto;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentSearchCondition;
@@ -13,7 +14,9 @@ import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,6 +82,25 @@ public class AssignmentController {
 
         return ResponseEntity.ok(
                 APIResponse.ok("과제 공고 목록을 성공적으로 조회하였습니다.", assignmentSummaries)
+        );
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Page<RecruitmentWithAppsResponseDto>>> getMyAssignments(
+            @PageableDefault(size = 5) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        PageRequest pageRequest = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        Page<RecruitmentWithAppsResponseDto> assignmentsWithApps = assignmentService.getAllByUserId(userDetails.getUserId(), pageRequest);
+
+        return ResponseEntity.ok(
+                APIResponse.ok("내 과제 공고 목록을 성공적으로 조회하였습니다.", assignmentsWithApps)
         );
     }
 

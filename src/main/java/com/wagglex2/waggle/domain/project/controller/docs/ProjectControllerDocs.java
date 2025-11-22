@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.project.controller.docs;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.common.type.Skill;
@@ -13,6 +14,7 @@ import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -172,7 +174,7 @@ public interface ProjectControllerDocs {
                     description = "**프로젝트 공고 상세 조회 성공**",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = ProjectDetailResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -374,7 +376,9 @@ public interface ProjectControllerDocs {
                     description = "**프로젝트 공고 목록 조회 성공**",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ProjectSummaryResponseDto.class)
+                            ),
                             examples = {
                                     @ExampleObject(
                                             name = "/projects?page=4&size=3&purpose=contest",
@@ -576,6 +580,175 @@ public interface ProjectControllerDocs {
             @RequestParam(value = "skills", required = false) List<Skill> skills,
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
             @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+
+    @Operation(
+            summary = "내 프로젝트 공고 목록 조회",
+            description = """
+                    사용자별 등록한 프로젝트 공고 목록을 조회한다.<br>
+                    각 공고에 해당하는 지원 정보를 포함한다.<br>
+                    응답의 공고와 각 공고에 대한 지원 정보는 생성 일자, 지원 일자 기준 최신순이다.
+                    """,
+            security = @SecurityRequirement(name = "Bearer Token"),
+            parameters = {
+                    @Parameter(
+                            name = "page",
+                            description = """
+                                    **조회하려는 내 프로젝트 공고 목록 페이지**<br>
+                                    기본값: 0 (0부터 시작)
+                                    """,
+                            in = ParameterIn.QUERY
+                    ),
+                    @Parameter(
+                            name = "size",
+                            description = """
+                                    **조회하려는 내 프로젝트 공고 개수**<br>
+                                    기본값: 5
+                                    """,
+                            in = ParameterIn.QUERY
+                    )
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "**내 프로젝트 공고 목록 조회 성공**",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = RecruitmentWithAppsResponseDto.class)
+                            ),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "내 프로젝트 공고 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "recruitmentId": 141,
+                                                                    "title": "토스 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025.12.20",
+                                                                    "applications": []
+                                                                },
+                                                                {
+                                                                    "recruitmentId": 137,
+                                                                    "title": "네이버 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025.12.20",
+                                                                    "applications": [
+                                                                        {
+                                                                            "applicationId": 27,
+                                                                            "applicantId": 40,
+                                                                            "nickname": "박데통",
+                                                                            "meetingType": {
+                                                                                "desc": "온라인",
+                                                                                "name": "ONLINE"
+                                                                            },
+                                                                            "grade": 3,
+                                                                            "content": "이 프로젝트에 지원하고 싶습니다.",
+                                                                            "appliedAt": "2025.11.22",
+                                                                            "position": {
+                                                                                "desc": "프론트엔드",
+                                                                                "name": "FRONT_END"
+                                                                            },
+                                                                            "skills": [
+                                                                                {
+                                                                                    "desc": "JavaScript",
+                                                                                    "name": "JAVASCRIPT"
+                                                                                },
+                                                                                {
+                                                                                    "desc": "React",
+                                                                                    "name": "REACT"
+                                                                                }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "applicationId": 12,
+                                                                            "applicantId": 34,
+                                                                            "nickname": "매운새우깡",
+                                                                            "meetingType": {
+                                                                                "desc": "온라인",
+                                                                                "name": "ONLINE"
+                                                                            },
+                                                                            "grade": 3,
+                                                                            "content": "이 프로젝트에 지원하고 싶습니다.",
+                                                                            "appliedAt": "2025.11.03",
+                                                                            "position": {
+                                                                                "desc": "백엔드",
+                                                                                "name": "BACK_END"
+                                                                            },
+                                                                            "skills": [
+                                                                                {
+                                                                                    "desc": "MySQL",
+                                                                                    "name": "MYSQL"
+                                                                                },
+                                                                                {
+                                                                                    "desc": "Spring Boot",
+                                                                                    "name": "SPRING_BOOT"
+                                                                                },
+                                                                                {
+                                                                                    "desc": "Java",
+                                                                                    "name": "JAVA"
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 5,
+                                                                "number": 0,
+                                                                "totalElements": 2,
+                                                                "totalPages": 1
+                                                            }
+                                                        }
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "**인증 필요**",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "**서버 오류 발생**",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    ResponseEntity<APIResponse<Page<RecruitmentWithAppsResponseDto>>> getMyProjects(
+            @PageableDefault(size = 5) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     );
 
