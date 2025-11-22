@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name = "프로젝트 공고", description = "프로젝트 공고 관련 API")
+@Tag(name = "Project(프로젝트 공고)", description = "프로젝트 공고 관련 API")
 public interface ProjectControllerDocs {
 
     @Operation(
