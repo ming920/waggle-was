@@ -15,6 +15,10 @@ import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.repository.StudyRepository;
 import com.wagglex2.waggle.domain.study.service.StudyService;
+import com.wagglex2.waggle.domain.team.entity.Team;
+import com.wagglex2.waggle.domain.team.service.TeamService;
+import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
+import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +44,7 @@ public class StudyServiceImpl implements StudyService {
     private static final Set<String> STUDY_SORT_FIELDS = Set.of("createdAt");
     private final StudyRepository studyRepository;
     private final UserService userService;
+    private final TeamService teamService;
     private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
@@ -50,7 +55,14 @@ public class StudyServiceImpl implements StudyService {
         User user = userService.findById(userId);
         Study newStudy = StudyCreationRequestDto.toEntity(user, requestDto);
 
-        return studyRepository.save(newStudy).getId();
+        Long studyId = studyRepository.save(newStudy).getId();
+
+        Team team = new Team(newStudy);
+        TeamMember leader = new TeamMember(team, user, TeamRole.LEADER);
+        team.addMember(leader);
+        teamService.save(team);
+
+        return studyId;
     }
 
     @Transactional
