@@ -17,6 +17,7 @@ public interface ProjectService {
     Page<ProjectSummaryResponseDto> getProjectSummaries(Long viewerId, ProjectSearchCondition condition, Pageable pageable);
     List<ProjectSummaryResponseDto> getProjectSummariesByIds(Long viewerId, List<Long> projectIds);
     Page<RecruitmentWithAppsResponseDto> getAllByUserId(Long userId, Pageable pageable);
+    Page<ProjectSummaryResponseDto> getBookmarkedProjectsByUserId(Long userId, Pageable pageable);
     void updateProject(Long userId, Long projectId, ProjectUpdateRequestDto updateDto);
     void deleteProject(Long userId, Long projectId);
 }

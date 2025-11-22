@@ -114,6 +114,20 @@ public class ProjectController implements ProjectControllerDocs {
         );
     }
 
+    @GetMapping("/bookmarks")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getMyBookmarks(
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Page<ProjectSummaryResponseDto> bookmarkedProjects =
+                projectService.getBookmarkedProjectsByUserId(userDetails.getUserId(), pageable);
+
+        return ResponseEntity.ok(
+                APIResponse.ok("프로젝트 공고 찜 목록을 성공적으로 조회하였습니다.", bookmarkedProjects)
+        );
+    }
+
     @PutMapping("/{projectId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<APIResponse<Void>> updateProject(

@@ -8,6 +8,7 @@ import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
+import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectCreationRequestDto;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectSearchCondition;
@@ -178,6 +179,29 @@ public class ProjectServiceImpl implements ProjectService {
                 .toList();
 
         return new PageImpl<>(content, pageable, projects.getTotalElements());
+    }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Override
+    public Page<ProjectSummaryResponseDto> getBookmarkedProjectsByUserId(Long userId, Pageable pageable) {
+        // 찜한 프로젝트 공고 id 조회
+        Page<Long> targetIds =
+                bookmarkService.findBookmarkedRecruitmentIdsByUserId(
+                        userId,
+                        RecruitmentCategory.PROJECT,
+                        pageable
+                );
+
+        // 조회할 공고가 없으면, 빈 리스트 반환
+        if (targetIds.getContent().isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, targetIds.getTotalElements());
+        }
+
+        // targetIds에 해당하는 프로젝트 공고 정보 조회
+        List<ProjectSummaryResponseDto> projectSummaries =
+                getProjectSummariesByIds(userId, targetIds.getContent());
+
+        return new PageImpl<>(projectSummaries, pageable, targetIds.getTotalElements());
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
