@@ -111,6 +111,8 @@ public class UserController implements UserControllerDocs {
                 .body(APIResponse.ok("기본 정보 입력에 성공했습니다."));
     }
 
+    @GetMapping("/")
+
     /**
      * 비밀번호를 변경한다.
      *

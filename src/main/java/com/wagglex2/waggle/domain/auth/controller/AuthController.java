@@ -8,6 +8,7 @@ import com.wagglex2.waggle.domain.auth.dto.request.EmailRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.EmailVerificationRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.SignInRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.response.SignInResponseDto;
 import com.wagglex2.waggle.domain.auth.dto.response.TokenPair;
 import com.wagglex2.waggle.domain.auth.service.AuthService;
 import com.wagglex2.waggle.domain.user.service.UserService;
@@ -69,7 +70,7 @@ public class AuthController implements AuthControllerDocs {
 
 
     @PostMapping("/sign-in")
-    public ResponseEntity<APIResponse<Void>> signIn(
+    public ResponseEntity<APIResponse<SignInResponseDto>> signIn(
             @Valid @RequestBody SignInRequestDto dto,
             HttpServletResponse response
     ) {
@@ -87,8 +88,10 @@ public class AuthController implements AuthControllerDocs {
                 jwtUtil.getRefreshExpMills() / 1000
         );
 
+        SignInResponseDto signInResponseDto = authService.login(tokens.userId());
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(APIResponse.ok("로그인에 성공했습니다."));
+                .body(APIResponse.ok("로그인에 성공했습니다.", signInResponseDto));
     }
 
 

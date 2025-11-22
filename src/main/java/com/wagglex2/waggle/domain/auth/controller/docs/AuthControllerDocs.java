@@ -6,6 +6,7 @@ import com.wagglex2.waggle.domain.auth.dto.request.EmailRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.EmailVerificationRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.SignInRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.response.SignInResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -384,7 +385,7 @@ public interface AuthControllerDocs {
                     )
             )
     })
-    ResponseEntity<APIResponse<Void>> signIn(
+    ResponseEntity<APIResponse<SignInResponseDto>> signIn(
             @Valid @RequestBody SignInRequestDto dto,
             HttpServletResponse response
     );

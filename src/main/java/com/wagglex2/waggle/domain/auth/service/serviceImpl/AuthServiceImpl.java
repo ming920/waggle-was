@@ -5,6 +5,7 @@ import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
 import com.wagglex2.waggle.domain.auth.dto.request.SignInRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.response.SignInResponseDto;
 import com.wagglex2.waggle.domain.auth.dto.response.TokenPair;
 import com.wagglex2.waggle.domain.auth.service.AuthService;
 import com.wagglex2.waggle.domain.user.entity.User;
@@ -247,12 +248,19 @@ public class AuthServiceImpl implements AuthService {
 
             log.info("리프레시 토큰 Redis에 저장 성공 : {}", userId);
 
-            return new TokenPair(accessToken, refreshToken);
+            return new TokenPair(userId, accessToken, refreshToken);
 
         } catch (BadCredentialsException e) {
             log.warn("로그인 실패 - 잘못된 인증 정보 : {}", dto.username());
             throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
         }
+    }
+
+    @Override
+    public SignInResponseDto login(Long userId) {
+        User user = userService.findById(userId);
+
+        return SignInResponseDto.fromEntity(user);
     }
 
     /**
@@ -340,7 +348,7 @@ public class AuthServiceImpl implements AuthService {
             // 5. Redis 새로운 Refresh Token 갱신
             redisTemplate.opsForValue().set(redisKey, newRefreshToken, jwtUtil.getRefreshExpMills(), TimeUnit.MILLISECONDS);
 
-            return new TokenPair(newAccessToken, newRefreshToken);
+            return new TokenPair(userId, newAccessToken, newRefreshToken);
 
         } catch (RedisConnectionException e) {
             log.warn("Redis 연결 실패 - Token 재발급 로직: {}", e.getMessage());
