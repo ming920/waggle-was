@@ -40,7 +40,7 @@ public interface ProjectControllerDocs {
             description = "프로젝트 공고를 등록한다.",
             security = @SecurityRequirement(name = "Bearer Token"),
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "**프로젝트 공고 작성 내용**",
+                    description = "프로젝트 공고 작성 내용",
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
@@ -84,7 +84,7 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "**프로젝트 공고 등록 성공**",
+                    description = "프로젝트 공고 등록 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -103,7 +103,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "**유효하지 않은 요청 값 또는 비즈니스 검증 실패로 인해 요청이 거부된 경우**",
+                    description = "유효하지 않은 요청 값 또는 비즈니스 검증 실패로 인해 요청이 거부된 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -161,7 +161,7 @@ public interface ProjectControllerDocs {
             parameters = {
                   @Parameter(
                           name = "projectId",
-                          description = "**조회하려는 프로젝트 공고 ID**",
+                          description = "조회하려는 프로젝트 공고 ID",
                           required = true,
                           in = ParameterIn.PATH,
                           example = "3"
@@ -171,7 +171,7 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "**프로젝트 공고 상세 조회 성공**",
+                    description = "프로젝트 공고 상세 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = ProjectDetailResponseDto.class),
@@ -261,7 +261,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "**타 대학 공고인 경우**",
+                    description = "타 대학 공고인 경우",
                     content = @Content(
                             mediaType = "application/json",
                             examples = {
@@ -278,7 +278,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "**해당 프로젝트 공고를 찾을 수 없는 경우**",
+                    description = "해당 프로젝트 공고를 찾을 수 없는 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -318,19 +318,19 @@ public interface ProjectControllerDocs {
             parameters = {
                     @Parameter(
                             name = "q",
-                            description = "**검색어**<br>띄어쓰기는 `+`로 구분한다.",
+                            description = "검색어<br>띄어쓰기는 `+`로 구분한다.",
                             in = ParameterIn.QUERY,
                             example = "스프링+공모전"
                     ),
                     @Parameter(
                             name = "purpose",
-                            description = "**조회하려는 프로젝트 목적**",
+                            description = "조회하려는 프로젝트 목적",
                             in = ParameterIn.QUERY
                     ),
                     @Parameter(
                             name = "positions",
                             description = """
-                                    **조회하려는 포지션**<br>
+                                    조회하려는 포지션<br>
                                     값은 `,`로 구별한다.<br>
                                     예시: `/projects?positions=front-end,back-end`
                                     """,
@@ -339,7 +339,7 @@ public interface ProjectControllerDocs {
                     @Parameter(
                             name = "skills",
                             description = """
-                                    **조회하려는 기술 스택**<br>
+                                    조회하려는 기술 스택<br>
                                     값은 `,`로 구별한다.<br>
                                     예시: `/projects?positions=react,spring-boot`
                                     """,
@@ -348,7 +348,7 @@ public interface ProjectControllerDocs {
                     @Parameter(
                             name = "status",
                             description = """
-                                    **조회하려는 공고 상태(마감 여부)**<br>
+                                    조회하려는 공고 상태(마감 여부)<br>
                                     기본값(미지정): `모집 중`, `마감` 모두
                                     """,
                             in = ParameterIn.QUERY
@@ -356,7 +356,7 @@ public interface ProjectControllerDocs {
                     @Parameter(
                             name = "page",
                             description = """
-                                    **조회하려는 프로젝트 공고 목록 페이지**<br>
+                                    조회하려는 프로젝트 공고 목록 페이지<br>
                                     기본값: 0 (0부터 시작)
                                     """,
                             in = ParameterIn.QUERY
@@ -364,7 +364,7 @@ public interface ProjectControllerDocs {
                     @Parameter(
                             name = "size",
                             description = """
-                                    **조회하려는 프로젝트 공고 개수**<br>
+                                    조회하려는 프로젝트 공고 개수<br>
                                     기본값: 9
                                     """,
                             in = ParameterIn.QUERY
@@ -374,7 +374,7 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "**프로젝트 공고 목록 조회 성공**",
+                    description = "프로젝트 공고 목록 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -558,7 +558,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "**요청 값이 유효하지 않은 경우**",
+                    description = "요청 값이 유효하지 않은 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -1010,14 +1010,14 @@ public interface ProjectControllerDocs {
             parameters = {
                     @Parameter(
                             name = "projectId",
-                            description = "**수정하려는 프로젝트 공고 ID**",
+                            description = "수정하려는 프로젝트 공고 ID",
                             required = true,
                             in = ParameterIn.PATH,
                             example = "23"
                     )
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "**프로젝트 공고 수정 내용**",
+                    description = "프로젝트 공고 수정 내용",
                     required = true,
                     content = @Content(
                             mediaType = "application/json",
@@ -1066,7 +1066,7 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "**프로젝트 공고 수정 성공**",
+                    description = "프로젝트 공고 수정 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -1084,7 +1084,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "**입력 값이 유효하지 않은 경우**",
+                    description = "입력 값이 유효하지 않은 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -1112,7 +1112,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "**다른 사용자의 프로젝트 공고를 수정하려는 경우**",
+                    description = "다른 사용자의 프로젝트 공고를 수정하려는 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -1130,7 +1130,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "**해당 프로젝트 공고를 찾을 수 없는 경우**",
+                    description = "해당 프로젝트 공고를 찾을 수 없는 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -1160,7 +1160,7 @@ public interface ProjectControllerDocs {
             parameters = {
                     @Parameter(
                             name = "projectId",
-                            description = "**삭제하려는 프로젝트 공고 ID**",
+                            description = "삭제하려는 프로젝트 공고 ID",
                             required = true,
                             in = ParameterIn.PATH,
                             example = "23"
@@ -1170,7 +1170,7 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "**프로젝트 공고 삭제 성공**",
+                    description = "프로젝트 공고 삭제 성공",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -1188,7 +1188,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "**다른 사용자의 프로젝트 공고를 삭제하려는 경우**",
+                    description = "다른 사용자의 프로젝트 공고를 삭제하려는 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -1206,7 +1206,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "404",
-                    description = "**해당 프로젝트 공고를 찾을 수 없는 경우**",
+                    description = "해당 프로젝트 공고를 찾을 수 없는 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
