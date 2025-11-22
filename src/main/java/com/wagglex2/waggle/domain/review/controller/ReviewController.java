@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.review.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.review.controller.docs.ReviewControllerDocs;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewCreationRequestDto;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewUpdateRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/reviews")
 @RequiredArgsConstructor
 @Slf4j
-public class ReviewController {
+public class ReviewController implements ReviewControllerDocs {
 
     private final ReviewService reviewService;
 
