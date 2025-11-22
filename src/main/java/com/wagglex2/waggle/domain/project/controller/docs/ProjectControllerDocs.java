@@ -758,6 +758,252 @@ public interface ProjectControllerDocs {
     );
 
     @Operation(
+            summary = "프로젝트 공고 찜 목록 조회",
+            description = "프로젝트 공고 찜 목록을 조회한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
+            parameters = {
+                    @Parameter(
+                            name = "page",
+                            description = """
+                                    조회하려는 찜 목록 페이지<br>
+                                    기본값: 0 (0부터 시작)
+                                    """,
+                            in = ParameterIn.QUERY
+                    ),
+                    @Parameter(
+                            name = "size",
+                            description = """
+                                    조회하려는 프로젝트 공고 개수<br>
+                                    기본값: 9
+                                    """,
+                            in = ParameterIn.QUERY
+                    )
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "프로젝트 공고 찜 목록 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = ProjectSummaryResponseDto.class)
+                            ),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "프로젝트 공고 찜 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 19,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "학교 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
+                                                                        },
+                                                                        {
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 21,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 3,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "토스 주관 공모전 팀원 구합니다. (추가 모집)",
+                                                                    "deadline": "2025-12-31",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Django",
+                                                                            "name": "DJANGO"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Vue.js",
+                                                                            "name": "VUE_JS"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 20,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 1,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "해커톤 팀원 구합니다.",
+                                                                    "deadline": "2025-10-11",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온/오프라인",
+                                                                        "name": "HYBRID"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 19,
+                                                                    "purpose": {
+                                                                        "desc": "해커톤",
+                                                                        "name": "HACKATHON"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 9,
+                                                                "number": 0,
+                                                                "totalElements": 3,
+                                                                "totalPages": 1
+                                                            }
+                                                        }
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getMyBookmarks(
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+
+    @Operation(
             summary = "프로젝트 공고 수정",
             description = "본인이 작성한 프로젝트 공고 1건을 수정한다.",
             security = @SecurityRequirement(name = "Bearer Token"),
