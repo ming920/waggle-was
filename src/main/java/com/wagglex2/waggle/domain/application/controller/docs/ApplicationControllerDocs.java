@@ -626,6 +626,7 @@ public interface ApplicationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "지원 내역 없음",
+                                            description = "`/applications/me?category=study`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -654,11 +655,26 @@ public interface ApplicationControllerDocs {
                             examples = {
                                     @ExampleObject(
                                             name = "카테고리가 누락된 경우",
+                                            description = """
+                                                    - `/applications/me`
+                                                    - `/applications/me?category=`
+                                                    """,
                                             value = """
                                                     {
                                                         "code": "REQUIRED_FIELD_MISSING",
                                                         "message": "필수 값이 누락되었습니다.",
                                                         "data": "category"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "카테고리 값이 잘못된 경우",
+                                            description = "`/applications/me?category=apple`",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_ENUM_VALUE",
+                                                        "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
+                                                        "data": "쿼리 파라미터 'category'의 값 'apple'이(가) 유효하지 않습니다."
                                                     }
                                                     """
                                     )
