@@ -22,9 +22,14 @@ public record UserResponseDto(
         Integer grade,
         PositionType position,
         Set<Skill> skills,
-        String shortIntro
+        String shortIntro,
+        String profileImageUrl
 ) {
-    public static UserResponseDto from(User user) {
+    public static UserResponseDto from(User user, String defaultImageUrl) {
+        String imageUrl = user.getProfileImageUrl() != null 
+            ? user.getProfileImageUrl() 
+            : defaultImageUrl;
+
         return new UserResponseDto(
                 user.getUsername(),
                 user.getEmail(),
@@ -33,7 +38,8 @@ public record UserResponseDto(
                 user.getGrade(),
                 user.getPosition(),
                 user.getSkills(),
-                user.getShortIntro()
+                user.getShortIntro(),
+                imageUrl
         );
     }
 }
