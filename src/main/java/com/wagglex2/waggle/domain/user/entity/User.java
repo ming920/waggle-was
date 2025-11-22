@@ -101,19 +101,16 @@ public class User {
     @Builder
     private User(
             String username, String password, String email, String nickname,
-            University university, Integer grade, PositionType position,
-            Set<Skill> skills, String shortIntro, UserRoleType role, UserStatus status) {
+            University university, UserRoleType role,
+            UserStatus status, String profileImageUrl) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.university = university;
         this.nickname = nickname;
-        this.grade = grade;
-        this.position = position;
-        this.skills = skills;
-        this.shortIntro = shortIntro;
         this.role = role;
         this.status = status;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public void changePassword(String encodedPassword) {

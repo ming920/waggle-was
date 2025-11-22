@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ErrorCode.DUPLICATED_NICKNAME);
         }
 
-        User user = dto.toEntity(passwordEncoder);
+        User user = dto.toEntity(passwordEncoder, defaultProfileImageUrl);
         return userRepository.save(user).getId();
     }
 

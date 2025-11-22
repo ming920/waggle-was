@@ -41,7 +41,7 @@ public record SignUpRequestDto(
         }
     }
 
-    public User toEntity(PasswordEncoder passwordEncoder) {
+    public User toEntity(PasswordEncoder passwordEncoder, String defaultProfileImageUrl) {
         return User.builder()
                 .username(username)
                 .password(passwordEncoder.encode(password))
@@ -50,6 +50,7 @@ public record SignUpRequestDto(
                 .university(University.fromEmail(email))
                 .role(UserRoleType.ROLE_USER)
                 .status(UserStatus.INCOMPLETED)
+                .profileImageUrl(defaultProfileImageUrl)
                 .build();
     }
 }

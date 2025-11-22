@@ -307,14 +307,14 @@ public class UserController implements UserControllerDocs {
      */
     @PostMapping("/me/profile-image")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserResponseDto>> uploadProfileImage(
+    public ResponseEntity<APIResponse<UserResponseDto>> uploadProfileImage(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestParam("file") MultipartFile file
     ) {
         UserResponseDto data = userService.uploadProfileImage(userDetails.getUserId(), file);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("프로필 이미지 업로드에 성공했습니다.", data));
+                .body(APIResponse.ok("프로필 이미지 업로드에 성공했습니다.", data));
     }
 
     /**
@@ -325,12 +325,12 @@ public class UserController implements UserControllerDocs {
      */
     @DeleteMapping("/me/profile-image")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserResponseDto>> deleteProfileImage(
+    public ResponseEntity<APIResponse<UserResponseDto>> deleteProfileImage(
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         UserResponseDto data = userService.deleteProfileImage(userDetails.getUserId());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.ok("프로필 이미지가 기본 이미지로 변경되었습니다.", data));
+                .body(APIResponse.ok("프로필 이미지가 기본 이미지로 변경되었습니다.", data));
     }
 }

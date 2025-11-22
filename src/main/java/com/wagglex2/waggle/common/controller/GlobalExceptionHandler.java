@@ -113,11 +113,11 @@ public class GlobalExceptionHandler {
      * </p>
      *
      * @param ex {@link MaxUploadSizeExceededException}
-     * @return {@link ResponseEntity} - {@link ApiResponse}를 포함한 에러 응답
+     * @return {@link ResponseEntity} - {@link APIResponse}를 포함한 에러 응답
      */
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<ApiResponse<Void>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
+    public ResponseEntity<APIResponse<Void>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                .body(ApiResponse.error(ErrorCode.FILE_SIZE_TOO_LARGE));
+                .body(APIResponse.error(ErrorCode.FILE_SIZE_TOO_LARGE));
     }
 }
