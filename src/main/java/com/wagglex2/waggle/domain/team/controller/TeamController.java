@@ -4,6 +4,7 @@ import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
+import com.wagglex2.waggle.domain.team.controller.docs.TeamControllerDocs;
 import com.wagglex2.waggle.domain.team.dto.response.TeamResponseDto;
 import com.wagglex2.waggle.domain.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/teams")
 @RequiredArgsConstructor
-public class TeamController {
+public class TeamController implements TeamControllerDocs {
 
     private final TeamService teamService;
 

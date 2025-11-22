@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.team_member.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.team_member.controller.docs.TeamMemberControllerDocs;
 import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/teams/{teamId}/members")
 @RequiredArgsConstructor
-public class TeamMemberController {
+public class TeamMemberController implements TeamMemberControllerDocs {
 
     private final TeamMemberService teamMemberService;
 

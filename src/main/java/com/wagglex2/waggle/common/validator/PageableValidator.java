@@ -32,10 +32,9 @@ public class PageableValidator {
 
     private final PaginationProperties paginationProperties;
 
-    public Pageable validate(Pageable pageable) {
+    public void validate(Pageable pageable) {
         validatePageSize(pageable.getPageSize());
         validatePageNumber(pageable.getPageNumber());
-        return pageable;
     }
 
     public void validateSort(Pageable pageable, Set<String> allowedProperties) {
