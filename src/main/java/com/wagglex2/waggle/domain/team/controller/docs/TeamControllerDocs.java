@@ -78,7 +78,7 @@ public interface TeamControllerDocs {
                     description = "팀 목록 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = TeamResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
