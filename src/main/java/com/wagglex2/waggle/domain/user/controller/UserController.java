@@ -99,19 +99,19 @@ public class UserController implements UserControllerDocs {
         }
     }
 
+
     @PatchMapping("/basic-info")
     public ResponseEntity<APIResponse<Void>> updateBasicInfo(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @RequestBody @Valid UserBasicInfoRequestDto dto
             ) {
 
+        // 현재 로그인한 사용자 ID로 기본 정보 업데이트
         userService.updateBasicInfo(userDetails.getUserId(), dto);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.ok("기본 정보 입력에 성공했습니다."));
     }
-
-    @GetMapping("/")
 
     /**
      * 비밀번호를 변경한다.

@@ -88,7 +88,7 @@ public class AuthController implements AuthControllerDocs {
                 jwtUtil.getRefreshExpMills() / 1000
         );
 
-        SignInResponseDto signInResponseDto = authService.login(tokens.userId());
+        SignInResponseDto signInResponseDto = authService.loadSignInInfo(tokens.userId());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.ok("로그인에 성공했습니다.", signInResponseDto));

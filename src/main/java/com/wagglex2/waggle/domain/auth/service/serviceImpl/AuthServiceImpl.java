@@ -257,7 +257,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public SignInResponseDto login(Long userId) {
+    public SignInResponseDto loadSignInInfo(Long userId) {
         User user = userService.findById(userId);
 
         return SignInResponseDto.fromEntity(user);

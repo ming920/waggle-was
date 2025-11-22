@@ -30,7 +30,24 @@ public interface AuthControllerDocs {
 
     @Operation(
             summary = "회원가입 이메일 인증코드 발송",
-            description = "입력된 이메일 주소로 6자리 인증번호를 발송한다.(TTL: 3분)"
+            description = "입력된 이메일 주소로 6자리 인증번호를 발송한다.(TTL: 3분)",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "이메일",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = EmailRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "email": "qwer1234@yu.ac.kr"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -105,7 +122,25 @@ public interface AuthControllerDocs {
             description = """
                     사용자가 입력한 6자리 인증번호를 검증한다.
                     이메일 수정하지 못하도록 이메일도 같이 보낸다.
-                    """
+                    """,
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "이메일 인증번호 검증",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = EmailVerificationRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "email": "rkfsky920@yu.ac.kr",
+                                                        "inputCode": "809417"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -177,7 +212,28 @@ public interface AuthControllerDocs {
 
 
     @Operation(
-            summary = "회원가입 요청"
+            summary = "회원가입 요청",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "회원가입 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = SignUpRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "username": "qwer1234",
+                                                      "password": "qwer1234!",
+                                                      "passwordConfirm": "qwer1234!",
+                                                      "nickname": "qwer1234",
+                                                      "email": "qwer1234!@yu.ac.kr"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -286,7 +342,26 @@ public interface AuthControllerDocs {
                     로그인에 성공하면 Access Token 및 Refresh Token을 발급한다.
                     Access Token은 HTTP 응답 헤더(Authorization)애 추가한다.
                     Refresh Token은 HttpOnly 쿠키로 추가한다.
-                    """
+                    userStatus를 이용해 기본 정보 입력 유무를 확인한다.
+                    """,
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "로그인 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = SignInRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                      "username": "qwer1234",
+                                                      "password": "qwer1234!"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -308,13 +383,33 @@ public interface AuthControllerDocs {
                     },
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = SignInResponseDto.class),
                             examples = {
                                     @ExampleObject(
+                                            name = "기본 정보 입력을 안한 사용자",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "로그인에 성공했습니다."
+                                                        "message": "로그인에 성공했습니다.",
+                                                        "data": {
+                                                            "userId": 41,
+                                                            "username": "asdf1234",
+                                                            "status": "INCOMPLETED"
+                                                        }
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "기본 정보 입력을 한 사용자",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "로그인에 성공했습니다.",
+                                                        "data": {
+                                                            "userId": 42,
+                                                            "username": "qwer1234",
+                                                            "status": "ACTIVE"
+                                                        }
                                                     }
                                                     """
                                     )

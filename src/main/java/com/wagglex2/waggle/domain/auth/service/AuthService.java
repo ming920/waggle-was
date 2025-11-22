@@ -9,7 +9,7 @@ public interface AuthService {
     void sendEmailAuthCode(String toEmail, String verificationCode);
     void verifyCode(String toEmail, String inputCode);
     TokenPair login(SignInRequestDto dto);
-    SignInResponseDto login(Long userId);
+    SignInResponseDto loadSignInInfo(Long userId);
     void deleteRefreshToken(Long userId);
     TokenPair reissueTokens(String refreshToken);
 }

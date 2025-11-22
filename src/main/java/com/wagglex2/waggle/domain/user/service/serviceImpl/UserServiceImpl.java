@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
     private final S3Service s3Service;
-    
+
     @Value("${aws.s3.default-profile-image-url}")
     private String defaultProfileImageUrl;
 
@@ -58,7 +58,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsById(Long id) { return userRepository.existsById(id); }
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
 
     @Override
     public boolean existsByEmail(String email) {
@@ -90,10 +92,10 @@ public class UserServiceImpl implements UserService {
      * @param dto 회원가입 요청 DTO
      * @return 생성된 User의 식별자(ID)
      * @throws BusinessException <ul>
-     *                                       <li>{@link ErrorCode#DUPLICATED_USERNAME} : 이미 존재하는 아이디</li>
-     *                                       <li>{@link ErrorCode#DUPLICATED_EMAIL} : 이미 등록된 이메일</li>
-     *                                       <li>{@link ErrorCode#DUPLICATED_NICKNAME} : 이미 사용 중인 닉네임</li>
-     *                                   </ul>
+     *                            <li>{@link ErrorCode#DUPLICATED_USERNAME} : 이미 존재하는 아이디</li>
+     *                            <li>{@link ErrorCode#DUPLICATED_EMAIL} : 이미 등록된 이메일</li>
+     *                            <li>{@link ErrorCode#DUPLICATED_NICKNAME} : 이미 사용 중인 닉네임</li>
+     *                           </ul>
      */
     @Override
     @Transactional
@@ -120,6 +122,7 @@ public class UserServiceImpl implements UserService {
 
         User user = findById(id);
 
+        // 기본 정보 업데이트
         user.updateGrade(dto.grade());
         user.updatePosition(dto.position());
         user.updateSkills(dto.skills());
