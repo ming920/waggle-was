@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "알림", description = "알림 관련 API")
+@Tag(name = "Notification(알림)", description = "알림 관련 API")
 public interface NotificationControllerDocs {
 
     @Operation(
