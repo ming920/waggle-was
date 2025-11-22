@@ -207,7 +207,7 @@ public interface ReviewControllerDocs {
                     description = "작성한 리뷰 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = ReviewResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -329,7 +329,7 @@ public interface ReviewControllerDocs {
                     description = "받은 리뷰 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = ReviewResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
