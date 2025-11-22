@@ -93,11 +93,11 @@ public class ApplicationController implements ApplicationControllerDocs {
 
     @DeleteMapping("{applicationId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<APIResponse<Void>> cancelApplication(
+    public ResponseEntity<APIResponse<Void>> deleteApplication(
             @PathVariable("applicationId") Long applicationId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        applicationService.cancelApplication(userDetails.getUserId(), applicationId);
+        applicationService.deleteApplication(userDetails.getUserId(), applicationId);
 
         return ResponseEntity.ok(
                 APIResponse.ok("지원을 성공적으로 취소/삭제하였습니다.")
