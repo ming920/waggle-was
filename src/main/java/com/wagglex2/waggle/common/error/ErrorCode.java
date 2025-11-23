@@ -37,6 +37,8 @@ public enum ErrorCode {
     INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, "INVALID_FILE_FORMAT", "지원하지 않는 파일 형식입니다. jpg, jpeg, png만 가능합니다."),
     USER_ALREADY_COMPLETED_BASIC_INFO(HttpStatus.BAD_REQUEST, "USER_ALREADY_COMPLETED_BASIC_INFO", "이미 기본 정보를 입력한 사용자입니다."),
     INVALID_ARGUMENT(HttpStatus.BAD_REQUEST, "INVALID_ARGUMENT", "유효하지 않은 인자 값입니다."),
+    INVALID_JSON_FIELD(HttpStatus.BAD_REQUEST, "INVALID_JSON_FIELD", "요청 본문의 필드 값 형식이 올바르지 않습니다."),
+    UNREADABLE_JSON(HttpStatus.BAD_REQUEST, "UNREADABLE_JSON", "요청 본문을 읽을 수 없습니다."),
 
     // 401
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다."),
