@@ -399,7 +399,7 @@ public interface UserControllerDocs {
                                                         "data": [
                                                             {
                                                                 "field": "grade",
-                                                                "message": "학년은 4 이하여여야 합니다."
+                                                                "message": "학년은 4 이하이어야 합니다."
                                                             },
                                                             {
                                                                 "field": "skills",

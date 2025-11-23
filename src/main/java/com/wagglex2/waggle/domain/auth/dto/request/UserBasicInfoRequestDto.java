@@ -9,7 +9,7 @@ import java.util.Set;
 public record UserBasicInfoRequestDto(
         @NotNull(message = "학년이 누락되었습니다.")
         @Min(value = 1, message = "학년은 1 이상이어야 합니다.")
-        @Max(value = 4, message = "학년은 4 이하여여야 합니다.")
+        @Max(value = 4, message = "학년은 4 이하이어야 합니다.")
         Integer grade,
 
         @NotNull(message = "포지션이 누락되었습니다.")
