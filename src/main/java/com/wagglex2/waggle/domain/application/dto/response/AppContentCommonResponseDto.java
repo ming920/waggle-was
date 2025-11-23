@@ -32,10 +32,10 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class AppContentCommonResponseDto {
 
-    private Long applicationId;
-    private Long applicantId;
-    private String nickname;
-    private String profileImageUrl;
+    private final Long applicationId;
+    private final Long applicantId;
+    private final String nickname;
+    private final String profileImageUrl;
     private final MeetingType meetingType;
     private final Integer grade;
     private final String content;
