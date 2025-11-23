@@ -78,6 +78,14 @@ public class TeamServiceImpl implements TeamService {
             Pageable pageable
     ) {
 
+        if (userId == null) {
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        if (status == RecruitmentStatus.CANCELED) {
+            throw new BusinessException(ErrorCode.RECRUITMENT_NOT_FOUND);
+        }
+
         pageableValidator.validate(pageable);
         pageableValidator.validateSort(pageable, MY_TEAM_SORT_FIELDS);
 

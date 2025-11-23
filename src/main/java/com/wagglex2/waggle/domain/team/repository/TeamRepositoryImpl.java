@@ -1,6 +1,9 @@
 package com.wagglex2.waggle.domain.team.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,6 +17,8 @@ import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.wagglex2.waggle.domain.team.entity.QTeam.team;
 import static com.wagglex2.waggle.domain.team_member.entity.QTeamMember.teamMember;
@@ -38,13 +43,12 @@ public class TeamRepositoryImpl implements TeamRepositoryCustom{
                 .and(eqStatus(status))
                 .and(eqUser(viewerId));
 
-        // Team ID만 먼저 페이징 조회 (Fetch Join 안함)
+        // Team ID만 조회
         List<Long> teamIds = queryFactory
                 .select(team.id)
                 .from(team)
-                .leftJoin(team.members, teamMember)
-                .leftJoin(team.recruitment, baseRecruitment)
                 .where(builder)
+                .orderBy(getOrderSpecifiers(pageable))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -61,16 +65,21 @@ public class TeamRepositoryImpl implements TeamRepositoryCustom{
                 .where(team.id.in(teamIds))
                 .fetch();
 
+        // 순서 보장
+        Map<Long, Team> teamMap = teams.stream()
+                .collect(Collectors.toMap(Team::getId, t -> t));
+        List<Team> orderedTeams = teamIds.stream()
+                .map(teamMap::get)
+                .toList();
+
         // Count 쿼리
         JPAQuery<Long> countQuery = queryFactory
-                .select(team.id.countDistinct())
+                .select(team.countDistinct())
                 .from(team)
-                .leftJoin(team.members, teamMember)
-                .leftJoin(team.recruitment, baseRecruitment)
                 .where(builder);
 
         return PageableExecutionUtils.getPage(
-                teams,
+                orderedTeams,
                 pageable,
                 countQuery::fetchOne
         );
@@ -85,20 +94,37 @@ public class TeamRepositoryImpl implements TeamRepositoryCustom{
                 .fetch();
     }
 
+    private OrderSpecifier<?>[] getOrderSpecifiers(Pageable pageable) {
+        if (pageable.getSort().isEmpty()) {
+            return new OrderSpecifier[]{team.createdAt.desc()};
+        }
+
+        return pageable.getSort().stream()
+                .map(order -> {
+                    Path<?> path = getPath(order.getProperty());
+                    return order.isAscending()
+                            ? new OrderSpecifier(Order.ASC, path)
+                            : new OrderSpecifier(Order.DESC, path);
+                })
+                .toArray(OrderSpecifier[]::new);
+    }
+
+    private Path<?> getPath(String property) {
+        return switch (property) {
+            case "createdAt" -> team.createdAt;
+            default -> team.createdAt;
+        };
+    }
+
     private BooleanExpression eqCategory(RecruitmentCategory category) {
-        return category != null ? baseRecruitment.category.eq(category) : null;
+        return team.recruitment.category.eq(category);
     }
 
     private BooleanExpression eqStatus(RecruitmentStatus status) {
-        return status != null ? baseRecruitment.status.eq(status) : null;
+        return team.recruitment.status.eq(status);
     }
 
     private BooleanExpression eqUser(Long viewerId) {
-        if (viewerId == null) {
-            return null;
-        }
-
-        return teamMember.user.id.eq(viewerId)
-                .or(baseRecruitment.user.id.eq(viewerId));
+        return team.members.any().user.id.eq(viewerId);
     }
 }
