@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.bookmark.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.bookmark.controller.docs.BookmarkControllerDocs;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/bookmarks")
 @RequiredArgsConstructor
-public class BookmarkController {
+public class BookmarkController implements BookmarkControllerDocs {
 
     private final BookmarkService bookmarkService;
 
