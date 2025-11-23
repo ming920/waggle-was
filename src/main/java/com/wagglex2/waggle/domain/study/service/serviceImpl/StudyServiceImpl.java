@@ -2,6 +2,12 @@ package com.wagglex2.waggle.domain.study.service.serviceImpl;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
+import com.wagglex2.waggle.common.validator.PageableValidator;
+import com.wagglex2.waggle.domain.application.dto.response.AppContentSimpleResponseDto;
+import com.wagglex2.waggle.domain.application.entity.Application;
+import com.wagglex2.waggle.domain.application.service.ApplicationService;
+import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
+import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
@@ -9,20 +15,39 @@ import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.repository.StudyRepository;
 import com.wagglex2.waggle.domain.study.service.StudyService;
+import com.wagglex2.waggle.domain.team.entity.Team;
+import com.wagglex2.waggle.domain.team.service.TeamService;
+import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
+import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class StudyServiceImpl implements StudyService {
+    private static final Set<String> STUDY_SORT_FIELDS = Set.of("createdAt");
     private final StudyRepository studyRepository;
     private final UserService userService;
+    private final TeamService teamService;
+    private final BookmarkService bookmarkService;
+    private final ApplicationService applicationService;
+    private final PageableValidator pageableValidator;
 
     @Transactional
     @Override
@@ -30,7 +55,14 @@ public class StudyServiceImpl implements StudyService {
         User user = userService.findById(userId);
         Study newStudy = StudyCreationRequestDto.toEntity(user, requestDto);
 
-        return studyRepository.save(newStudy).getId();
+        Long studyId = studyRepository.save(newStudy).getId();
+
+        Team team = new Team(newStudy);
+        TeamMember leader = new TeamMember(team, user, TeamRole.LEADER);
+        team.addMember(leader);
+        teamService.save(team);
+
+        return studyId;
     }
 
     @Transactional
@@ -57,7 +89,65 @@ public class StudyServiceImpl implements StudyService {
             throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
         }
 
-        return StudyResponseDto.fromEntity(study);
+        Optional<Long> bookmarkIdOptional =
+                bookmarkService.findIdByUserIdAndRecruitmentId(viewerId, studyId);
+
+        return StudyResponseDto.fromEntity(
+                study,
+                bookmarkIdOptional.isPresent(),
+                bookmarkIdOptional.orElse(null)
+        );
+    }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Override
+    public Page<RecruitmentWithAppsResponseDto> getAllByUserId(
+            @P("userId") Long userId,
+            Pageable pageable
+    ) {
+        pageableValidator.validate(pageable);
+        pageableValidator.validateSort(pageable, STUDY_SORT_FIELDS);
+
+        Page<Study> studies = studyRepository.findAllByUserId(userId, pageable);
+
+        // 공고 ID 목록
+        List<Long> assignmnetIds = studies.stream()
+                .map(Study::getId)
+                .toList();
+
+        // 공고 ID로 application 전체 조회
+        List<Application> applications = applicationService.findAllByRecruitmentIds(assignmnetIds);
+
+        // 공고 ID -> applications 매핑 Map 생성
+        Map<Long, List<Application>> appsByRecruitmentId = applications.stream()
+                .collect(Collectors.groupingBy(
+                        app -> app.getRecruitment().getId())
+                );
+
+        // DTO 조합
+        List<RecruitmentWithAppsResponseDto> content = studies.stream()
+                .map(s -> new RecruitmentWithAppsResponseDto(
+                        s.getId(),
+                        s.getTitle(),
+                        s.getDeadline(),
+                        appsByRecruitmentId.getOrDefault(
+                                        s.getId(),
+                                        List.of()
+                                ).stream()
+                                .map(app -> new AppContentSimpleResponseDto(
+                                        app.getId(),
+                                        app.getApplicant().getId(),
+                                        app.getApplicant().getNickname(),
+                                        app.getMeetingType(),
+                                        app.getGrade(),
+                                        app.getContent(),
+                                        app.getCreatedAt()
+                                ))
+                                .toList()
+                ))
+                .toList();
+
+        return new PageImpl<>(content, pageable, studies.getTotalElements());
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

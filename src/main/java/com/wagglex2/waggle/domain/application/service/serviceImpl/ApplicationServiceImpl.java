@@ -41,6 +41,8 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -110,6 +112,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Application findById(Long id) {
         return applicationRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.APPLICATION_NOT_FOUND));
+    }
+
+    @Override
+    public List<Application> findAllByRecruitmentIds(List<Long> recruitmentIds) {
+        return applicationRepository.findAllByRecruitmentIds(recruitmentIds);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

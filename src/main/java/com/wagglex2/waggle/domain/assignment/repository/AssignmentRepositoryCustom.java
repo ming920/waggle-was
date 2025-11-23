@@ -18,7 +18,7 @@ public interface AssignmentRepositoryCustom {
      * @param pageable  페이징 및 정렬 정보 ({@link org.springframework.data.domain.Pageable})
      * @return 조건에 맞는 과제 요약 DTO 페이지 ({@link org.springframework.data.domain.Page}&lt;{@link AssignmentSummaryResponseDto}&gt;)
      */
-    Page<AssignmentSummaryResponseDto> getAssignmentSummaries(AssignmentSearchCondition condition, Pageable pageable);
+    Page<AssignmentSummaryResponseDto> getAssignmentSummaries(Long viewerId, AssignmentSearchCondition condition, Pageable pageable);
 
     /**
      * 주어진 Assignment ID 목록에 해당하는 과제 요약 정보를 조회한다.
@@ -26,5 +26,5 @@ public interface AssignmentRepositoryCustom {
      * @param assignmentIds 조회할 Assignment ID 목록
      * @return 입력 순서에 맞춘 {@code List<AssignmentSummaryResponseDto>}
      */
-    List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(List<Long> assignmentIds);
+    List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(Long viewerId, List<Long> assignmentIds);
 }

@@ -3,8 +3,10 @@ package com.wagglex2.waggle.domain.project.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.wagglex2.waggle.domain.common.querydsl.RecruitmentSearchMatcher;
 import com.wagglex2.waggle.domain.common.type.*;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectSearchCondition;
 import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto;
@@ -19,6 +21,7 @@ import java.util.*;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.set;
+import static com.wagglex2.waggle.domain.bookmark.entity.QBookmark.bookmark;
 import static com.wagglex2.waggle.domain.project.entity.QProject.project;
 import static com.wagglex2.waggle.domain.user.entity.QUser.user;
 
@@ -42,14 +45,24 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      *     </ol>
      */
     @Override
-    public Page<ProjectSummaryResponseDto> getProjectSummaries(ProjectSearchCondition condition, Pageable pageable) {
+    public Page<ProjectSummaryResponseDto> getProjectSummaries(
+            Long viewerId,
+            ProjectSearchCondition condition,
+            Pageable pageable
+    ) {
         // where문 조건
         BooleanBuilder builder = new BooleanBuilder()
                 .and(eqPurpose(condition.purpose()))
                 .and(eqStatus(condition.status()))
                 .and(containsAnyKeyword(condition.keywords()))
                 .and(containsAnyPosition(condition.positions()))
-                .and(containsAnySkill(condition.skills()));
+                .and(containsAnySkill(condition.skills()))
+                .and(project.user.university.eq(  // 같은 대학의 공고만을 조회
+                        JPAExpressions
+                                .select(user.university)
+                                .from(user)
+                                .where(user.id.eq(viewerId))
+                ));
 
         // 조건에 맞는 모든 Project 공고 id 조회
         List<Long> projectIds = queryFactory
@@ -62,7 +75,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                 .fetch();
 
         // 해당 id의 Project 공고 조회
-        List<ProjectSummaryResponseDto> content = getProjectSummariesByIds(projectIds);
+        List<ProjectSummaryResponseDto> content = getProjectSummariesByIds(viewerId, projectIds);
 
         // 조건을 만족하는 모든 프로젝트 엔티티의 개수를 구하는 쿼리
         // 페이지의 총 개수를 제공하기 위함
@@ -81,12 +94,20 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      * @return 입력 순서에 맞춘 {@code List<ProjectSummaryResponseDto>}
      */
     @Override
-    public List<ProjectSummaryResponseDto> getProjectSummariesByIds(List<Long> projectIds) {
+    public List<ProjectSummaryResponseDto> getProjectSummariesByIds(
+            Long viewerId,
+            List<Long> projectIds
+    ) {
         // 해당 id에 대한 Project 정보 조회
         // collection 데이터를 group by로 묶어서 가져오기 위함
         Map<Long, ProjectSummaryResponseDto> responseDtoMap = queryFactory
                 .from(project)
                 .innerJoin(project.user, user)
+                .leftJoin(bookmark)
+                .on(
+                        bookmark.user.id.eq(viewerId)
+                                .and(bookmark.recruitment.id.eq(project.id))
+                )
                 .where(project.id.in(projectIds))
                 .transform(
                         groupBy(project.id).as(Projections.constructor(
@@ -103,7 +124,9 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                                 project.purpose,
                                 project.meetingType,
                                 set(project.positions.any().position),
-                                set(project.skills)
+                                set(project.skills),
+                                bookmark.id.isNotNull(),
+                                bookmark.id
                         ))
                 );
 
@@ -130,7 +153,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
      */
     private BooleanExpression eqStatus(RecruitmentStatus status) {
         if (status == null || status == RecruitmentStatus.CANCELED) {
-            return null;
+            return project.status.ne(RecruitmentStatus.CANCELED);
         }
 
         return project.status.eq(status);
@@ -139,19 +162,12 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     /**
      * 제목(title) 또는 내용(content)에 키워드 중 하나라도 포함되는 조건 생성
      */
-    private BooleanBuilder containsAnyKeyword(Set<String> keywords) {
-        if (keywords == null || keywords.isEmpty()) {
-            return null;
-        }
-
-        BooleanBuilder builder = new BooleanBuilder();
-        keywords.forEach(keyword ->
-                builder
-                        .or(project.title.containsIgnoreCase(keyword))
-                        .or(project.content.containsIgnoreCase(keyword))
+    private BooleanExpression containsAnyKeyword(Set<String> keywords) {
+        return RecruitmentSearchMatcher.match(
+                keywords,
+                project.title,
+                project.content
         );
-
-        return builder;
     }
 
     /**

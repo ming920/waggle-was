@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.project.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.common.type.Skill;
@@ -17,7 +18,9 @@ import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +72,8 @@ public class ProjectController implements ProjectControllerDocs {
             @RequestParam(value = "positions", required = false) List<PositionType> positions,
             @RequestParam(value = "skills", required = false) List<Skill> skills,
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
-            @PageableDefault(size = 9) Pageable pageable
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Set<String> nouns = (keywords != null) ? komoranUtil.getNouns(keywords) : Set.of();
         Set<PositionType> positionSet = (positions != null) ? Set.copyOf(positions) : Set.of();
@@ -84,10 +88,43 @@ public class ProjectController implements ProjectControllerDocs {
         );
 
         Page<ProjectSummaryResponseDto> projectSummaries =
-                projectService.getProjectSummaries(condition, pageable);
+                projectService.getProjectSummaries(userDetails.getUserId(), condition, pageable);
 
         return ResponseEntity.ok(
                 APIResponse.ok("프로젝트 공고 목록을 성공적으로 조회하였습니다.", projectSummaries)
+        );
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Page<RecruitmentWithAppsResponseDto>>> getMyProjects(
+            @PageableDefault(size = 5) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        PageRequest pageRequest = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        Page<RecruitmentWithAppsResponseDto> projectsWithApps = projectService.getAllByUserId(userDetails.getUserId(), pageRequest);
+
+        return ResponseEntity.ok(
+                APIResponse.ok("내 프로젝트 공고 목록을 성공적으로 조회하였습니다.", projectsWithApps)
+        );
+    }
+
+    @GetMapping("/bookmarks")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getMyBookmarks(
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Page<ProjectSummaryResponseDto> bookmarkedProjects =
+                projectService.getBookmarkedProjectsByUserId(userDetails.getUserId(), pageable);
+
+        return ResponseEntity.ok(
+                APIResponse.ok("프로젝트 공고 찜 목록을 성공적으로 조회하였습니다.", bookmarkedProjects)
         );
     }
 

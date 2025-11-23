@@ -26,9 +26,9 @@ public class AssignmentDetailResponseDto extends BaseRecruitmentDetailResponseDt
             Long id, Long authorId, String authorNickname, RecruitmentCategory category, University university,
             String title, String content, LocalDateTime deadline, LocalDateTime createdAt,
             RecruitmentStatus status, int viewCount, String department, String lecture, String lectureCode,
-            ParticipantInfoResponseDto participants, Set<Integer> grades
+            ParticipantInfoResponseDto participants, Set<Integer> grades, boolean isBookmarked, Long bookmarkId
     ) {
-        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount);
+        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
         this.department = department;
         this.lecture = lecture;
         this.lectureCode = lectureCode;
@@ -36,7 +36,7 @@ public class AssignmentDetailResponseDto extends BaseRecruitmentDetailResponseDt
         this.grades = grades;
     }
 
-    public static AssignmentDetailResponseDto fromEntity(Assignment assignment) {
+    public static AssignmentDetailResponseDto fromEntity(Assignment assignment, boolean isBookmarked, Long bookmarkId) {
         User author = assignment.getUser();
         ParticipantInfoResponseDto participants = ParticipantInfoResponseDto.from(assignment.getParticipants());
         Set<Integer> grades = Set.copyOf(assignment.getGrades());
@@ -45,7 +45,7 @@ public class AssignmentDetailResponseDto extends BaseRecruitmentDetailResponseDt
                 assignment.getId(), author.getId(), author.getNickname(), assignment.getCategory(), author.getUniversity(),
                 assignment.getTitle(), assignment.getContent(), assignment.getDeadline(), assignment.getCreatedAt(),
                 assignment.getStatus(), assignment.getViewCount(), assignment.getDepartment(), assignment.getLecture(),
-                assignment.getLectureCode(), participants, grades
+                assignment.getLectureCode(), participants, grades, isBookmarked, bookmarkId
         );
     }
 }

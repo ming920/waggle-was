@@ -3,10 +3,12 @@ package com.wagglex2.waggle.domain.assignment.repository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentSearchCondition;
 import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentSummaryResponseDto;
+import com.wagglex2.waggle.domain.common.querydsl.RecruitmentSearchMatcher;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ import java.util.Set;
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.set;
 import static com.wagglex2.waggle.domain.assignment.entity.QAssignment.assignment;
+import static com.wagglex2.waggle.domain.bookmark.entity.QBookmark.bookmark;
 import static com.wagglex2.waggle.domain.user.entity.QUser.user;
 
 /**
@@ -41,11 +44,21 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      *     </ol>
      */
     @Override
-    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(AssignmentSearchCondition condition, Pageable pageable) {
+    public Page<AssignmentSummaryResponseDto> getAssignmentSummaries(
+            Long viewerId,
+            AssignmentSearchCondition condition,
+            Pageable pageable
+    ) {
         BooleanBuilder where = new BooleanBuilder()
                 .and(eqStatus(condition.status()))
                 .and(containsAnyKeyword(condition.keywords()))
-                .and(containsAnyGrade(condition.grades()));
+                .and(containsAnyGrade(condition.grades()))
+                .and(assignment.user.university.eq(  // 같은 대학의 공고만을 조회
+                        JPAExpressions
+                                .select(user.university)
+                                .from(user)
+                                .where(user.id.eq(viewerId))
+                ));
 
         // 조건 에 맞는 모든 Assignment 공고 id 조회
         List<Long> assignmentIds = queryFactory
@@ -58,7 +71,7 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
                 .fetch();
 
         // 해당 id의 Assignment 공고 조회
-        List<AssignmentSummaryResponseDto> content = getAssignmentSummariesByIds(assignmentIds);
+        List<AssignmentSummaryResponseDto> content = getAssignmentSummariesByIds(viewerId, assignmentIds);
 
         // 조건 만족하는 모든 과제 엔티티 개수를 구하는 쿼리
         // 페이지 총 개수를 제공하기 위함
@@ -77,12 +90,20 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      * @return 입력 순서에 맞춘 {@code List<AssignmentSummaryResponseDto>}
      */
     @Override
-    public List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(List<Long> assignmentIds) {
+    public List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(
+            Long viewerId,
+            List<Long> assignmentIds
+    ) {
         // 해당 id에 대한 Assignment 정보 조회
         // collection 데이터를 group by로 묶어서 가져오기 위함
         Map<Long, AssignmentSummaryResponseDto> responseDtoMap = queryFactory
                 .from(assignment)
                 .innerJoin(assignment.user, user)
+                .leftJoin(bookmark)
+                .on(
+                        bookmark.user.id.eq(viewerId)
+                                .and(bookmark.recruitment.id.eq(assignment.id))
+                )
                 .where(assignment.id.in(assignmentIds))
                 .transform(
                         groupBy(assignment.id).as(Projections.constructor(
@@ -99,12 +120,9 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
                                 assignment.department,
                                 assignment.lecture,
                                 assignment.lectureCode,
-                                Projections.constructor(
-                                        com.wagglex2.waggle.domain.common.dto.response.ParticipantInfoResponseDto.class,
-                                        assignment.participants.currParticipants,
-                                        assignment.participants.maxParticipants
-                                ),
-                                set(assignment.grades.any())
+                                set(assignment.grades.any()),
+                                bookmark.id.isNotNull(),
+                                bookmark.id
                         ))
                 );
         // 최종 응답 데이터 (불변 리스트)
@@ -119,22 +137,19 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
      */
     private BooleanExpression eqStatus(RecruitmentStatus status) {
         if (status == null || status == RecruitmentStatus.CANCELED)
-            return null;
+            return assignment.status.ne(RecruitmentStatus.CANCELED);
         return assignment.status.eq(status);
     }
 
     /**
      * 제목(title) 또는 내용(content)에 키워드 중 하나라도 포함되는 조건 생성
      */
-    private BooleanBuilder containsAnyKeyword(Set<String> keywords) {
-        if (keywords == null || keywords.isEmpty())
-            return null;
-        BooleanBuilder builder = new BooleanBuilder();
-        keywords.forEach(keyword ->
-                builder.or(assignment.title.containsIgnoreCase(keyword))
-                        .or(assignment.content.containsIgnoreCase(keyword))
+    private BooleanExpression containsAnyKeyword(Set<String> keywords) {
+        return RecruitmentSearchMatcher.match(
+                keywords,
+                assignment.title,
+                assignment.content
         );
-        return builder;
     }
 
     /**

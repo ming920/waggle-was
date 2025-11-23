@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -77,16 +78,27 @@ public class TeamServiceImpl implements TeamService {
             Pageable pageable
     ) {
 
+        if (userId == null) {
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        if (status == RecruitmentStatus.CANCELED) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT);
+        }
+
         pageableValidator.validate(pageable);
         pageableValidator.validateSort(pageable, MY_TEAM_SORT_FIELDS);
 
-        Page<Team> teams = teamRepository.findDistinctByRecruitmentCategoryAndRecruitmentStatusAndRecruitmentUserId(
-                category, status, userId, pageable
-        );
+        Page<Team> teams = teamRepository.getTeams(userId, category, status, pageable);
 
-        teams.getContent().forEach(team -> {
-            team.getMembers().size(); // BatchSize 트리거
-        });
+        if (!teams.isEmpty()) {
+            List<Long> teamIds = teams.getContent().stream()
+                    .map(Team::getId)
+                    .toList();
+
+            // 별도 쿼리로 members 조회
+            teamRepository.fetchMembers(teamIds);
+        }
 
         return teams.map(TeamResponseDto::fromEntity);
     }

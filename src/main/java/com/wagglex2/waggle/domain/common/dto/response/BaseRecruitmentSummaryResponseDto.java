@@ -25,4 +25,6 @@ public abstract class BaseRecruitmentSummaryResponseDto {
     private final LocalDateTime deadline;
 
     private final RecruitmentStatus status;
+    private final boolean isBookmarked;
+    private final Long bookmarkId;
 }

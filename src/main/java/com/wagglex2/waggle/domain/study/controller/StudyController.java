@@ -3,12 +3,18 @@ package com.wagglex2.waggle.domain.study.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
 import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
 import com.wagglex2.waggle.domain.study.service.StudyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,6 +51,25 @@ public class StudyController {
         );
     }
 
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Page<RecruitmentWithAppsResponseDto>>> getMyStudies(
+            @PageableDefault(size = 5) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        PageRequest pageRequest = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Direction.DESC, "createdAt")
+        );
+
+        Page<RecruitmentWithAppsResponseDto> studiesWithApps = studyService.getAllByUserId(userDetails.getUserId(), pageRequest);
+
+        return ResponseEntity.ok(
+                APIResponse.ok("내 스터디 공고 목록을 성공적으로 조회하였습니다.", studiesWithApps)
+        );
+    }
+
     @PutMapping("/{studyId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<APIResponse<Void>> updateStudy(
@@ -70,5 +95,4 @@ public class StudyController {
                 APIResponse.ok("스터디 공고를 성공적으로 삭제하였습니다.")
         );
     }
-
 }
