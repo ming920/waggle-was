@@ -149,7 +149,7 @@ public class StudyServiceImpl implements StudyService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
 
         if (!userId.equals(study.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_UPDATE_ANOTHER_USER_STUDY);
         }
 
         if (study.getStatus() == RecruitmentStatus.CANCELED) {
@@ -169,10 +169,15 @@ public class StudyServiceImpl implements StudyService {
         if (study.getStatus() == RecruitmentStatus.CANCELED) {
             throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
         }
-        
+
+        // 이미 삭제 처리되었는지 확인
+        if (study.getStatus() == RecruitmentStatus.CANCELED) {
+            throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
+        }
+
         // 권한 검증
         if (!userId.equals(study.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_DELETE_ANOTHER_USER_STUDY);
         }
 
         // 논리적 삭제
