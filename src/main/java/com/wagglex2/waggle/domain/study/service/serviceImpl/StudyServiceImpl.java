@@ -9,8 +9,10 @@ import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
+import com.wagglex2.waggle.domain.study.dto.request.StudySearchCondition;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
 import com.wagglex2.waggle.domain.study.dto.response.StudyDetailResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudySummaryResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.repository.StudyRepository;
 import com.wagglex2.waggle.domain.study.service.StudyService;
@@ -74,6 +76,15 @@ public class StudyServiceImpl implements StudyService {
         }
 
         return StudyDetailResponseDto.fromEntity(study);
+    }
+
+    @Override
+    public Page<StudySummaryResponseDto> getStudySummaries(
+            Long viewerId,
+            StudySearchCondition condition,
+            Pageable pageable
+    ) {
+        return studyRepository.getStudySummaries(viewerId, condition, pageable);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
