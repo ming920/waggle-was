@@ -244,4 +244,23 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(APIResponse.error(ErrorCode.UNREADABLE_JSON));
     }
+
+    /**
+     * 일반적인 서버 예외 처리
+     * <p>
+     * 애플리케이션 실행 중 처리되지 않은 모든 예외를 처리한다.
+     * <p>
+     *
+     * <p>
+     * 주로 예기치 않은 서버 오류, NullPointerException, RuntimeException 등
+     * 처리되지 않은 예외를 포괄적으로 잡기 위해 사용된다.
+     *
+     * @param ex {@link Exception} - 처리되지 않은 예외
+     * @return {@link ResponseEntity} - {@link APIResponse}를 포함한 500 Internal Server Error 응답
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<APIResponse<Void>> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(APIResponse.error(ErrorCode.INTERNAL_SERVER_ERROR));
+    }
 }
