@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         User user = findById(id);
 
         if (user.getStatus() != UserStatus.INCOMPLETED) {
-            throw new BusinessException(ErrorCode.USER_STATUS_NOT_INCOMPLETED);
+            throw new BusinessException(ErrorCode.USER_ALREADY_COMPLETED_BASIC_INFO);
         }
 
         // 기본 정보 업데이트
