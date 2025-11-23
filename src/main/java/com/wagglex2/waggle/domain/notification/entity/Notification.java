@@ -52,4 +52,8 @@ public class Notification {
         this.application = application;
         this.type = type;
     }
+
+    public void markAsRead() {
+        this.isRead = true;
+    }
 }

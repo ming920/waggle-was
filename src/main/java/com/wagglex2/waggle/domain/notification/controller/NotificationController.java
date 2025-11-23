@@ -48,6 +48,17 @@ public class NotificationController implements NotificationControllerDocs {
         return ResponseEntity.ok(APIResponse.ok(message, notifications));
     }
 
+    @PatchMapping("{notificationId}/read")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Void>> markAsRead(
+            @PathVariable("notificationId") Long notificationId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        notificationService.markAsRead(userDetails.getUserId(), notificationId);
+
+        return ResponseEntity.ok(APIResponse.ok("알림을 읽음 처리하였습니다."));
+    }
+
     @DeleteMapping("{notificationId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<APIResponse<Void>> deleteById(
