@@ -75,4 +75,10 @@ public class BookmarkServiceImpl implements BookmarkService {
 
         bookmarkRepository.delete(bookmark);
     }
+
+    @Transactional
+    @Override
+    public void deleteAllByRecruitmentId(Long recruitmentId) {
+        bookmarkRepository.deleteAllByRecruitmentId(recruitmentId);
+    }
 }
