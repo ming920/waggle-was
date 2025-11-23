@@ -152,10 +152,10 @@ public class AuthServiceImpl implements AuthService {
      * @param toEmail   인증번호를 받은 이메일
      * @param inputCode 사용자가 입력한 인증번호
      * @throws BusinessException <ul>
-     *                                                                                           <li>{@link ErrorCode#INVALID_REQUEST} : 이메일 또는 인증번호가 누락됨</li>
-     *                                                                                           <li>{@link ErrorCode#VERIFICATION_CODE_EXPIRED} : 인증번호가 존재하지 않거나 만료됨</li>
-     *                                                                                           <li>{@link ErrorCode#INVALID_VERIFICATION_CODE} : 입력된 인증번호 불일치</li>
-     *                                                                                       </ul>
+     *                                                                                                                     <li>{@link ErrorCode#INVALID_REQUEST} : 이메일 또는 인증번호가 누락됨</li>
+     *                                                                                                                     <li>{@link ErrorCode#VERIFICATION_CODE_EXPIRED} : 인증번호가 존재하지 않거나 만료됨</li>
+     *                                                                                                                     <li>{@link ErrorCode#INVALID_VERIFICATION_CODE} : 입력된 인증번호 불일치</li>
+     *                                                                                                                 </ul>
      */
     @Override
     public void verifyCode(String toEmail, String inputCode) {
@@ -208,10 +208,10 @@ public class AuthServiceImpl implements AuthService {
      * @param dto 로그인 요청 DTO (username, password)
      * @return Access / Refresh Token 쌍
      * @throws BusinessException <ul>
-     *                                                                                 <li>{@link ErrorCode#INVALID_CREDENTIALS} : 잘못된 로그인 정보</li>
-     *                                                                                 <li>{@link ErrorCode#REDIS_CONNECTION_ERROR} : Redis 연결 실패</li>
-     *                                                                                 <li>{@link ErrorCode#INTERNAL_SERVER_ERROR} : 기타 서버 내부 오류</li>
-     *                                                                               </ul>
+     *                            <li>{@link ErrorCode#INVALID_CREDENTIALS} : 잘못된 로그인 정보</li>
+     *                            <li>{@link ErrorCode#REDIS_CONNECTION_ERROR} : Redis 연결 실패</li>
+     *                            <li>{@link ErrorCode#INTERNAL_SERVER_ERROR} : 기타 서버 내부 오류</li>
+     *                           </ul>
      */
     @Override
     public TokenPair login(SignInRequestDto dto) {

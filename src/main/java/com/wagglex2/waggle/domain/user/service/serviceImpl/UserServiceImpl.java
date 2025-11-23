@@ -122,15 +122,16 @@ public class UserServiceImpl implements UserService {
 
         User user = findById(id);
 
+        if (user.getStatus() != UserStatus.INCOMPLETED) {
+            throw new BusinessException(ErrorCode.USER_STATUS_NOT_INCOMPLETED);
+        }
+
         // 기본 정보 업데이트
         user.updateGrade(dto.grade());
         user.updatePosition(dto.position());
         user.updateSkills(dto.skills());
         user.updateShortIntro(dto.shortIntro());
-
-        if (user.getStatus() == UserStatus.INCOMPLETED) {
-            user.updateStatus(UserStatus.ACTIVE);
-        }
+        user.updateStatus(UserStatus.ACTIVE);
     }
 
     /**
