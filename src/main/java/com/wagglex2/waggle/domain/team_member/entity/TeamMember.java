@@ -74,10 +74,19 @@ public class TeamMember {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    // 과제, 스터디
     public TeamMember(Team team, User user, TeamRole role) {
         this.team = team;
         this.user = user;
         this.role = role;
+    }
+
+    // 프로젝트
+    public TeamMember(Team team, User user, TeamRole role, PositionType position) {
+        this.team = team;
+        this.user = user;
+        this.role = role;
+        this.position = position;
     }
 
     public void setTeam(Team team) {

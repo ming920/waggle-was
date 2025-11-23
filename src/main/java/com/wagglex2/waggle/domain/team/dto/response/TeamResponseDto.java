@@ -1,5 +1,6 @@
 package com.wagglex2.waggle.domain.team.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wagglex2.waggle.domain.common.dto.response.PeriodResponseDto;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
@@ -32,6 +33,7 @@ import java.util.List;
  * </ul>
  * </p>
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record TeamResponseDto(
         Long id,
         Long recruitmentId,
