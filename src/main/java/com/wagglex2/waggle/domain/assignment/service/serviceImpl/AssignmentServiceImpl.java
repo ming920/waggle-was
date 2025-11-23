@@ -120,12 +120,13 @@ public class AssignmentServiceImpl implements AssignmentService {
     }
 
     @Override
-    public Page<AssignmentSummaryResponseDto> getBookmarkedAssignmentsByUserId(Long userId, Pageable pageable) {
+    public Page<AssignmentSummaryResponseDto> getBookmarkedAssignmentsByUserId(Long userId, RecruitmentStatus status, Pageable pageable) {
         // 찜한 과제 공고 id 조회
         Page<Long> targetIds =
                 bookmarkService.findBookmarkedRecruitmentIdsByUserId(
                         userId,
                         RecruitmentCategory.ASSIGNMENT,
+                        status,
                         pageable
                 );
 

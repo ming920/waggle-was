@@ -1489,6 +1489,7 @@ public interface ProjectControllerDocs {
             )
     })
     ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getMyBookmarks(
+            @RequestParam(value = "status", required = false) RecruitmentStatus status,
             @PageableDefault(size = 9) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     );

@@ -186,12 +186,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @PreAuthorize("#userId == authentication.principal.userId")
     @Override
-    public Page<ProjectSummaryResponseDto> getBookmarkedProjectsByUserId(Long userId, Pageable pageable) {
+    public Page<ProjectSummaryResponseDto> getBookmarkedProjectsByUserId(Long userId, RecruitmentStatus status, Pageable pageable) {
         // 찜한 프로젝트 공고 id 조회
         Page<Long> targetIds =
                 bookmarkService.findBookmarkedRecruitmentIdsByUserId(
                         userId,
                         RecruitmentCategory.PROJECT,
+                        status,
                         pageable
                 );
 
