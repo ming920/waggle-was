@@ -39,7 +39,7 @@ public class BookmarkRepositoryImpl implements BookmarkRepositoryCustom {
                 .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
-                .select(bookmark.recruitment.count())
+                .select(bookmark.count())
                 .from(bookmark)
                 .where(builder);
 
