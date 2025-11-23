@@ -190,7 +190,7 @@ public interface TeamControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "잘못된 정렬 기준, 페이지 크기/번호",
+                    description = "잘못된 정렬 기준, 페이지 크기 초과, ENUM 불일치, CANCELED 불가",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -206,7 +206,7 @@ public interface TeamControllerDocs {
                                                     """
                                     ),
                                     @ExampleObject(
-                                            name = "쿼리 파라미터 값이 유효하지 않을 때",
+                                            name = "쿼리 파라미터 값이 유효하지 않을 때(ENUM 불일치)",
                                             description = "http://3.35.173.28:8080/api/v1/teams/me?status=closeddd",
                                             value = """
                                                     {

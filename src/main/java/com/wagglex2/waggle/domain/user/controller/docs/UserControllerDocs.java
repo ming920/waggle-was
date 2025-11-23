@@ -6,6 +6,8 @@ import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.user.dto.request.*;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -835,6 +837,26 @@ public interface UserControllerDocs {
     @Operation(
             summary = "특정 사용자 리뷰 조회",
             description = "특정 사용자가 받은 리뷰 목록을 조건에 따라 페이지네이션 방식으로 조회한다.",
+            parameters = {
+                    @Parameter(
+                            name = "size",
+                            description = "가져올 리뷰 개수 (기본값: 5)",
+                            in = ParameterIn.QUERY,
+                            example = "5"
+                    ),
+                    @Parameter(
+                            name = "sort",
+                            description = "정렬 기준 필드(기본값: createdAt), 정렬 방향(ASC 또는 DESC, 기본값: DESC)",
+                            in = ParameterIn.QUERY,
+                            example = "createdAt,DESC"
+                    ),
+                    @Parameter(
+                            name = "page",
+                            description = "가져올 페이지",
+                            in = ParameterIn.QUERY,
+                            example = "0"
+                    )
+            },
             security = @SecurityRequirement(name = "Bearer Token")
     )
     @ApiResponses({
@@ -843,7 +865,7 @@ public interface UserControllerDocs {
                     description = "리뷰 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = ReviewResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -875,6 +897,36 @@ public interface UserControllerDocs {
                                                                 "totalPages": 3
                                                             }
                                                         }
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 정렬 기준, 페이지 크기 초과",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "잘못된 정렬 기준",
+                                            description = "http://3.35.173.28:8080/api/v1/users/{userId}/reviews/received?sort=create",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_SORT_PROPERTY",
+                                                        "message": "create는 정렬할 수 없는 필드입니다. 허용된 필드: [createdAt]"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "페이지 번호가 최댓값 이상인 경우",
+                                            description = "http://3.35.173.28:8080/api/v1/users/{userId}/reviews/received?page=999999",
+                                            value = """
+                                                    {
+                                                        "code": "PAGE_INDEX_OUT_OF_RANGE",
+                                                        "message": "페이지 번호는 최대 10000까지 가능합니다. (요청: 999999)"
                                                     }
                                                     """
                                     )

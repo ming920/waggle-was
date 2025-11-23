@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.review.service.serviceImpl;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
+import com.wagglex2.waggle.common.validator.PageableValidator;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewCreationRequestDto;
 import com.wagglex2.waggle.domain.review.dto.request.ReviewUpdateRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
@@ -19,6 +20,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,6 +30,10 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserService userService;
+    private final PageableValidator pageableValidator;
+
+    private static final Set<String> REVIEW_SORT_FIELDS =
+            Set.of("createdAt");
 
 
     @Override
@@ -82,6 +89,10 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public Page<ReviewResponseDto> getReviewsByRevieweeId(Long revieweeId, Pageable pageable) {
+
+        pageableValidator.validate(pageable);
+        pageableValidator.validateSort(pageable, REVIEW_SORT_FIELDS);
+
         return reviewRepository.findByRevieweeIdAndStatus(
                         revieweeId,
                         ReviewStatus.ACTIVE,
@@ -106,6 +117,10 @@ public class ReviewServiceImpl implements ReviewService {
      */
     @Override
     public Page<ReviewResponseDto> getReviewsByReviewerId(Long reviewerId, Pageable pageable) {
+
+        pageableValidator.validate(pageable);
+        pageableValidator.validateSort(pageable, REVIEW_SORT_FIELDS);
+
         return reviewRepository.findByReviewerIdAndStatus(
                         reviewerId,
                         ReviewStatus.ACTIVE,
