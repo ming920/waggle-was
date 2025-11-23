@@ -2,7 +2,7 @@ package com.wagglex2.waggle.domain.study.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
-import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudyDetailResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.service.StudyService;
 import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
@@ -55,7 +55,7 @@ class StudyControllerTest {
     void getStudy() throws Exception {
         // given
         Study study = createStudy();
-        StudyResponseDto responseDto = StudyResponseDto.fromEntity(study);
+        StudyDetailResponseDto responseDto = StudyDetailResponseDto.fromEntity(study);
         given(studyService.getStudy(1L, 1L)).willReturn(responseDto);
 
         // when

@@ -6,7 +6,7 @@ import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
-import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudyDetailResponseDto;
 import com.wagglex2.waggle.domain.study.service.StudyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +40,11 @@ public class StudyController {
 
     @GetMapping("/{studyId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<APIResponse<StudyResponseDto>> getStudy(
+    public ResponseEntity<APIResponse<StudyDetailResponseDto>> getStudy(
             @PathVariable Long studyId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        StudyResponseDto responseDto = studyService.getStudy(userDetails.getUserId(), studyId);
+        StudyDetailResponseDto responseDto = studyService.getStudy(userDetails.getUserId(), studyId);
 
         return ResponseEntity.ok(
                 APIResponse.ok("스터디 공고를 성공적으로 조회하였습니다.", responseDto)

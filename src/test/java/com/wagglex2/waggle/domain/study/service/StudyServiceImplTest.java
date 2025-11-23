@@ -3,7 +3,7 @@ package com.wagglex2.waggle.domain.study.service;
 import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
 import com.wagglex2.waggle.domain.common.type.Period;
 import com.wagglex2.waggle.domain.common.type.Skill;
-import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudyDetailResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.repository.StudyRepository;
 import com.wagglex2.waggle.domain.study.service.serviceImpl.StudyServiceImpl;
@@ -42,10 +42,10 @@ class StudyServiceImplTest {
         given(studyRepository.increaseViewCount(1L)).willReturn(1);
 
         // when
-        StudyResponseDto actual = studyService.getStudy(1L, 1L);
+        StudyDetailResponseDto actual = studyService.getStudy(1L, 1L);
 
         // then
-        StudyResponseDto expected = StudyResponseDto.fromEntity(study);
+        StudyDetailResponseDto expected = StudyDetailResponseDto.fromEntity(study);
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("viewCount")
                 .isEqualTo(expected);

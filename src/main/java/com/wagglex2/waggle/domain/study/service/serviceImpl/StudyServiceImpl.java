@@ -10,7 +10,7 @@ import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsRespons
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
-import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudyDetailResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.repository.StudyRepository;
 import com.wagglex2.waggle.domain.study.service.StudyService;
@@ -51,7 +51,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Transactional
     @Override
-    public StudyResponseDto getStudy(Long viewerId, Long studyId) {
+    public StudyDetailResponseDto getStudy(Long viewerId, Long studyId) {
         Study study = studyRepository.findWithAllById(studyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
 
@@ -73,7 +73,7 @@ public class StudyServiceImpl implements StudyService {
             throw new BusinessException(ErrorCode.STUDY_NOT_FOUND);
         }
 
-        return StudyResponseDto.fromEntity(study);
+        return StudyDetailResponseDto.fromEntity(study);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
