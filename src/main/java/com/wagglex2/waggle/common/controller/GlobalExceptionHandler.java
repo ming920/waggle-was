@@ -4,8 +4,10 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.response.ValidationError;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,7 +16,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -147,5 +151,34 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(APIResponse.error("NOT_FOUND", message));
+    }
+
+    /**
+     * HttpRequestMethodNotSupportedException 예외 처리
+     * <p>
+     * 클라이언트가 요청한 URL은 존재하지만, 해당 URL에서 요청한 HTTP 메서드가 허용되지 않을 경우 발생하는 예외를 처리한다.
+     *
+     * <p>
+     * 처리 결과로 클라이언트에게 HTTP 405 상태 코드와 함께 ErrorCode 및 요청 정보, 허용된 메서드를 반환한다.
+     *
+     * @param ex {@link HttpRequestMethodNotSupportedException} - 요청된 메서드 정보와 허용된 메서드 목록 포함
+     * @param request {@link HttpServletRequest} - 요청 URL 정보를 얻기 위해 사용
+     * @return {@link ResponseEntity} - {@link APIResponse}를 포함한 405 Method Not Allowed 응답
+     */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<APIResponse<Map<String, Object>>> handleHttpRequestMethodNotSupportedException(
+            HttpRequestMethodNotSupportedException ex,
+            HttpServletRequest request
+    ) {
+        String[] allowed = ex.getSupportedMethods();
+
+        // 순서 보장을 위해 LinkedHashMap 사용
+        Map<String, Object> errorDetail = new LinkedHashMap<>();
+        errorDetail.put("url", request.getRequestURI());
+        errorDetail.put("requested", ex.getMethod());
+        errorDetail.put("allowed", allowed != null ? allowed : "허용된 메서드 없음");
+
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(APIResponse.error(ErrorCode.METHOD_NOT_ALLOWED, errorDetail));
     }
 }

@@ -84,6 +84,9 @@ public enum ErrorCode {
     TARGET_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "TARGET_MEMBER_NOT_FOUND", "삭제할 멤버를 찾을 수 없습니다."),
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION_NOT_FOUND", "알림을 찾을 수 없습니다."),
 
+    // 405
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "METHOD_NOT_ALLOWED", "허용되지 않은 HTTP 메서드입니다."),
+
     // 406
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT_ACCEPTABLE", "응답 가능한 미디어 타입이 없습니다."),
 
