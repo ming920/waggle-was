@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface StudyRepository extends JpaRepository<Study, Long> {
+public interface StudyRepository extends JpaRepository<Study, Long>, StudyRepositoryCustom {
 
     @EntityGraph(
             attributePaths = {"user", "skills"},
