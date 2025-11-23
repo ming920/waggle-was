@@ -84,7 +84,10 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "프로젝트 공고 등록 성공",
+                    description = """
+                            프로젝트 공고 등록 성공<br>
+                            data: 프로젝트 공고 ID
+                            """,
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -142,6 +145,42 @@ public interface ProjectControllerDocs {
                                                                 "message": "진행 방식이 누락되었습니다."
                                                             }
                                                         ]
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
@@ -260,6 +299,24 @@ public interface ProjectControllerDocs {
                     )
             ),
             @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
                     responseCode = "403",
                     description = "타 대학 공고인 경우",
                     content = @Content(
@@ -293,6 +350,24 @@ public interface ProjectControllerDocs {
                                     )
                             }
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
             )
     })
     ResponseEntity<APIResponse<ProjectDetailResponseDto>> getProject(
@@ -303,7 +378,16 @@ public interface ProjectControllerDocs {
     @Operation(
             summary = "프로젝트 공고 목록 조회(검색)",
             description = """
-                    프로젝트 공고 목록을 조회(검색)한다.<br>
+                    프로젝트 공고 목록을 최신순으로 조회(검색)한다.<br><br>
+                    모든 조건은 AND로 처리된다. 단, 검색어, 포지션, 기술 스택은 OR로 처리된다.<br>
+                    
+                    예시:
+                    
+                    요청 - `/projects?q=네이버+카카오&purpose=contest&positions=front-end,back-end&skills=react,spring_boot,mysql`<br>
+                    
+                    처리 - ("네이버" OR "카카오") AND contest AND (front-end OR back-end) AND (react OR spring_boot OR mysql)
+                    
+                    <br>
                     enum 값은 대소문자와 `-`, `_`를 구분하지 않는다.
                     
                     예시:
@@ -318,7 +402,10 @@ public interface ProjectControllerDocs {
             parameters = {
                     @Parameter(
                             name = "q",
-                            description = "검색어<br>띄어쓰기는 `+`로 구분한다.",
+                            description = """
+                                    검색어<br>
+                                    띄어쓰기는 `+`로 구분한다.
+                                    """,
                             in = ParameterIn.QUERY,
                             example = "스프링+공모전"
                     ),
@@ -382,8 +469,8 @@ public interface ProjectControllerDocs {
                             ),
                             examples = {
                                     @ExampleObject(
-                                            name = "/projects?page=4&size=3&purpose=contest",
-                                            description = "`/projects?page=4&size=3&purpose=contest`",
+                                            name = "/projects?purpose=contest&page=4&size=3",
+                                            description = "`/projects?purpose=contest&page=4&size=3`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -552,6 +639,359 @@ public interface ProjectControllerDocs {
                                                         }
                                                     }
                                                     """
+                                    ),
+                                    @ExampleObject(
+                                            name = "/projects?q=카카오+공모전&page=4&size=3",
+                                            description = "`/projects?q=카카오+공모전&page=4&size=3`",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "프로젝트 공고 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 3,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "토스 주관 공모전 팀원 구합니다. (추가 모집)",
+                                                                    "deadline": "2025-12-30",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Vue.js",
+                                                                            "name": "VUE_JS"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Django",
+                                                                            "name": "DJANGO"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 3,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 1,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "카카오 해커톤 팀원 구합니다.",
+                                                                    "deadline": "2025-10-11",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온/오프라인",
+                                                                        "name": "HYBRID"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "해커톤",
+                                                                        "name": "HACKATHON"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 3,
+                                                                "number": 4,
+                                                                "totalElements": 14,
+                                                                "totalPages": 5
+                                                            }
+                                                        }
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "/projects?positions=front-end&skills=react,vue_js",
+                                            description = "`/projects?positions=front-end&skills=react,vue_js`",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "프로젝트 공고 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 148,
+                                                                    "authorId": 35,
+                                                                    "authorNickname": "우주멋쟁이123",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "웹 애플리케이션 개발 프로젝트",
+                                                                    "deadline": "2025-12-31",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온/오프라인",
+                                                                        "name": "HYBRID"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "풀스택",
+                                                                            "name": "FULL_STACK"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Java",
+                                                                            "name": "JAVA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "TypeScript",
+                                                                            "name": "TYPESCRIPT"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "토이 프로젝트",
+                                                                        "name": "TOY_PROJECT"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                },
+                                                                {
+                                                                    "id": 23,
+                                                                    "authorId": 20,
+                                                                    "authorNickname": "우주멋쟁이",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "졸업작품 팀원 모집합니다",
+                                                                    "deadline": "2025-10-25",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온라인",
+                                                                        "name": "ONLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Java",
+                                                                            "name": "JAVA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 5,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 3,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "토스 주관 공모전 팀원 구합니다. (추가 모집)",
+                                                                    "deadline": "2025-12-30",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Vue.js",
+                                                                            "name": "VUE_JS"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Django",
+                                                                            "name": "DJANGO"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 3,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 1,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "카카오 해커톤 팀원 구합니다.",
+                                                                    "deadline": "2025-10-11",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온/오프라인",
+                                                                        "name": "HYBRID"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "해커톤",
+                                                                        "name": "HACKATHON"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 9,
+                                                                "number": 0,
+                                                                "totalElements": 4,
+                                                                "totalPages": 1
+                                                            }
+                                                        }
+                                                    }
+                                                    """
                                     )
                             }
                     )
@@ -564,13 +1004,49 @@ public interface ProjectControllerDocs {
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
-                                            name = "/projects?page=5&size=3&purpose=banana",
+                                            name = "enum 조건이 잘못된 값인 경우",
                                             description = "`/projects?page=5&size=3&purpose=banana`",
                                             value = """
                                                     {
                                                         "code": "INVALID_ENUM_VALUE",
                                                         "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
                                                         "data": "쿼리 파라미터 'purpose'의 값 'banana'이(가) 유효하지 않습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
                                                     }
                                                     """
                                     )
@@ -600,7 +1076,7 @@ public interface ProjectControllerDocs {
                     @Parameter(
                             name = "page",
                             description = """
-                                    **조회하려는 내 프로젝트 공고 목록 페이지**<br>
+                                    조회하려는 내 프로젝트 공고 목록 페이지<br>
                                     기본값: 0 (0부터 시작)
                                     """,
                             in = ParameterIn.QUERY
@@ -608,7 +1084,7 @@ public interface ProjectControllerDocs {
                     @Parameter(
                             name = "size",
                             description = """
-                                    **조회하려는 내 프로젝트 공고 개수**<br>
+                                    조회하려는 내 프로젝트 공고 개수<br>
                                     기본값: 5
                                     """,
                             in = ParameterIn.QUERY
@@ -618,7 +1094,7 @@ public interface ProjectControllerDocs {
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
-                    description = "**내 프로젝트 공고 목록 조회 성공**",
+                    description = "내 프로젝트 공고 목록 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
                             array = @ArraySchema(
@@ -626,18 +1102,14 @@ public interface ProjectControllerDocs {
                             ),
                             examples = {
                                     @ExampleObject(
+                                            name = "/projects/me?page=1&size=3",
+                                            description = "`/projects/me?page=1&size=3`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
                                                         "message": "내 프로젝트 공고 목록을 성공적으로 조회하였습니다.",
                                                         "data": {
                                                             "content": [
-                                                                {
-                                                                    "recruitmentId": 141,
-                                                                    "title": "토스 주관 공모전 팀원 구합니다.",
-                                                                    "deadline": "2025.12.20",
-                                                                    "applications": []
-                                                                },
                                                                 {
                                                                     "recruitmentId": 137,
                                                                     "title": "네이버 주관 공모전 팀원 구합니다.",
@@ -653,7 +1125,7 @@ public interface ProjectControllerDocs {
                                                                             },
                                                                             "grade": 3,
                                                                             "content": "이 프로젝트에 지원하고 싶습니다.",
-                                                                            "appliedAt": "2025.11.22",
+                                                                            "appliedAt": "2025.11.21",
                                                                             "position": {
                                                                                 "desc": "프론트엔드",
                                                                                 "name": "FRONT_END"
@@ -679,16 +1151,12 @@ public interface ProjectControllerDocs {
                                                                             },
                                                                             "grade": 3,
                                                                             "content": "이 프로젝트에 지원하고 싶습니다.",
-                                                                            "appliedAt": "2025.11.03",
+                                                                            "appliedAt": "2025.11.02",
                                                                             "position": {
                                                                                 "desc": "백엔드",
                                                                                 "name": "BACK_END"
                                                                             },
                                                                             "skills": [
-                                                                                {
-                                                                                    "desc": "MySQL",
-                                                                                    "name": "MYSQL"
-                                                                                },
                                                                                 {
                                                                                     "desc": "Spring Boot",
                                                                                     "name": "SPRING_BOOT"
@@ -696,17 +1164,33 @@ public interface ProjectControllerDocs {
                                                                                 {
                                                                                     "desc": "Java",
                                                                                     "name": "JAVA"
+                                                                                },
+                                                                                {
+                                                                                    "desc": "MySQL",
+                                                                                    "name": "MYSQL"
                                                                                 }
                                                                             ]
                                                                         }
                                                                     ]
+                                                                },
+                                                                {
+                                                                    "recruitmentId": 19,
+                                                                    "title": "학교 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025.11.11",
+                                                                    "applications": []
+                                                                },
+                                                                {
+                                                                    "recruitmentId": 18,
+                                                                    "title": "정부 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025.11.11",
+                                                                    "applications": []
                                                                 }
                                                             ],
                                                             "page": {
-                                                                "size": 5,
-                                                                "number": 0,
-                                                                "totalElements": 2,
-                                                                "totalPages": 1
+                                                                "size": 3,
+                                                                "number": 1,
+                                                                "totalElements": 9,
+                                                                "totalPages": 3
                                                             }
                                                         }
                                                     }
@@ -717,7 +1201,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "401",
-                    description = "**인증 필요**",
+                    description = "인증 필요",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -735,7 +1219,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "500",
-                    description = "**서버 오류 발생**",
+                    description = "서버 오류 발생",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
@@ -791,6 +1275,8 @@ public interface ProjectControllerDocs {
                             ),
                             examples = {
                                     @ExampleObject(
+                                            name = "/projects/bookmarks?size=3",
+                                            description = "`/projects/bookmarks?size=3`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -798,9 +1284,9 @@ public interface ProjectControllerDocs {
                                                         "data": {
                                                             "content": [
                                                                 {
-                                                                    "id": 19,
-                                                                    "authorId": 5,
-                                                                    "authorNickname": "새우깡",
+                                                                    "id": 23,
+                                                                    "authorId": 20,
+                                                                    "authorNickname": "우주멋쟁이",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -810,37 +1296,41 @@ public interface ProjectControllerDocs {
                                                                         "desc": "프로젝트",
                                                                         "name": "PROJECT"
                                                                     },
-                                                                    "title": "학교 공모전 팀원 구합니다.",
-                                                                    "deadline": "2025-11-11",
+                                                                    "title": "졸업작품 팀원 모집합니다",
+                                                                    "deadline": "2025-10-25",
                                                                     "status": {
                                                                         "desc": "모집 중",
                                                                         "name": "RECRUITING"
                                                                     },
                                                                     "meetingType": {
-                                                                        "desc": "오프라인",
-                                                                        "name": "OFFLINE"
+                                                                        "desc": "온라인",
+                                                                        "name": "ONLINE"
                                                                     },
                                                                     "positions": [
                                                                         {
-                                                                            "desc": "게임",
-                                                                            "name": "GAME"
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
                                                                         },
                                                                         {
-                                                                            "desc": "디자인",
-                                                                            "name": "DESIGNER"
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
                                                                         }
                                                                     ],
                                                                     "skills": [
                                                                         {
-                                                                            "desc": "Unity",
-                                                                            "name": "UNITY"
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
                                                                         },
                                                                         {
-                                                                            "desc": "Figma",
-                                                                            "name": "FIGMA"
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Java",
+                                                                            "name": "JAVA"
                                                                         }
                                                                     ],
-                                                                    "bookmarkId": 21,
+                                                                    "bookmarkId": 5,
                                                                     "purpose": {
                                                                         "desc": "공모전",
                                                                         "name": "CONTEST"
@@ -861,7 +1351,7 @@ public interface ProjectControllerDocs {
                                                                         "name": "PROJECT"
                                                                     },
                                                                     "title": "토스 주관 공모전 팀원 구합니다. (추가 모집)",
-                                                                    "deadline": "2025-12-31",
+                                                                    "deadline": "2025-12-30",
                                                                     "status": {
                                                                         "desc": "모집 중",
                                                                         "name": "RECRUITING"
@@ -882,15 +1372,15 @@ public interface ProjectControllerDocs {
                                                                     ],
                                                                     "skills": [
                                                                         {
-                                                                            "desc": "Django",
-                                                                            "name": "DJANGO"
-                                                                        },
-                                                                        {
                                                                             "desc": "Vue.js",
                                                                             "name": "VUE_JS"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Django",
+                                                                            "name": "DJANGO"
                                                                         }
                                                                     ],
-                                                                    "bookmarkId": 20,
+                                                                    "bookmarkId": 3,
                                                                     "purpose": {
                                                                         "desc": "공모전",
                                                                         "name": "CONTEST"
@@ -898,7 +1388,7 @@ public interface ProjectControllerDocs {
                                                                     "bookmarked": true
                                                                 },
                                                                 {
-                                                                    "id": 1,
+                                                                    "id": 2,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
                                                                     "university": {
@@ -913,8 +1403,8 @@ public interface ProjectControllerDocs {
                                                                     "title": "해커톤 팀원 구합니다.",
                                                                     "deadline": "2025-10-11",
                                                                     "status": {
-                                                                        "desc": "모집 중",
-                                                                        "name": "RECRUITING"
+                                                                        "desc": "취소",
+                                                                        "name": "CANCELED"
                                                                     },
                                                                     "meetingType": {
                                                                         "desc": "온/오프라인",
@@ -932,15 +1422,15 @@ public interface ProjectControllerDocs {
                                                                     ],
                                                                     "skills": [
                                                                         {
-                                                                            "desc": "React",
-                                                                            "name": "REACT"
-                                                                        },
-                                                                        {
                                                                             "desc": "Spring Boot",
                                                                             "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
                                                                         }
                                                                     ],
-                                                                    "bookmarkId": 19,
+                                                                    "bookmarkId": 6,
                                                                     "purpose": {
                                                                         "desc": "해커톤",
                                                                         "name": "HACKATHON"
@@ -949,7 +1439,7 @@ public interface ProjectControllerDocs {
                                                                 }
                                                             ],
                                                             "page": {
-                                                                "size": 9,
+                                                                "size": 3,
                                                                 "number": 0,
                                                                 "totalElements": 3,
                                                                 "totalPages": 1
@@ -1111,6 +1601,24 @@ public interface ProjectControllerDocs {
                     )
             ),
             @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
                     responseCode = "403",
                     description = "다른 사용자의 프로젝트 공고를 수정하려는 경우",
                     content = @Content(
@@ -1146,6 +1654,24 @@ public interface ProjectControllerDocs {
                             }
                     )
             ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     })
     ResponseEntity<APIResponse<Void>> updateProject(
             @PathVariable Long projectId,
@@ -1180,6 +1706,24 @@ public interface ProjectControllerDocs {
                                                     {
                                                         "code": "SUCCESS",
                                                         "message": "프로젝트 공고를 성공적으로 삭제하였습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
                                                     }
                                                     """
                                     )
@@ -1222,6 +1766,24 @@ public interface ProjectControllerDocs {
                             }
                     )
             ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     })
     ResponseEntity<APIResponse<Void>> deleteProject(
             @PathVariable Long projectId,
