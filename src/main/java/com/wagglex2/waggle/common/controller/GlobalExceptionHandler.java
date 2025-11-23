@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
@@ -119,5 +120,32 @@ public class GlobalExceptionHandler {
     public ResponseEntity<APIResponse<Void>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                 .body(APIResponse.error(ErrorCode.FILE_SIZE_TOO_LARGE));
+    }
+
+    /**
+     * NoResourceFoundException 예외 처리
+     * <p>
+     * 클라이언트가 잘못된 URL 경로로 요청을 보낸 경우 발생하는 예외를 처리한다.
+     * <p>
+     * 예시:
+     * <ul>
+     *     <li>잘못된 경로 요청 (예: GET /api/v1/apple)</li>
+     * </ul>
+     * <p>
+     * 처리 결과로 클라이언트에게 HTTP 404 상태 코드와 함께 상세 메시지를 반환한다.
+     *
+     * @param ex {@link NoResourceFoundException} - 요청한 리소스를 찾을 수 없는 정보 포함
+     * @return {@link ResponseEntity} - {@link APIResponse}를 포함한 404 에러 응답
+     */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<APIResponse<String>> handleNoResourceFoundException(NoResourceFoundException ex) {
+        String message = String.format(
+                "잘못된 URL입니다. (%s %s)",
+                ex.getHttpMethod(),
+                ex.getResourcePath()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(APIResponse.error("NOT_FOUND", message));
     }
 }
