@@ -221,9 +221,10 @@ public interface ProjectControllerDocs {
                                                         "code": "SUCCESS",
                                                         "message": "프로젝트 공고를 성공적으로 조회하였습니다.",
                                                         "data": {
-                                                            "id": 141,
+                                                            "id": 1,
                                                             "authorId": 5,
                                                             "authorNickname": "새우깡",
+                                                            "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                             "category": {
                                                                 "desc": "프로젝트",
                                                                 "name": "PROJECT"
@@ -233,22 +234,22 @@ public interface ProjectControllerDocs {
                                                                 "domain": "yu.ac.kr",
                                                                 "name": "YOUNGNAM_UNIV"
                                                             },
-                                                            "title": "토스 주관 공모전 팀원 구합니다.",
-                                                            "content": "1등 팀 채용한답니다. 열심히 합시다.",
-                                                            "deadline": "2025-12-20 23:59:59",
-                                                            "createdAt": "2025-11-17 15:10:51",
+                                                            "title": "카카오 해커톤 팀원 구합니다.",
+                                                            "content": "카카오에서 개최하는 해커톤 같이 할 사람 구해요.",
+                                                            "deadline": "2025-10-11 23:59:59",
+                                                            "createdAt": "2025-10-08 00:53:36",
                                                             "status": {
                                                                 "desc": "모집 중",
                                                                 "name": "RECRUITING"
                                                             },
-                                                            "viewCount": 1,
+                                                            "viewCount": 91,
                                                             "purpose": {
-                                                                "desc": "공모전",
-                                                                "name": "CONTEST"
+                                                                "desc": "해커톤",
+                                                                "name": "HACKATHON"
                                                             },
                                                             "meetingType": {
-                                                                "desc": "오프라인",
-                                                                "name": "OFFLINE"
+                                                                "desc": "온/오프라인",
+                                                                "name": "HYBRID"
                                                             },
                                                             "positions": [
                                                                 {
@@ -274,23 +275,24 @@ public interface ProjectControllerDocs {
                                                             ],
                                                             "skills": [
                                                                 {
-                                                                    "desc": "React",
-                                                                    "name": "REACT"
-                                                                },
-                                                                {
                                                                     "desc": "Spring Boot",
                                                                     "name": "SPRING_BOOT"
+                                                                },
+                                                                {
+                                                                    "desc": "React",
+                                                                    "name": "REACT"
                                                                 }
                                                             ],
                                                             "grades": [
-                                                                2,
-                                                                3
+                                                                3,
+                                                                4
                                                             ],
                                                             "period": {
-                                                                "startDate": "2025-12-25",
-                                                                "endDate": "2026-03-20"
+                                                                "startDate": "2025-10-05",
+                                                                "endDate": "2025-10-20"
                                                             },
-                                                            "bookmarked": false
+                                                            "bookmarkId": 24,
+                                                            "bookmarked": true
                                                         }
                                                     }
                                                     """
