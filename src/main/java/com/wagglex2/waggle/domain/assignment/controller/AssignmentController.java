@@ -104,6 +104,20 @@ public class AssignmentController {
         );
     }
 
+    @GetMapping("/bookmarks")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Page<AssignmentSummaryResponseDto>>> getMyBookmarks(
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Page<AssignmentSummaryResponseDto> bookmarkedAssignments =
+                assignmentService.getBookmarkedAssignmentsByUserId(userDetails.getUserId(), pageable);
+
+        return ResponseEntity.ok(
+                APIResponse.ok("과제 공고 찜 목록을 성공적으로 조회하였습니다.", bookmarkedAssignments)
+        );
+    }
+
     @PutMapping("/{assignmentId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<APIResponse<Void>> updateAssignment(

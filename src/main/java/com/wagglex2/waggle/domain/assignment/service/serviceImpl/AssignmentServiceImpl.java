@@ -16,6 +16,7 @@ import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
+import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
@@ -108,6 +109,33 @@ public class AssignmentServiceImpl implements AssignmentService {
             Pageable pageable
     ) {
         return assignmentRepository.getAssignmentSummaries(viewerId, condition, pageable);
+    }
+
+    @Override
+    public List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(Long viewerId, List<Long> assignmentIds) {
+        return assignmentRepository.getAssignmentSummariesByIds(viewerId, assignmentIds);
+    }
+
+    @Override
+    public Page<AssignmentSummaryResponseDto> getBookmarkedAssignmentsByUserId(Long userId, Pageable pageable) {
+        // 찜한 과제 공고 id 조회
+        Page<Long> targetIds =
+                bookmarkService.findBookmarkedRecruitmentIdsByUserId(
+                        userId,
+                        RecruitmentCategory.ASSIGNMENT,
+                        pageable
+                );
+
+        // 조회할 공고가 없으면, 빈 리스트 반환
+        if (targetIds.getContent().isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, targetIds.getTotalElements());
+        }
+
+        // targetIds에 해당하는 과제 공고 정보 조회
+        List<AssignmentSummaryResponseDto> assignmentSummaries =
+                getAssignmentSummariesByIds(userId, targetIds.getContent());
+
+        return new PageImpl<>(assignmentSummaries, pageable, targetIds.getTotalElements());
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
