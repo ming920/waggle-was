@@ -21,6 +21,7 @@ import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.set;
 import static com.wagglex2.waggle.domain.study.entity.QStudy.study;
 import static com.wagglex2.waggle.domain.user.entity.QUser.user;
+import static com.wagglex2.waggle.domain.bookmark.entity.QBookmark.bookmark;
 
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
                 .fetch();
 
         // 해당 id의 Study 공고 조회
-        List<StudySummaryResponseDto> content = getStudySummariesByIds(studyIds);
+        List<StudySummaryResponseDto> content = getStudySummariesByIds(viewerId, studyIds);
 
         // 조건을 만족하는 모든 스터디 엔티티의 개수를 구하는 쿼리
         // 페이지의 총 개수를 제공하기 위함
@@ -84,12 +85,20 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
      * @return 입력 순서에 맞춘 {@code List<StudySummaryResponseDto>}
      */
     @Override
-    public List<StudySummaryResponseDto> getStudySummariesByIds(List<Long> studyIds) {
+    public List<StudySummaryResponseDto> getStudySummariesByIds(
+                Long viewerId,
+                List<Long> studyIds
+) {
         // 해당 id에 대한 Study 정보 조회
         // collection 데이터를 group by로 묶어서 가져오기 위함
         Map<Long, StudySummaryResponseDto> responseDtoMap = queryFactory
                 .from(study)
                 .innerJoin(study.user, user)
+                .leftJoin(bookmark)
+                .on(
+                        bookmark.user.id.eq(viewerId)
+                                .and(bookmark.recruitment.id.eq(study.id))
+                )
                 .where(study.id.in(studyIds))
                 .transform(
                         groupBy(study.id).as(Projections.constructor(

@@ -353,7 +353,9 @@ public interface StudyControllerDocs {
                                                                             "desc": "Java",
                                                                             "name": "JAVA"
                                                                         }
-                                                                    ]
+                                                                    ],
+                                                                    "bookmarked": false,
+                                                                    "bookmarkId": null
                                                                 },
                                                                 {
                                                                     "id": 23,
@@ -383,7 +385,9 @@ public interface StudyControllerDocs {
                                                                             "desc": "JavaScript",
                                                                             "name": "JAVASCRIPT"
                                                                         }
-                                                                    ]
+                                                                    ],
+                                                                    "bookmarked": false,
+                                                                    "bookmarkId": null
                                                                 },
                                                                 {
                                                                     "id": 19,
@@ -409,7 +413,9 @@ public interface StudyControllerDocs {
                                                                             "desc": "Python",
                                                                             "name": "PYTHON"
                                                                         }
-                                                                    ]
+                                                                    ],
+                                                                    "bookmarkId": 21,
+                                                                    "bookmarked": true
                                                                 }
                                                             ],
                                                             "page": {

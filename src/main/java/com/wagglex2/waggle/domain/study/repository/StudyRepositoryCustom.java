@@ -25,5 +25,5 @@ public interface StudyRepositoryCustom {
      * @param studyIds 조회할 Study ID 목록
      * @return 입력 순서에 맞춘 {@code List<StudySummaryResponseDto>}
      */
-    List<StudySummaryResponseDto> getStudySummariesByIds(List<Long> studyIds);
+    List<StudySummaryResponseDto> getStudySummariesByIds(Long viewerId, List<Long> studyIds);
 }
