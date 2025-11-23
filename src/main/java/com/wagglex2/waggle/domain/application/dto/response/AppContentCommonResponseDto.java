@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
  *     <li>{@link #applicationId} - 지원 ID</li>
  *     <li>{@link #applicantId} - 지원자 ID</li>
  *     <li>{@link #nickname} - 지원자 닉네임</li>
+ *     <li>{@link #profileImageUrl} - 지원자 프로필 이미지 URL</li>
  *     <li>{@link #meetingType} - 진행 방식</li>
  *     <li>{@link #grade} - 지원자 학년</li>
  *     <li>{@link #content} - 지원서 본문</li>
@@ -34,7 +35,7 @@ public abstract class AppContentCommonResponseDto {
     private Long applicationId;
     private Long applicantId;
     private String nickname;
-    // TODO profile image
+    private String profileImageUrl;
     private final MeetingType meetingType;
     private final Integer grade;
     private final String content;

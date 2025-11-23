@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
  *     <li>{@link #applicationId} - 지원 ID</li>
  *     <li>{@link #applicantId} - 지원자 ID</li>
  *     <li>{@link #nickname} - 지원자 닉네임</li>
+ *     <li>{@link #profileImageUrl} - 지원자 프로필 이미지 URL</li>
  *     <li>{@link #meetingType} - 진행 방식</li>
  *     <li>{@link #grade} - 지원자 학년</li>
  *     <li>{@link #content} - 지원서 본문</li>
@@ -31,9 +32,9 @@ public class AppContentSimpleResponseDto extends AppContentCommonResponseDto {
 
     public AppContentSimpleResponseDto(
             Long applicationId, Long applicantId, String nickname,
-            MeetingType meetingType, Integer grade, String content,
-            LocalDateTime appliedAt
+            String profileImageUrl, MeetingType meetingType,
+            Integer grade, String content, LocalDateTime appliedAt
     ) {
-        super(applicationId, applicantId, nickname, meetingType, grade, content, appliedAt);
+        super(applicationId, applicantId, nickname, profileImageUrl, meetingType, grade, content, appliedAt);
     }
 }

@@ -1112,6 +1112,18 @@ public interface ProjectControllerDocs {
                                                         "data": {
                                                             "content": [
                                                                 {
+                                                                    "recruitmentId": 139,
+                                                                    "title": "토스 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025.12.20",
+                                                                    "applications": []
+                                                                },
+                                                                {
+                                                                    "recruitmentId": 138,
+                                                                    "title": "네이버 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025.12.20",
+                                                                    "applications": []
+                                                                },
+                                                                {
                                                                     "recruitmentId": 137,
                                                                     "title": "네이버 주관 공모전 팀원 구합니다.",
                                                                     "deadline": "2025.12.20",
@@ -1120,25 +1132,26 @@ public interface ProjectControllerDocs {
                                                                             "applicationId": 27,
                                                                             "applicantId": 40,
                                                                             "nickname": "박데통",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "meetingType": {
                                                                                 "desc": "온라인",
                                                                                 "name": "ONLINE"
                                                                             },
                                                                             "grade": 3,
                                                                             "content": "이 프로젝트에 지원하고 싶습니다.",
-                                                                            "appliedAt": "2025.11.21",
+                                                                            "appliedAt": "2025.11.22",
                                                                             "position": {
                                                                                 "desc": "프론트엔드",
                                                                                 "name": "FRONT_END"
                                                                             },
                                                                             "skills": [
                                                                                 {
-                                                                                    "desc": "JavaScript",
-                                                                                    "name": "JAVASCRIPT"
-                                                                                },
-                                                                                {
                                                                                     "desc": "React",
                                                                                     "name": "REACT"
+                                                                                },
+                                                                                {
+                                                                                    "desc": "JavaScript",
+                                                                                    "name": "JAVASCRIPT"
                                                                                 }
                                                                             ]
                                                                         },
@@ -1146,25 +1159,26 @@ public interface ProjectControllerDocs {
                                                                             "applicationId": 12,
                                                                             "applicantId": 34,
                                                                             "nickname": "매운새우깡",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "meetingType": {
                                                                                 "desc": "온라인",
                                                                                 "name": "ONLINE"
                                                                             },
                                                                             "grade": 3,
                                                                             "content": "이 프로젝트에 지원하고 싶습니다.",
-                                                                            "appliedAt": "2025.11.02",
+                                                                            "appliedAt": "2025.11.03",
                                                                             "position": {
                                                                                 "desc": "백엔드",
                                                                                 "name": "BACK_END"
                                                                             },
                                                                             "skills": [
                                                                                 {
-                                                                                    "desc": "Spring Boot",
-                                                                                    "name": "SPRING_BOOT"
-                                                                                },
-                                                                                {
                                                                                     "desc": "Java",
                                                                                     "name": "JAVA"
+                                                                                },
+                                                                                {
+                                                                                    "desc": "Spring Boot",
+                                                                                    "name": "SPRING_BOOT"
                                                                                 },
                                                                                 {
                                                                                     "desc": "MySQL",
@@ -1173,25 +1187,13 @@ public interface ProjectControllerDocs {
                                                                             ]
                                                                         }
                                                                     ]
-                                                                },
-                                                                {
-                                                                    "recruitmentId": 19,
-                                                                    "title": "학교 공모전 팀원 구합니다.",
-                                                                    "deadline": "2025.11.11",
-                                                                    "applications": []
-                                                                },
-                                                                {
-                                                                    "recruitmentId": 18,
-                                                                    "title": "정부 공모전 팀원 구합니다.",
-                                                                    "deadline": "2025.11.11",
-                                                                    "applications": []
                                                                 }
                                                             ],
                                                             "page": {
                                                                 "size": 3,
                                                                 "number": 1,
-                                                                "totalElements": 9,
-                                                                "totalPages": 3
+                                                                "totalElements": 10,
+                                                                "totalPages": 4
                                                             }
                                                         }
                                                     }

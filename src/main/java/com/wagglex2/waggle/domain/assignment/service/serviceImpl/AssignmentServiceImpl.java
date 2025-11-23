@@ -174,6 +174,7 @@ public class AssignmentServiceImpl implements AssignmentService {
                                         app.getId(),
                                         app.getApplicant().getId(),
                                         app.getApplicant().getNickname(),
+                                        app.getApplicant().getProfileImageUrl(),
                                         app.getMeetingType(),
                                         app.getGrade(),
                                         app.getContent(),
