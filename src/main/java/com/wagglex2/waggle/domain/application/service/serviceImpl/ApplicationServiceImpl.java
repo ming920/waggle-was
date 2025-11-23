@@ -25,7 +25,7 @@ import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
 import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
-import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
+import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +53,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final UserService userService;
     private final RecruitmentService recruitmentService;
     private final TeamService teamService;
+    private final TeamMemberService teamMemberService;
     private final ApplicationEventPublisher publisher;
 
     @PreAuthorize("#userId == authentication.principal.userId")
@@ -211,7 +212,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // 팀에 추가
         Team team = teamService.findByRecruitmentId(recruitment.getId());
-        TeamMember newMember = new TeamMember(team, application.getApplicant(), TeamRole.MEMBER);
+        TeamMember newMember = teamMemberService.createMember(team, application);
         team.addMember(newMember);
 
         // 이벤트 발행
