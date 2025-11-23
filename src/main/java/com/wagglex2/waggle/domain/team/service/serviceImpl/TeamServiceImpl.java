@@ -83,7 +83,7 @@ public class TeamServiceImpl implements TeamService {
         }
 
         if (status == RecruitmentStatus.CANCELED) {
-            throw new BusinessException(ErrorCode.RECRUITMENT_NOT_FOUND);
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT);
         }
 
         pageableValidator.validate(pageable);
