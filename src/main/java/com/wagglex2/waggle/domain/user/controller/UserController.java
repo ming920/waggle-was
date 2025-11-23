@@ -43,7 +43,7 @@ public class UserController implements UserControllerDocs {
      *
      * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
-    @GetMapping("/username/check")
+    @PostMapping("/username/check")
     public ResponseEntity<APIResponse<Boolean>> existsByUsername(
             @RequestBody @Valid UsernameCheckRequestDto dto
             ) {
@@ -63,7 +63,7 @@ public class UserController implements UserControllerDocs {
      *
      * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
-    @GetMapping("/email/check")
+    @PostMapping("/email/check")
     public ResponseEntity<APIResponse<Boolean>> existsByEmail(
             @RequestBody @Valid EmailCheckRequestDto dto
             ) {
@@ -84,7 +84,7 @@ public class UserController implements UserControllerDocs {
      *
      * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
-    @GetMapping("/nickname/check")
+    @PostMapping("/nickname/check")
     public ResponseEntity<APIResponse<Boolean>> existsByNickname(
             @RequestBody @Valid NicknameCheckRequestDto dto
     ) {
