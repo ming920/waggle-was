@@ -1,6 +1,7 @@
 package com.wagglex2.waggle.common.security;
 
 import com.wagglex2.waggle.domain.user.entity.User;
+import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
 import lombok.Getter;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,13 +19,15 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
     private String password;
     private final String nickname;
     private final String role;
+    private final UserStatus status;
 
-    // JWT에서 직접 생성하는 생성자
+    // JWT에서 생성 (status는 JWT에 포함 안함)
     public CustomUserDetails(Long userId, String username, String nickname, String role) {
         this.userId = userId;
         this.username = username;
         this.nickname = nickname;
         this.role = role;
+        this.status = UserStatus.ACTIVE; // 기본값 설정 (JWT 인증된 유저는 활성 상태)
         this.password = null;
     }
 
@@ -35,6 +38,7 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
         this.password = user.getPassword();
         this.nickname = user.getNickname();
         this.role = user.getRole().name();
+        this.status = user.getStatus(); // DB에서 가져온 실제 status
     }
 
     @Override
@@ -71,7 +75,7 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return status == UserStatus.ACTIVE || status == UserStatus.INCOMPLETED;
     }
 
     @Override

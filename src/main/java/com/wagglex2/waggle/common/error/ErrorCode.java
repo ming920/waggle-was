@@ -35,6 +35,7 @@ public enum ErrorCode {
     FILE_NOT_UPLOADED(HttpStatus.BAD_REQUEST, "FILE_NOT_UPLOADED", "파일이 업로드되지 않았습니다."),
     INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "INVALID_FILE_NAME", "파일명이 올바르지 않습니다."),
     INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, "INVALID_FILE_FORMAT", "지원하지 않는 파일 형식입니다. jpg, jpeg, png만 가능합니다."),
+    USER_ALREADY_COMPLETED_BASIC_INFO(HttpStatus.BAD_REQUEST, "USER_ALREADY_COMPLETED_BASIC_INFO", "이미 기본 정보를 입력한 사용자입니다."),
     INVALID_ARGUMENT(HttpStatus.BAD_REQUEST, "INVALID_ARGUMENT", "유효하지 않은 인자 값입니다."),
 
     // 401

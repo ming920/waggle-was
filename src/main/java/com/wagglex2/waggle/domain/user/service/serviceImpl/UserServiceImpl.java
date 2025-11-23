@@ -4,6 +4,7 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.service.S3Service;
 import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.PasswordRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.UserUpdateRequestDto;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
     private final S3Service s3Service;
-    
+
     @Value("${aws.s3.default-profile-image-url}")
     private String defaultProfileImageUrl;
 
@@ -57,7 +58,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsById(Long id) { return userRepository.existsById(id); }
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
 
     @Override
     public boolean existsByEmail(String email) {
@@ -89,10 +92,10 @@ public class UserServiceImpl implements UserService {
      * @param dto 회원가입 요청 DTO
      * @return 생성된 User의 식별자(ID)
      * @throws BusinessException <ul>
-     *                                       <li>{@link ErrorCode#DUPLICATED_USERNAME} : 이미 존재하는 아이디</li>
-     *                                       <li>{@link ErrorCode#DUPLICATED_EMAIL} : 이미 등록된 이메일</li>
-     *                                       <li>{@link ErrorCode#DUPLICATED_NICKNAME} : 이미 사용 중인 닉네임</li>
-     *                                   </ul>
+     *                            <li>{@link ErrorCode#DUPLICATED_USERNAME} : 이미 존재하는 아이디</li>
+     *                            <li>{@link ErrorCode#DUPLICATED_EMAIL} : 이미 등록된 이메일</li>
+     *                            <li>{@link ErrorCode#DUPLICATED_NICKNAME} : 이미 사용 중인 닉네임</li>
+     *                           </ul>
      */
     @Override
     @Transactional
@@ -109,8 +112,26 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ErrorCode.DUPLICATED_NICKNAME);
         }
 
-        User user = dto.toEntity(passwordEncoder);
+        User user = dto.toEntity(passwordEncoder, defaultProfileImageUrl);
         return userRepository.save(user).getId();
+    }
+
+    @Override
+    @Transactional
+    public void updateBasicInfo(Long id, UserBasicInfoRequestDto dto) {
+
+        User user = findById(id);
+
+        if (user.getStatus() != UserStatus.INCOMPLETED) {
+            throw new BusinessException(ErrorCode.USER_ALREADY_COMPLETED_BASIC_INFO);
+        }
+
+        // 기본 정보 업데이트
+        user.updateGrade(dto.grade());
+        user.updatePosition(dto.position());
+        user.updateSkills(dto.skills());
+        user.updateShortIntro(dto.shortIntro());
+        user.updateStatus(UserStatus.ACTIVE);
     }
 
     /**
