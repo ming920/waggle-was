@@ -7,6 +7,7 @@ import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsRespons
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.common.type.Skill;
 import com.wagglex2.waggle.domain.common.util.KomoranUtil;
+import com.wagglex2.waggle.domain.study.controller.docs.StudyControllerDocs;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudySearchCondition;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
@@ -32,7 +33,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/studies")
 @RequiredArgsConstructor
-public class StudyController {
+public class StudyController implements StudyControllerDocs {
     private final StudyService studyService;
     private final KomoranUtil komoranUtil;
 
