@@ -2,19 +2,24 @@ package com.wagglex2.waggle.domain.team.service.serviceImpl;
 
 import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
-import com.wagglex2.waggle.common.error.ErrorCode;
-import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.validator.PageableValidator;
+import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
+import com.wagglex2.waggle.domain.common.service.RecruitmentService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.team.dto.response.TeamResponseDto;
 import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.repository.TeamRepository;
 import com.wagglex2.waggle.domain.team.service.TeamService;
+import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
+import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
+import com.wagglex2.waggle.domain.user.entity.User;
+import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -26,7 +31,9 @@ import java.util.Set;
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
+    private final UserService userService;
     private final PageableValidator pageableValidator;
+    private final RecruitmentService recruitmentService;
 
     private static final Set<String> MY_TEAM_SORT_FIELDS =
             Set.of("createdAt");
@@ -58,6 +65,18 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public boolean existsById(Long id) {
         return teamRepository.existsById(id);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY) // 반드시 트랜잭션 내에서 실행
+    public void createByRecruitmentId(Long userId, Long recruitmentId) {
+        User user = userService.findById(userId);
+        BaseRecruitment recruitment = recruitmentService.findById(recruitmentId);
+
+        Team team = new Team(recruitment);
+        TeamMember leader = new TeamMember(team, user, TeamRole.LEADER);
+        team.addMember(leader);
+        teamRepository.save(team);
     }
 
     /**
@@ -104,7 +123,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.MANDATORY) // 반드시 트랜잭션 내에서 실행
     public void deleteByRecruitmentId(Long recruitmentId) {
         Team team = findByRecruitmentId(recruitmentId);
 

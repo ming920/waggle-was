@@ -16,13 +16,10 @@ import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
+import com.wagglex2.waggle.domain.common.event.CreateRecruitmentEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
-import com.wagglex2.waggle.domain.team.entity.Team;
-import com.wagglex2.waggle.domain.team.service.TeamService;
-import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
-import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +46,6 @@ public class AssignmentServiceImpl implements AssignmentService {
     private static final Set<String> ASSIGNMENT_SORT_FIELDS = Set.of("createdAt");
     private final AssignmentRepository assignmentRepository;
     private final UserService userService;
-    private final TeamService teamService;
     private final ApplicationEventPublisher publisher;
     private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
@@ -63,10 +59,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         Long assignmentId = assignmentRepository.save(newAssignment).getId();
 
-        Team team = new Team(newAssignment);
-        TeamMember leader = new TeamMember(team, user, TeamRole.LEADER);
-        team.addMember(leader);
-        teamService.save(team);
+        publisher.publishEvent(new CreateRecruitmentEvent(userId, assignmentId));
 
         return assignmentId;
     }

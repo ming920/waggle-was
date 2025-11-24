@@ -13,6 +13,7 @@ public interface TeamService {
     Team findByIdWithMembers(Long id);
     Team findByRecruitmentId(Long recruitmentId);
     boolean existsById(Long id);
+    void createByRecruitmentId(Long userId, Long recruitmentId);
     Page<TeamResponseDto> getByUserIdAndCategoryAndStatus(Long userId, RecruitmentCategory category, RecruitmentStatus status, Pageable pageable);
     void deleteByRecruitmentId(Long recruitmentId);
 }
