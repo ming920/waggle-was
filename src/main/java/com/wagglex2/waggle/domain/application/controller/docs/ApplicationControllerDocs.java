@@ -1127,7 +1127,7 @@ public interface ApplicationControllerDocs {
     })
     @DeleteMapping("{applicationId}")
     @PreAuthorize("isAuthenticated()")
-    ResponseEntity<APIResponse<Void>> cancelApplication(
+    ResponseEntity<APIResponse<Void>> deleteApplication(
             @PathVariable("applicationId") Long applicationId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     );

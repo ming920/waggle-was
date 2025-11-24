@@ -259,7 +259,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     @PreAuthorize("#userId == authentication.principal.userId")
     @Transactional
     @Override
-    public void cancelApplication(Long userId, Long applicationId) {
+    public void deleteApplication(Long userId, Long applicationId) {
         Application application = findById(applicationId);
 
         // 권한 검증
@@ -274,6 +274,12 @@ public class ApplicationServiceImpl implements ApplicationService {
 
         // 논리적 삭제
         application.delete();
+    }
+
+    @Transactional
+    @Override
+    public void cancelApplication(Long recruitmentId) {
+        applicationRepository.cancelAllByRecruitmentId(recruitmentId);
     }
 
     @Transactional

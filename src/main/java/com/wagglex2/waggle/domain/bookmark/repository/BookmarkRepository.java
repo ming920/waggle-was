@@ -5,6 +5,7 @@ import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -46,4 +47,13 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
         AND b.recruitment.id = :recruitmentId
     """)
     Optional<Long> findIdByUserIdAndRecruitmentId(Long userId, Long recruitmentId);
+
+    /**
+     * 특정 공고에 대한 모든 찜을 삭제한다.
+     *
+     * @param recruitmentId 공고 ID
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE FROM Bookmark b WHERE b.recruitment.id = :recruitmentId")
+    void deleteAllByRecruitmentId(Long recruitmentId);
 }

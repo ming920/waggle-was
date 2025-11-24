@@ -17,6 +17,7 @@ import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
@@ -25,6 +26,7 @@ import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +50,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final AssignmentRepository assignmentRepository;
     private final UserService userService;
     private final TeamService teamService;
+    private final ApplicationEventPublisher publisher;
     private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
@@ -228,5 +231,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         // 논리적 삭제
         assignment.cancel();
+
+        publisher.publishEvent(new RecruitmentDeletedEvent(assignmentId));
     }
 }
