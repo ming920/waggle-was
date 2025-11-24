@@ -27,7 +27,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "User", description = "사용자 관련 API")
+@Tag(name = "User(사용자)", description = "사용자 관련 API")
 public interface UserControllerDocs {
 
     @Operation(

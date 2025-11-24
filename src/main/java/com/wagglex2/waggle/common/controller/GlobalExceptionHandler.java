@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.List;
 
@@ -119,5 +120,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<APIResponse<Void>> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException ex) {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
                 .body(APIResponse.error(ErrorCode.FILE_SIZE_TOO_LARGE));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<APIResponse<String>> handleNoResourceFoundException(NoResourceFoundException ex) {
+        String message = String.format(
+                "잘못된 URL입니다. (%s %s)",
+                ex.getHttpMethod(),
+                ex.getResourcePath()
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(APIResponse.error("NOT_FOUND", message));
     }
 }

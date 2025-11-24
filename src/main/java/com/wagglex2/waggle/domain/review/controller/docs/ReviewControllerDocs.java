@@ -25,7 +25,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Review", description = "리뷰 관련 API")
+@Tag(name = "Review(리뷰)", description = "리뷰 관련 API")
 public interface ReviewControllerDocs {
 
     @Operation(

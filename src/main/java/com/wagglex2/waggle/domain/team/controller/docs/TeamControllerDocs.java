@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "Team", description = "팀 관련 API")
+@Tag(name = "Team(팀)", description = "팀 관련 API")
 public interface TeamControllerDocs {
 
     @Operation(
