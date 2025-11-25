@@ -108,6 +108,7 @@ public enum ErrorCode {
     NOT_RECRUITING_POSITION(HttpStatus.CONFLICT, "NOT_RECRUITING_POSITION", "해당 포지션은 모집 대상이 아닙니다."),
     POSITION_FULL(HttpStatus.CONFLICT, "POSITION_FULL", "이미 모집이 완료된 포지션입니다."),
     ALREADY_PROCESSED_APPLICATION(HttpStatus.CONFLICT, "ALREADY_PROCESSED_APPLICATION", "이미 처리된 지원서입니다."),
+    MISMATCHED_MEETING_TYPE(HttpStatus.CONFLICT, "MISMATCHED_MEETING_TYPE", "모집하지 않는 진행 방식입니다."),
     TEAM_FULL(HttpStatus.CONFLICT, "TEAM_FULL", "이미 모집이 완료되었습니다."),
 
     // 413

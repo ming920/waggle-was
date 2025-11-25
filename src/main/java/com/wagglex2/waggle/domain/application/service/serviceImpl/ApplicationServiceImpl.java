@@ -21,6 +21,7 @@ import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.notification.type.NotificationType;
 import com.wagglex2.waggle.domain.project.entity.Project;
+import com.wagglex2.waggle.domain.project.type.MeetingType;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
@@ -291,6 +292,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     private Long applyProject(User applicant, Project project, ApplicationProjectRequestDto requestDto) {
+        MeetingType recruitingMeetingType = project.getMeetingType();
+        MeetingType appliedMeetingType = requestDto.getMeetingType();
+
+        // 모집하는 진행 방식에 해당되지 않는 경우
+        if (recruitingMeetingType != MeetingType.HYBRID && appliedMeetingType != MeetingType.HYBRID) {
+            if (recruitingMeetingType != appliedMeetingType) {
+                throw new BusinessException(ErrorCode.MISMATCHED_MEETING_TYPE);
+            }
+        }
+
         // 지원한 포지션에 대한 정보 가져오기
         PositionParticipantInfo targetPositionInfo = project.getPositionInfoByRole(requestDto.getPosition())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_RECRUITING_POSITION));

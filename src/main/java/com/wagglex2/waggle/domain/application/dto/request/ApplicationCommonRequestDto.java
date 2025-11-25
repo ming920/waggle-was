@@ -60,6 +60,7 @@ public abstract class ApplicationCommonRequestDto {
     @NotNull(message = "지원하는 공고의 카테고리가 누락되었습니다.")
     private final RecruitmentCategory category;
 
+    @Getter
     @NotNull(message = "선호하는 진행 방식이 누락되었습니다.")
     protected final MeetingType meetingType;
 
