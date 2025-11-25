@@ -111,7 +111,7 @@ public class AssignmentRepositoryImpl implements AssignmentRepositoryCustom {
                                 assignment.id,
                                 assignment.user.id,
                                 assignment.user.nickname,
-                                // TODO profileImg
+                                assignment.user.profileImageUrl,
                                 assignment.user.university,
                                 assignment.category,
                                 assignment.title,

@@ -106,7 +106,7 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
                                 study.id,
                                 study.user.id,
                                 study.user.nickname,
-                                // TODO profileImg
+                                study.user.profileImageUrl,
                                 study.user.university,
                                 study.category,
                                 study.title,

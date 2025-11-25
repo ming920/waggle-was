@@ -16,7 +16,7 @@ public abstract class BaseRecruitmentSummaryResponseDto {
     private final Long id;
     private final Long authorId;
     private final String authorNickname;
-    // TODO profileImg
+    private final String authorProfileImageUrl;
     private final University university;
     private final RecruitmentCategory category;
     private final String title;

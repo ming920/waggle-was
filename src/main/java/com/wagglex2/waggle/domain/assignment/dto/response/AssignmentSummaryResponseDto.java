@@ -20,13 +20,13 @@ public class AssignmentSummaryResponseDto extends BaseRecruitmentSummaryResponse
     private final Set<Integer> grades;
 
     public AssignmentSummaryResponseDto(
-            Long id, Long authorId, String authorNickname,
+            Long id, Long authorId, String authorNickname, String authorProfileImageUrl,
             University university, RecruitmentCategory category, String title,
             LocalDateTime deadline, RecruitmentStatus status,
             String department, String lecture, String lectureCode,
             Set<Integer> grades, boolean isBookmarked, Long bookmarkId
     ) {
-        super(id, authorId, authorNickname, university, category, title, deadline, status, isBookmarked, bookmarkId);
+        super(id, authorId, authorNickname, authorProfileImageUrl, university, category, title, deadline, status, isBookmarked, bookmarkId);
         this.department = department;
         this.lecture = lecture;
         this.lectureCode = lectureCode;

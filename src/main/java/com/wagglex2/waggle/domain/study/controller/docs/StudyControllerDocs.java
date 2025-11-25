@@ -322,107 +322,102 @@ public interface StudyControllerDocs {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "스터디 공고 목록을 성공적으로 조회하였습니다.",
+                                                        "message": "과제 공고 목록을 성공적으로 조회하였습니다.",
                                                         "data": {
                                                             "content": [
                                                                 {
-                                                                    "id": 113,
-                                                                    "authorId": 1,
-                                                                    "authorNickname": "민민민재",
-                                                                    "university": {
-                                                                        "desc": "영남대",
-                                                                        "domain": "yu.ac.kr",
-                                                                        "name": "YOUNGNAM_UNIV"
-                                                                    },
-                                                                    "category": {
-                                                                        "desc": "스터디",
-                                                                        "name": "STUDY"
-                                                                    },
-                                                                    "title": "Spring Boot 스터디 모집합니다.",
-                                                                    "deadline": "2025-11-11",
-                                                                    "status": {
-                                                                        "desc": "모집 중",
-                                                                        "name": "RECRUITING"
-                                                                    },
-                                                                    "skills": [
-                                                                        {
-                                                                            "desc": "Spring Boot",
-                                                                            "name": "SPRING_BOOT"
-                                                                        },
-                                                                        {
-                                                                            "desc": "Java",
-                                                                            "name": "JAVA"
-                                                                        }
-                                                                    ],
-                                                                    "bookmarked": false,
-                                                                    "bookmarkId": null
-                                                                },
-                                                                {
-                                                                    "id": 23,
-                                                                    "authorId": 20,
-                                                                    "authorNickname": "우주멋쟁이",
-                                                                    "university": {
-                                                                        "desc": "영남대",
-                                                                        "domain": "yu.ac.kr",
-                                                                        "name": "YOUNGNAM_UNIV"
-                                                                    },
-                                                                    "category": {
-                                                                        "desc": "스터디",
-                                                                        "name": "STUDY"
-                                                                    },
-                                                                    "title": "React 스터디 함께하실 분",
-                                                                    "deadline": "2025-10-25",
-                                                                    "status": {
-                                                                        "desc": "모집 중",
-                                                                        "name": "RECRUITING"
-                                                                    },
-                                                                    "skills": [
-                                                                        {
-                                                                            "desc": "React",
-                                                                            "name": "REACT"
-                                                                        },
-                                                                        {
-                                                                            "desc": "JavaScript",
-                                                                            "name": "JAVASCRIPT"
-                                                                        }
-                                                                    ],
-                                                                    "bookmarked": false,
-                                                                    "bookmarkId": null
-                                                                },
-                                                                {
-                                                                    "id": 19,
+                                                                    "id": 159,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
                                                                         "name": "YOUNGNAM_UNIV"
                                                                     },
                                                                     "category": {
-                                                                        "desc": "스터디",
-                                                                        "name": "STUDY"
+                                                                        "desc": "과제",
+                                                                        "name": "ASSIGNMENT"
                                                                     },
-                                                                    "title": "알고리즘 스터디 모집",
-                                                                    "deadline": "2025-11-11",
+                                                                    "title": "컴퓨터비전: Canny/HoG/SIFT 비교 리포트",
+                                                                    "deadline": "2025-12-06",
                                                                     "status": {
-                                                                        "desc": "모집 중",
-                                                                        "name": "RECRUITING"
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
                                                                     },
-                                                                    "skills": [
-                                                                        {
-                                                                            "desc": "Python",
-                                                                            "name": "PYTHON"
-                                                                        }
+                                                                    "department": "컴퓨터공학과",
+                                                                    "lecture": "컴퓨터비전",
+                                                                    "lectureCode": "CSE415",
+                                                                    "grades": [
+                                                                        3,
+                                                                        4
                                                                     ],
-                                                                    "bookmarkId": 21,
-                                                                    "bookmarked": true
+                                                                    "bookmarked": false
+                                                                },
+                                                                {
+                                                                    "id": 155,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "과제",
+                                                                        "name": "ASSIGNMENT"
+                                                                    },
+                                                                    "title": "컴퓨터비전: Canny/HoG/SIFT 비교 리포트",
+                                                                    "deadline": "2025-12-06",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "department": "컴퓨터공학과",
+                                                                    "lecture": "컴퓨터비전",
+                                                                    "lectureCode": "CSE415",
+                                                                    "grades": [
+                                                                        3,
+                                                                        4
+                                                                    ],
+                                                                    "bookmarked": false
+                                                                },
+                                                                {
+                                                                    "id": 154,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "과제",
+                                                                        "name": "ASSIGNMENT"
+                                                                    },
+                                                                    "title": "컴퓨터비전: Canny/HoG/SIFT 비교 리포트",
+                                                                    "deadline": "2025-12-06",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "department": "컴퓨터공학과",
+                                                                    "lecture": "컴퓨터비전",
+                                                                    "lectureCode": "CSE415",
+                                                                    "grades": [
+                                                                        3,
+                                                                        4
+                                                                    ],
+                                                                    "bookmarked": false
                                                                 }
                                                             ],
                                                             "page": {
                                                                 "size": 3,
                                                                 "number": 0,
-                                                                "totalElements": 16,
-                                                                "totalPages": 6
+                                                                "totalElements": 14,
+                                                                "totalPages": 5
                                                             }
                                                         }
                                                     }
