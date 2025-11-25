@@ -281,7 +281,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Transactional
     @Override
     public void cancelApplication(Long recruitmentId) {
-        applicationRepository.cancelAllByRecruitmentId(recruitmentId);
+        applicationRepository.updateStatusAllByRecruitmentId(
+                recruitmentId,
+                ApplicationStatus.SUBMITTED,
+                ApplicationStatus.CANCELED
+        );
     }
 
     @Transactional
@@ -292,7 +296,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     )
     @Override
     public void updateAllByRecruitmentReopened(Long recruitmentId) {
-        applicationRepository.updateAllByRecruitmentReopened(recruitmentId);
+        applicationRepository.updateStatusAllByRecruitmentId(
+                recruitmentId,
+                ApplicationStatus.CLOSED,
+                ApplicationStatus.SUBMITTED
+        );
     }
 
     @Transactional
