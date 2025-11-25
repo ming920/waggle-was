@@ -19,9 +19,9 @@ import org.springframework.stereotype.Repository;
 
 import static com.querydsl.core.group.GroupBy.groupBy;
 import static com.querydsl.core.group.GroupBy.set;
+import static com.wagglex2.waggle.domain.bookmark.entity.QBookmark.bookmark;
 import static com.wagglex2.waggle.domain.study.entity.QStudy.study;
 import static com.wagglex2.waggle.domain.user.entity.QUser.user;
-import static com.wagglex2.waggle.domain.bookmark.entity.QBookmark.bookmark;
 
 import java.util.List;
 import java.util.Map;
@@ -112,7 +112,9 @@ public class StudyRepositoryImpl implements StudyRepositoryCustom {
                                 study.title,
                                 study.deadline,
                                 study.status,
-                                set(study.skills)
+                                set(study.skills),
+                                bookmark.id.isNotNull(),
+                                bookmark.id
                         ))
                 );
 
