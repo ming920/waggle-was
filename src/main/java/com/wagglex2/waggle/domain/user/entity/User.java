@@ -47,20 +47,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String username;
 
     @Column(nullable = false, length = 60)
     private String password;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String email;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private University university;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nickname;
 
     private Integer grade;
