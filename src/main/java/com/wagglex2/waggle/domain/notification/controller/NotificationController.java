@@ -3,6 +3,7 @@ package com.wagglex2.waggle.domain.notification.controller;
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import com.wagglex2.waggle.domain.notification.controller.docs.NotificationControllerDocs;
 import com.wagglex2.waggle.domain.notification.dto.response.NotificationResponseDto;
 import com.wagglex2.waggle.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/notifications")
 @RequiredArgsConstructor
-public class NotificationController {
+public class NotificationController implements NotificationControllerDocs {
 
     private final NotificationService notificationService;
 
@@ -47,6 +48,17 @@ public class NotificationController {
         return ResponseEntity.ok(APIResponse.ok(message, notifications));
     }
 
+    @PatchMapping("{notificationId}/read")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Void>> markAsRead(
+            @PathVariable("notificationId") Long notificationId,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        notificationService.markAsRead(userDetails.getUserId(), notificationId);
+
+        return ResponseEntity.ok(APIResponse.ok("알림을 읽음 처리하였습니다."));
+    }
+
     @DeleteMapping("{notificationId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<APIResponse<Void>> deleteById(
@@ -55,7 +67,7 @@ public class NotificationController {
     ) {
         notificationService.deleteById(userDetails.getUserId(), notificationId);
 
-        return ResponseEntity.ok(APIResponse.ok("알림이 성공적으로 삭제되었습니다."));
+        return ResponseEntity.ok(APIResponse.ok("알림을 성공적으로 삭제하였습니다."));
     }
 
     @DeleteMapping

@@ -4,6 +4,7 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.service.S3Service;
 import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.PasswordRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.UserUpdateRequestDto;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
@@ -34,7 +35,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
     private final S3Service s3Service;
-    
+
     @Value("${aws.s3.default-profile-image-url}")
     private String defaultProfileImageUrl;
 
@@ -57,7 +58,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean existsById(Long id) { return userRepository.existsById(id); }
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
 
     @Override
     public boolean existsByEmail(String email) {
@@ -89,10 +92,10 @@ public class UserServiceImpl implements UserService {
      * @param dto 회원가입 요청 DTO
      * @return 생성된 User의 식별자(ID)
      * @throws BusinessException <ul>
-     *                                       <li>{@link ErrorCode#DUPLICATED_USERNAME} : 이미 존재하는 아이디</li>
-     *                                       <li>{@link ErrorCode#DUPLICATED_EMAIL} : 이미 등록된 이메일</li>
-     *                                       <li>{@link ErrorCode#DUPLICATED_NICKNAME} : 이미 사용 중인 닉네임</li>
-     *                                   </ul>
+     *                            <li>{@link ErrorCode#DUPLICATED_USERNAME} : 이미 존재하는 아이디</li>
+     *                            <li>{@link ErrorCode#DUPLICATED_EMAIL} : 이미 등록된 이메일</li>
+     *                            <li>{@link ErrorCode#DUPLICATED_NICKNAME} : 이미 사용 중인 닉네임</li>
+     *                           </ul>
      */
     @Override
     @Transactional
@@ -109,8 +112,26 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException(ErrorCode.DUPLICATED_NICKNAME);
         }
 
-        User user = dto.toEntity(passwordEncoder);
+        User user = dto.toEntity(passwordEncoder, defaultProfileImageUrl);
         return userRepository.save(user).getId();
+    }
+
+    @Override
+    @Transactional
+    public void updateBasicInfo(Long id, UserBasicInfoRequestDto dto) {
+
+        User user = findById(id);
+
+        if (user.getStatus() != UserStatus.INCOMPLETED) {
+            throw new BusinessException(ErrorCode.USER_ALREADY_COMPLETED_BASIC_INFO);
+        }
+
+        // 기본 정보 업데이트
+        user.updateGrade(dto.grade());
+        user.updatePosition(dto.position());
+        user.updateSkills(dto.skills());
+        user.updateShortIntro(dto.shortIntro());
+        user.updateStatus(UserStatus.ACTIVE);
     }
 
     /**
@@ -165,7 +186,7 @@ public class UserServiceImpl implements UserService {
         User user = findByIdWithSkills(userId);
 
         log.info("회원정보 불러오기 성공 : userId = {}", userId);
-        return UserResponseDto.from(user, defaultProfileImageUrl);
+        return UserResponseDto.from(user);
     }
 
     /**
@@ -211,7 +232,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("회원정보 수정 성공 : userId = {}", userId);
 
-        return UserResponseDto.from(user, defaultProfileImageUrl);
+        return UserResponseDto.from(user);
     }
 
     /**
@@ -270,6 +291,7 @@ public class UserServiceImpl implements UserService {
      * @return 업로드된 사용자 정보를 담은 UserResponseDto
      */
     @Override
+    @Transactional
     @PreAuthorize("#userId == authentication.principal.userId")
     public UserResponseDto uploadProfileImage(Long userId, MultipartFile file) {
         User user = findById(userId);
@@ -281,26 +303,12 @@ public class UserServiceImpl implements UserService {
         String imageUrl = s3Service.uploadImage(file, folderPath);
 
         // 엔티티 업데이트 (트랜잭션 안)
-        updateProfileImage(userId, imageUrl);
+        user.updateProfileImageUrl(imageUrl);
 
         deleteOldProfileImage(oldImageUrl);
 
         User updatedUser = findByIdWithSkills(userId);
-        return UserResponseDto.from(updatedUser, defaultProfileImageUrl);
-    }
-
-    /**
-     * 사용자의 프로필 이미지 URL을 DB에 업데이트한다.
-     *
-     * <p>트랜잭션 안에서만 실행되며, S3 작업은 포함하지 않는다.</p>
-     *
-     * @param userId      업데이트할 사용자 ID
-     * @param newImageUrl 새로운 프로필 이미지 URL
-     */
-    @Transactional
-    protected void updateProfileImage(Long userId, String newImageUrl) {
-        User user = findById(userId);
-        user.updateProfileImageUrl(newImageUrl);
+        return UserResponseDto.from(updatedUser);
     }
 
     /**
@@ -337,16 +345,17 @@ public class UserServiceImpl implements UserService {
      * @return 기본 이미지로 변경된 사용자 정보를 담은 UserResponseDto
      */
     @Override
+    @Transactional
     @PreAuthorize("#userId == authentication.principal.userId")
     public UserResponseDto deleteProfileImage(Long userId) {
         User user = findById(userId);
 
         String oldImageUrl = user.getProfileImageUrl();
 
-        updateProfileImage(userId, defaultProfileImageUrl);
+        user.updateProfileImageUrl(defaultProfileImageUrl);
         deleteOldProfileImage(oldImageUrl);
 
         User updatedUser = findByIdWithSkills(userId);
-        return UserResponseDto.from(updatedUser, defaultProfileImageUrl);
+        return UserResponseDto.from(updatedUser);
     }
 }

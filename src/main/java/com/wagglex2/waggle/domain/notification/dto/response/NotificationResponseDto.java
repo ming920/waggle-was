@@ -12,6 +12,7 @@ public record NotificationResponseDto(
         Long notificationId,
         Long applicationId,
         RecruitmentCategory category,
+        String recruitmentTitle,
         String senderNickname,
         NotificationType type,
 

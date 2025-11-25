@@ -35,6 +35,10 @@ public enum ErrorCode {
     FILE_NOT_UPLOADED(HttpStatus.BAD_REQUEST, "FILE_NOT_UPLOADED", "파일이 업로드되지 않았습니다."),
     INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "INVALID_FILE_NAME", "파일명이 올바르지 않습니다."),
     INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, "INVALID_FILE_FORMAT", "지원하지 않는 파일 형식입니다. jpg, jpeg, png만 가능합니다."),
+    USER_ALREADY_COMPLETED_BASIC_INFO(HttpStatus.BAD_REQUEST, "USER_ALREADY_COMPLETED_BASIC_INFO", "이미 기본 정보를 입력한 사용자입니다."),
+    INVALID_ARGUMENT(HttpStatus.BAD_REQUEST, "INVALID_ARGUMENT", "유효하지 않은 인자 값입니다."),
+    INVALID_JSON_FIELD(HttpStatus.BAD_REQUEST, "INVALID_JSON_FIELD", "요청 본문의 필드 값 형식이 올바르지 않습니다."),
+    UNREADABLE_JSON(HttpStatus.BAD_REQUEST, "UNREADABLE_JSON", "요청 본문을 읽을 수 없습니다."),
 
     // 401
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "인증이 필요합니다."),
@@ -67,6 +71,7 @@ public enum ErrorCode {
     CANNOT_REMOVE_NOT_LEADER(HttpStatus.FORBIDDEN, "CANNOT_DELETE_NOT_LEADER", "리더만 멤버를 삭제할 수 있습니다."),
     CANNOT_REMOVE_SELF(HttpStatus.FORBIDDEN, "CANNOT_DELETE_MYSELF", "자기 자신은 삭제할 수 없습니다."),
     CANNOT_DELETE_ANOTHER_USER_NOTIFICATION(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_NOTIFICATION", "다른 사용자의 알림은 삭제할 수 없습니다."),
+    CANNOT_READ_ANOTHER_USER_NOTIFICATION(HttpStatus.FORBIDDEN, "CANNOT_READ_ANOTHER_USER_NOTIFICATION", "다른 사용자의 알림은 읽을 수 없습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
@@ -84,6 +89,9 @@ public enum ErrorCode {
     LEADER_NOT_FOUND(HttpStatus.NOT_FOUND, "LEADER_NOT_FOUND", "리더를 찾을 수 없습니다."),
     TARGET_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "TARGET_MEMBER_NOT_FOUND", "삭제할 멤버를 찾을 수 없습니다."),
     NOTIFICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "NOTIFICATION_NOT_FOUND", "알림을 찾을 수 없습니다."),
+
+    // 405
+    METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "METHOD_NOT_ALLOWED", "허용되지 않은 HTTP 메서드입니다."),
 
     // 406
     NOT_ACCEPTABLE(HttpStatus.NOT_ACCEPTABLE, "NOT_ACCEPTABLE", "응답 가능한 미디어 타입이 없습니다."),

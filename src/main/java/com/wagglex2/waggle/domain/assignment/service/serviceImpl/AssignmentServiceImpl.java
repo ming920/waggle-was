@@ -14,7 +14,10 @@ import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentSummaryRespo
 import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
+import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
+import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
@@ -23,6 +26,7 @@ import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +40,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -44,6 +50,8 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final AssignmentRepository assignmentRepository;
     private final UserService userService;
     private final TeamService teamService;
+    private final ApplicationEventPublisher publisher;
+    private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
 
@@ -87,7 +95,14 @@ public class AssignmentServiceImpl implements AssignmentService {
             throw new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND);
         }
 
-        return AssignmentDetailResponseDto.fromEntity(assignment);
+        Optional<Long> bookmarkIdOptional =
+                bookmarkService.findIdByUserIdAndRecruitmentId(viewerId, assignmentId);
+
+        return AssignmentDetailResponseDto.fromEntity(
+                assignment,
+                bookmarkIdOptional.isPresent(),
+                bookmarkIdOptional.orElse(null)
+        );
     }
 
     @Override
@@ -97,6 +112,33 @@ public class AssignmentServiceImpl implements AssignmentService {
             Pageable pageable
     ) {
         return assignmentRepository.getAssignmentSummaries(viewerId, condition, pageable);
+    }
+
+    @Override
+    public List<AssignmentSummaryResponseDto> getAssignmentSummariesByIds(Long viewerId, List<Long> assignmentIds) {
+        return assignmentRepository.getAssignmentSummariesByIds(viewerId, assignmentIds);
+    }
+
+    @Override
+    public Page<AssignmentSummaryResponseDto> getBookmarkedAssignmentsByUserId(Long userId, Pageable pageable) {
+        // 찜한 과제 공고 id 조회
+        Page<Long> targetIds =
+                bookmarkService.findBookmarkedRecruitmentIdsByUserId(
+                        userId,
+                        RecruitmentCategory.ASSIGNMENT,
+                        pageable
+                );
+
+        // 조회할 공고가 없으면, 빈 리스트 반환
+        if (targetIds.getContent().isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, targetIds.getTotalElements());
+        }
+
+        // targetIds에 해당하는 과제 공고 정보 조회
+        List<AssignmentSummaryResponseDto> assignmentSummaries =
+                getAssignmentSummariesByIds(userId, targetIds.getContent());
+
+        return new PageImpl<>(assignmentSummaries, pageable, targetIds.getTotalElements());
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
@@ -189,5 +231,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         // 논리적 삭제
         assignment.cancel();
+
+        publisher.publishEvent(new RecruitmentDeletedEvent(assignmentId));
     }
 }

@@ -30,4 +30,6 @@ public class BaseRecruitmentDetailResponseDto {
 
     private final RecruitmentStatus status;
     private final int viewCount;
+    private final boolean isBookmarked;
+    private final Long bookmarkId;
 }

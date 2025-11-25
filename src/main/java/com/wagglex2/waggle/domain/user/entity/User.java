@@ -63,11 +63,9 @@ public class User {
     @Column(unique = true, nullable = false)
     private String nickname;
 
-    @Column(nullable = false)
     private Integer grade;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private PositionType position;
 
     @ElementCollection(fetch = FetchType.LAZY)
@@ -76,10 +74,10 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id",referencedColumnName = "id")
     )
     @Enumerated(EnumType.STRING)
-    @Column(name = "skill", nullable = false)
+    @Column(name = "skill")
     private Set<Skill> skills;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String shortIntro;
 
     @Enumerated(EnumType.STRING)
@@ -95,7 +93,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserStatus status = UserStatus.ACTIVE;
+    private UserStatus status;
 
     @Column(nullable = true)
     private String profileImageUrl;
@@ -103,18 +101,16 @@ public class User {
     @Builder
     private User(
             String username, String password, String email, String nickname,
-            University university, Integer grade, PositionType position,
-            Set<Skill> skills, String shortIntro, UserRoleType role) {
+            University university, UserRoleType role,
+            UserStatus status, String profileImageUrl) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.university = university;
         this.nickname = nickname;
-        this.grade = grade;
-        this.position = position;
-        this.skills = skills;
-        this.shortIntro = shortIntro;
         this.role = role;
+        this.status = status;
+        this.profileImageUrl = profileImageUrl;
     }
 
     public void changePassword(String encodedPassword) {
@@ -134,12 +130,15 @@ public class User {
     }
 
     public void updateSkills(Set<Skill> skills) {
-        this.skills = skills;
+        this.skills.clear();
+        this.skills.addAll(skills);
     }
 
     public void updateShortIntro(String shortIntro) {
         this.shortIntro = shortIntro;
     }
+
+    public void updateStatus(UserStatus status) {this.status = status;}
 
     public void withdraw() {
         this.status = UserStatus.WITHDRAWN;

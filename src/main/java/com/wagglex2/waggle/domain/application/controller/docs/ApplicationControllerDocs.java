@@ -37,7 +37,7 @@ public interface ApplicationControllerDocs {
             parameters = {
                     @Parameter(
                             name = "recruitmentId",
-                            description = "지원하려는 공고 ID (카테고리 구분 없음)",
+                            description = "지원하려는 공고 ID",
                             required = true,
                             in = ParameterIn.PATH,
                             example = "221"
@@ -93,7 +93,7 @@ public interface ApplicationControllerDocs {
             @ApiResponse(
                     responseCode = "200",
                     description = """
-                                  공고 지원 성공
+                                  공고 지원 성공<br>
                                   data: 지원 ID
                                   """,
                     content = @Content(
@@ -626,6 +626,7 @@ public interface ApplicationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "지원 내역 없음",
+                                            description = "`/applications/me?category=study`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -654,11 +655,26 @@ public interface ApplicationControllerDocs {
                             examples = {
                                     @ExampleObject(
                                             name = "카테고리가 누락된 경우",
+                                            description = """
+                                                    - `/applications/me`
+                                                    - `/applications/me?category=`
+                                                    """,
                                             value = """
                                                     {
                                                         "code": "REQUIRED_FIELD_MISSING",
                                                         "message": "필수 값이 누락되었습니다.",
                                                         "data": "category"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "카테고리 값이 잘못된 경우",
+                                            description = "`/applications/me?category=apple`",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_ENUM_VALUE",
+                                                        "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
+                                                        "data": "쿼리 파라미터 'category'의 값 'apple'이(가) 유효하지 않습니다."
                                                     }
                                                     """
                                     )
@@ -1111,7 +1127,7 @@ public interface ApplicationControllerDocs {
     })
     @DeleteMapping("{applicationId}")
     @PreAuthorize("isAuthenticated()")
-    ResponseEntity<APIResponse<Void>> cancelApplication(
+    ResponseEntity<APIResponse<Void>> deleteApplication(
             @PathVariable("applicationId") Long applicationId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     );

@@ -1,5 +1,6 @@
 package com.wagglex2.waggle.domain.team_member.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
 import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
@@ -18,6 +19,7 @@ import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
  * </ul>
  * </p>
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record TeamMemberResponseDto(
         Long userId,
         // TODO ProfileImage

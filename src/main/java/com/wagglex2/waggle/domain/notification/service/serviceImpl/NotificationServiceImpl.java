@@ -58,6 +58,26 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationRepository.getAllByUserIdAndCategory(receiverId, category, pageable);
     }
 
+    @PreAuthorize("#receiverId == authentication.principal.userId")
+    @Transactional
+    @Override
+    public void markAsRead(@P("receiverId") Long receiverId, Long notificationId) {
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOTIFICATION_NOT_FOUND));
+
+        // 권한 검증
+        if (!receiverId.equals(notification.getReceiver().getId())) {
+            throw new BusinessException(ErrorCode.CANNOT_READ_ANOTHER_USER_NOTIFICATION);
+        }
+
+        // 이미 읽음 처리된 경우 - 예외를 던지지 않음
+        if (notification.isRead()) {
+            return;
+        }
+
+        notification.markAsRead();
+    }
+
     @PreAuthorize("#userId == authentication.principal.userId")
     @Transactional
     @Override

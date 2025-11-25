@@ -4,6 +4,7 @@ import com.wagglex2.waggle.common.error.ErrorCode;
 import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.review.service.ReviewService;
 import com.wagglex2.waggle.domain.user.controller.docs.UserControllerDocs;
@@ -43,7 +44,7 @@ public class UserController implements UserControllerDocs {
      *
      * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
-    @GetMapping("/username/check")
+    @PostMapping("/username/check")
     public ResponseEntity<APIResponse<Boolean>> existsByUsername(
             @RequestBody @Valid UsernameCheckRequestDto dto
             ) {
@@ -63,7 +64,7 @@ public class UserController implements UserControllerDocs {
      *
      * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
-    @GetMapping("/email/check")
+    @PostMapping("/email/check")
     public ResponseEntity<APIResponse<Boolean>> existsByEmail(
             @RequestBody @Valid EmailCheckRequestDto dto
             ) {
@@ -84,7 +85,7 @@ public class UserController implements UserControllerDocs {
      *
      * @return APIResponse(Boolean) — 중복이면 true, 사용 가능이면 false
      */
-    @GetMapping("/nickname/check")
+    @PostMapping("/nickname/check")
     public ResponseEntity<APIResponse<Boolean>> existsByNickname(
             @RequestBody @Valid NicknameCheckRequestDto dto
     ) {
@@ -96,6 +97,20 @@ public class UserController implements UserControllerDocs {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(APIResponse.ok("사용 가능한 닉네임입니다.", false));
         }
+    }
+
+
+    @PatchMapping("/basic-info")
+    public ResponseEntity<APIResponse<Void>> updateBasicInfo(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody @Valid UserBasicInfoRequestDto dto
+            ) {
+
+        // 현재 로그인한 사용자 ID로 기본 정보 업데이트
+        userService.updateBasicInfo(userDetails.getUserId(), dto);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(APIResponse.ok("기본 정보 입력에 성공했습니다."));
     }
 
     /**

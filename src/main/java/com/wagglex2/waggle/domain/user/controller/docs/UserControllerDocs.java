@@ -2,6 +2,8 @@ package com.wagglex2.waggle.domain.user.controller.docs;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.auth.dto.request.EmailRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.user.dto.request.*;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
@@ -30,7 +32,24 @@ public interface UserControllerDocs {
 
     @Operation(
             summary = "아이디 중복 여부 검사",
-            description = "아이디가 중복이면 true, 사용 가능이면 false를 반환한다"
+            description = "아이디가 중복이면 true, 사용 가능이면 false를 반환한다",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "아이디 중복 요청 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UsernameCheckRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "username": "test1234"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -115,7 +134,24 @@ public interface UserControllerDocs {
 
     @Operation(
             summary = "이메일 중복 여부 검사",
-            description = "이메일 중복이면 true, 사용 가능이면 false를 반환한다"
+            description = "이메일 중복이면 true, 사용 가능이면 false를 반환한다",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "이메일 중복 요청 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = EmailCheckRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "email": "qwer1234@yu.ac.kr"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -200,7 +236,24 @@ public interface UserControllerDocs {
 
     @Operation(
             summary = "닉네임 중복 여부 검사",
-            description = "닉네임 중복이면 true, 사용 가능이면 false를 반환한다"
+            description = "닉네임 중복이면 true, 사용 가능이면 false를 반환한다",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "닉네임 중복 요청 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = NicknameCheckRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "nickname": "민민민재"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -284,9 +337,170 @@ public interface UserControllerDocs {
 
 
     @Operation(
+            summary = "기본 정보 입력",
+            description = "status가 INCOMPLETED인 사용자는 기본 정보 입력을 해야한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "기본 정보 입력 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserBasicInfoRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "grade": 3,
+                                                        "position": "BACK_END",
+                                                        "skills": [
+                                                            "JAVA",
+                                                            "SPRING_BOOT"
+                                                        ],
+                                                        "shortIntro": "안녕하세요, 백엔드 개발자 지망생입니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "기본 정보 입력 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "기본 정보 입력에 성공했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "학년/포지션/기술 스택/한 줄 소개 누락, 학년/기술 스택/한 줄 소개 크기 초과",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "",
+                                            value = """
+                                                    {
+                                                        "code": "VALIDATION_FAILED",
+                                                        "message": "요청 값이 유효하지 않습니다.",
+                                                        "data": [
+                                                            {
+                                                                "field": "grade",
+                                                                "message": "학년은 4 이하이어야 합니다."
+                                                            },
+                                                            {
+                                                                "field": "skills",
+                                                                "message": "기술 스택이 누락되었습니다."
+                                                            },
+                                                            {
+                                                                "field": "shortIntro",
+                                                                "message": "한 줄 소개가 누락되었습니다."
+                                                            }
+                                                        ]
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "해당 유저를 찾을 수 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "USER_NOT_FOUND",
+                                                        "message": "사용자를 찾을 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "서버 오류 발생",
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    ResponseEntity<APIResponse<Void>> updateBasicInfo(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody @Valid UserBasicInfoRequestDto dto
+    );
+
+
+    @Operation(
             summary = "비밀번호 변경",
             description = "기존 비밀번호, 새 비밀번호, 확인 비밀번호를 검증 후 처리한다.",
-            security = @SecurityRequirement(name = "Bearer Token")
+            security = @SecurityRequirement(name = "Bearer Token"),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "비밀번호 변경 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PasswordRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "old": "asdf1234!",
+                                                        "newPassword": "qwer1234!",
+                                                        "passwordConfirm": "qwer1234!"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -432,7 +646,7 @@ public interface UserControllerDocs {
                     description = "회원정보 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = UserResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = """
@@ -533,9 +747,40 @@ public interface UserControllerDocs {
 
 
     @Operation(
-            summary = "회원정보 조회",
-            description = "현재 로그인한 사용자의 정보를 조회한다.",
-            security = @SecurityRequirement(name = "Bearer Token")
+            summary = "회원정보 수정",
+            description = "현재 로그인한 사용자의 정보를 수정한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "회원정보 수정 내용",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UserUpdateRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "nickname" : "민민민재"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "nickname" : "민민민재",
+                                                        "grade" : 4,
+                                                        "position" : "FRONT_END",
+                                                        "skills": [
+                                                            "JAVA",
+                                                            "SPRING_BOOT",
+                                                            "CPP"
+                                                        ],
+                                                        "shortIntro": "안녕하세요!"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -703,7 +948,23 @@ public interface UserControllerDocs {
     @Operation(
             summary = "회원탈퇴",
             description = "현재 로그인한 사용자를 탈퇴한다. 본인 확인 인증을 위해 비밀번호로 검증한다.",
-            security = @SecurityRequirement(name = "Bearer Token")
+            security = @SecurityRequirement(name = "Bearer Token"),
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "회원탈퇴 시 비밀번호 인증",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = WithdrawRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "password" : "zxcv1234!"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
     )
     @ApiResponses({
             @ApiResponse(
@@ -843,7 +1104,7 @@ public interface UserControllerDocs {
                     description = "리뷰 조회 성공",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(implementation = APIResponse.class),
+                            schema = @Schema(implementation = ReviewResponseDto.class),
                             examples = {
                                     @ExampleObject(
                                             value = """

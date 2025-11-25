@@ -20,5 +20,6 @@ package com.wagglex2.waggle.domain.user.entity.type;
  */
 public enum UserStatus {
     ACTIVE,
-    WITHDRAWN
+    WITHDRAWN,
+    INCOMPLETED
 }

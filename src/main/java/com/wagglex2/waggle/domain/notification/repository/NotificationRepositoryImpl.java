@@ -45,6 +45,7 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom 
                                 notification.id,
                                 notification.application.id,
                                 notification.application.recruitment.category,
+                                notification.application.recruitment.title,
                                 notification.sender.nickname,
                                 notification.type,
                                 notification.createdAt,

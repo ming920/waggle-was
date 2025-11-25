@@ -26,15 +26,20 @@ public class StudyDetailResponseDto extends BaseRecruitmentDetailResponseDto {
             Long id, Long authorId, String authorNickname, RecruitmentCategory category,
             University university, String title, String content, LocalDateTime deadline,
             LocalDateTime createdAt, RecruitmentStatus status, int viewCount,
-            ParticipantInfoResponseDto participants, Set<Skill> skills, PeriodResponseDto period
+            ParticipantInfoResponseDto participants, Set<Skill> skills, PeriodResponseDto period,
+            boolean isBookmarked, Long bookmarkId
     ) {
-        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount);
+        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
         this.participants = participants;
         this.skills = skills;
         this.period = period;
     }
 
+<<<<<<< HEAD:src/main/java/com/wagglex2/waggle/domain/study/dto/response/StudyDetailResponseDto.java
     public static StudyDetailResponseDto fromEntity(Study study) {
+=======
+    public static StudyResponseDto fromEntity(Study study, boolean isBookmarked, Long bookmarkId) {
+>>>>>>> develop:src/main/java/com/wagglex2/waggle/domain/study/dto/response/StudyResponseDto.java
         User author = study.getUser();
         ParticipantInfoResponseDto participants = ParticipantInfoResponseDto.from(study.getParticipants());
         PeriodResponseDto period = PeriodResponseDto.from(study.getPeriod());
@@ -43,7 +48,8 @@ public class StudyDetailResponseDto extends BaseRecruitmentDetailResponseDto {
         return new StudyDetailResponseDto(
                 study.getId(), author.getId(), author.getNickname(), study.getCategory(), author.getUniversity(),
                 study.getTitle(), study.getContent(), study.getDeadline(), study.getCreatedAt(),
-                study.getStatus(), study.getViewCount() + 1, participants, skills, period
+                study.getStatus(), study.getViewCount() + 1, participants, skills, period,
+                isBookmarked, bookmarkId
         );
     }
 }
