@@ -32,6 +32,7 @@ import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -284,6 +285,17 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Transactional
+    @Retryable(
+            retryFor = TransientDataAccessException.class, // 일시적 DB 문제
+            noRetryFor = BusinessException.class,
+            maxAttempts = 3
+    )
+    @Override
+    public void updateAllByRecruitmentReopened(Long recruitmentId) {
+        applicationRepository.updateAllByRecruitmentReopened(recruitmentId);
+    }
+
+    @Transactional
     @Override
     public void closeApplicationsForClosedRecruitments() {
         int updated = applicationRepository.closeApplicationsForClosedRecruitments();
@@ -350,5 +362,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Recover
     protected void recover(ObjectOptimisticLockingFailureException e, Long deciderId, Long applicationId) {
         throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 이벤트 처리 재시도 실패 시 처리
+     */
+    @Recover
+    protected void recoverReopenEvent(TransientDataAccessException e, Long recruitmentId) {
+        log.error("공고 재개 시 지원 상태 업데이트 실패(재시도 모두 실패). recruitmentId={}, 예외타입={}, 메시지={}",
+                recruitmentId, e.getClass().getSimpleName(), e.getMessage(), e);
     }
 }

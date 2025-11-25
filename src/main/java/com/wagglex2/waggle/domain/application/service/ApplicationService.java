@@ -40,6 +40,17 @@ public interface ApplicationService {
     void cancelApplication(Long recruitmentId);
 
     /**
+     * 마감 상태였던 공고가 마감일 수정으로 인해 다시 모집 가능 상태(RECRUITING)가 된 경우,
+     * 해당 공고에 대한 모든 지원서를 '제출됨' 상태로 되돌린다.
+     * <p>
+     * 이 메서드는 {@link ApplicationEventListener} 이벤트 리스너에서 호출되어
+     * 마감일 수정에 따른 지원 상태 변경을 처리한다.
+     *
+     * @param recruitmentId 마감 상태에서 모집 상태로 변경된 공고의 ID
+     */
+    void updateAllByRecruitmentReopened(Long recruitmentId);
+
+    /**
      * 마감된 공고에 대한 모든 지원 상태를 CLOSED로 변경한다.
      */
     void closeApplicationsForClosedRecruitments();
