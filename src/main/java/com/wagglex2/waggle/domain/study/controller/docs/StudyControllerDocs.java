@@ -165,9 +165,10 @@ public interface StudyControllerDocs {
                                                         "code": "SUCCESS",
                                                         "message": "스터디 공고를 성공적으로 조회하였습니다.",
                                                         "data": {
-                                                            "id": 142,
-                                                            "authorId": 5,
-                                                            "authorNickname": "새우깡",
+                                                            "id": 27,
+                                                            "authorId": 20,
+                                                            "authorNickname": "우주멋쟁이",
+                                                            "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                             "category": {
                                                                 "desc": "스터디",
                                                                 "name": "STUDY"
@@ -177,15 +178,15 @@ public interface StudyControllerDocs {
                                                                 "domain": "yu.ac.kr",
                                                                 "name": "YOUNGNAM_UNIV"
                                                             },
-                                                            "title": "Spring Boot 스터디 모집합니다.",
-                                                            "content": "함께 Spring Boot를 학습하며 프로젝트를 진행할 스터디원을 모집합니다.",
-                                                            "deadline": "2025-12-20 23:59:59",
-                                                            "createdAt": "2025-11-17 15:10:51",
+                                                            "title": "Spring 스터디 모집",
+                                                            "content": "JPA와 스프링 핵심 공부",
+                                                            "deadline": "2025-10-31 23:59:59",
+                                                            "createdAt": "2025-10-11 23:11:31",
                                                             "status": {
                                                                 "desc": "모집 중",
                                                                 "name": "RECRUITING"
                                                             },
-                                                            "viewCount": 1,
+                                                            "viewCount": 59,
                                                             "participants": {
                                                                 "maxParticipants": 5,
                                                                 "currParticipants": 0
@@ -201,9 +202,10 @@ public interface StudyControllerDocs {
                                                                 }
                                                             ],
                                                             "period": {
-                                                                "startDate": "2025-12-25",
-                                                                "endDate": "2026-03-20"
-                                                            }
+                                                                "startDate": "2025-10-12",
+                                                                "endDate": "2025-11-12"
+                                                            },
+                                                            "bookmarked": false
                                                         }
                                                     }
                                                     """
@@ -253,6 +255,7 @@ public interface StudyControllerDocs {
     );
 
     @Operation(
+            // 예시의 빈 줄 없애면 UI가 겹침
             summary = "스터디 공고 목록 조회(검색)",
             description = """
                     스터디 공고 목록을 조회(검색)한다.<br>
@@ -260,6 +263,7 @@ public interface StudyControllerDocs {
                     
                     예시:
                     - `/studies?skills=spring-boot` (O)
+                    
                     - `/studies?skills=SPRING_BOOT` (O)
                     - `/studies?skills=springboot` (X)
                     """,
@@ -515,6 +519,7 @@ public interface StudyControllerDocs {
                                                                             "applicationId": 27,
                                                                             "applicantId": 40,
                                                                             "nickname": "박데통",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "meetingType": {
                                                                                 "desc": "온라인",
                                                                                 "name": "ONLINE"
@@ -522,7 +527,6 @@ public interface StudyControllerDocs {
                                                                             "grade": 3,
                                                                             "content": "이 스터디에 지원하고 싶습니다.",
                                                                             "appliedAt": "2025.11.22",
-                                                                            "position": null,
                                                                             "skills": [
                                                                                 {
                                                                                     "desc": "JavaScript",
@@ -538,6 +542,7 @@ public interface StudyControllerDocs {
                                                                             "applicationId": 12,
                                                                             "applicantId": 34,
                                                                             "nickname": "매운새우깡",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "meetingType": {
                                                                                 "desc": "온라인",
                                                                                 "name": "ONLINE"
@@ -545,7 +550,6 @@ public interface StudyControllerDocs {
                                                                             "grade": 3,
                                                                             "content": "이 스터디에 지원하고 싶습니다.",
                                                                             "appliedAt": "2025.11.03",
-                                                                            "position": null,
                                                                             "skills": [
                                                                                 {
                                                                                     "desc": "MySQL",
