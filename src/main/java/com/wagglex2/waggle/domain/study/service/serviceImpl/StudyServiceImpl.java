@@ -11,8 +11,10 @@ import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
+import com.wagglex2.waggle.domain.study.dto.request.StudySearchCondition;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
-import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudyDetailResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudySummaryResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.repository.StudyRepository;
 import com.wagglex2.waggle.domain.study.service.StudyService;
@@ -70,7 +72,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Transactional
     @Override
-    public StudyResponseDto getStudy(Long viewerId, Long studyId) {
+    public StudyDetailResponseDto getStudy(Long viewerId, Long studyId) {
         Study study = studyRepository.findWithAllById(studyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
 
@@ -100,6 +102,15 @@ public class StudyServiceImpl implements StudyService {
                 bookmarkIdOptional.isPresent(),
                 bookmarkIdOptional.orElse(null)
         );
+    }
+
+    @Override
+    public Page<StudySummaryResponseDto> getStudySummaries(
+            Long viewerId,
+            StudySearchCondition condition,
+            Pageable pageable
+    ) {
+        return studyRepository.getStudySummaries(viewerId, condition, pageable);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

@@ -35,11 +35,8 @@ public class StudyDetailResponseDto extends BaseRecruitmentDetailResponseDto {
         this.period = period;
     }
 
-<<<<<<< HEAD:src/main/java/com/wagglex2/waggle/domain/study/dto/response/StudyDetailResponseDto.java
-    public static StudyDetailResponseDto fromEntity(Study study) {
-=======
-    public static StudyResponseDto fromEntity(Study study, boolean isBookmarked, Long bookmarkId) {
->>>>>>> develop:src/main/java/com/wagglex2/waggle/domain/study/dto/response/StudyResponseDto.java
+    public static StudyDetailResponseDto fromEntity(Study study, boolean isBookmarked, Long bookmarkId) {
+
         User author = study.getUser();
         ParticipantInfoResponseDto participants = ParticipantInfoResponseDto.from(study.getParticipants());
         PeriodResponseDto period = PeriodResponseDto.from(study.getPeriod());
