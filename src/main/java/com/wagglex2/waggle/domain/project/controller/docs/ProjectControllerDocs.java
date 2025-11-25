@@ -438,7 +438,8 @@ public interface ProjectControllerDocs {
                                     조회하려는 공고 상태(마감 여부)<br>
                                     기본값(미지정): `모집 중`, `마감` 모두
                                     """,
-                            in = ParameterIn.QUERY
+                            in = ParameterIn.QUERY,
+                            schema = @Schema(allowableValues = {"RECRUITING", "CLOSED"})
                     ),
                     @Parameter(
                             name = "page",
@@ -1243,9 +1244,18 @@ public interface ProjectControllerDocs {
 
     @Operation(
             summary = "프로젝트 공고 찜 목록 조회",
-            description = "프로젝트 공고 찜 목록을 조회한다.",
+            description = "프로젝트 공고 찜 목록을 찜 일자 기준 최신순으로 조회한다.",
             security = @SecurityRequirement(name = "Bearer Token"),
             parameters = {
+                    @Parameter(
+                            name = "status",
+                            description = """
+                                    조회하려는 공고 상태<br>
+                                    기본값(미지정): `모집 중`, `마감` 모두
+                                    """,
+                            in = ParameterIn.QUERY,
+                            schema = @Schema(allowableValues = {"RECRUITING", "CLOSED"})
+                    ),
                     @Parameter(
                             name = "page",
                             description = """
@@ -1275,8 +1285,8 @@ public interface ProjectControllerDocs {
                             ),
                             examples = {
                                     @ExampleObject(
-                                            name = "/projects/bookmarks?size=3",
-                                            description = "`/projects/bookmarks?size=3`",
+                                            name = "status(상태) 미지정",
+                                            description = "`/projects/bookmarks?size=5`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -1284,9 +1294,9 @@ public interface ProjectControllerDocs {
                                                         "data": {
                                                             "content": [
                                                                 {
-                                                                    "id": 23,
-                                                                    "authorId": 20,
-                                                                    "authorNickname": "우주멋쟁이",
+                                                                    "id": 118,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1296,41 +1306,37 @@ public interface ProjectControllerDocs {
                                                                         "desc": "프로젝트",
                                                                         "name": "PROJECT"
                                                                     },
-                                                                    "title": "졸업작품 팀원 모집합니다",
-                                                                    "deadline": "2025-10-25",
+                                                                    "title": "학교 공모전 팀원 구합니다. 3",
+                                                                    "deadline": "2025-11-11",
                                                                     "status": {
-                                                                        "desc": "모집 중",
-                                                                        "name": "RECRUITING"
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
                                                                     },
                                                                     "meetingType": {
-                                                                        "desc": "온라인",
-                                                                        "name": "ONLINE"
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
                                                                     },
                                                                     "positions": [
                                                                         {
-                                                                            "desc": "프론트엔드",
-                                                                            "name": "FRONT_END"
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
                                                                         },
                                                                         {
-                                                                            "desc": "백엔드",
-                                                                            "name": "BACK_END"
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
                                                                         }
                                                                     ],
                                                                     "skills": [
                                                                         {
-                                                                            "desc": "Spring Boot",
-                                                                            "name": "SPRING_BOOT"
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
                                                                         },
                                                                         {
-                                                                            "desc": "React",
-                                                                            "name": "REACT"
-                                                                        },
-                                                                        {
-                                                                            "desc": "Java",
-                                                                            "name": "JAVA"
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
                                                                         }
                                                                     ],
-                                                                    "bookmarkId": 5,
+                                                                    "bookmarkId": 30,
                                                                     "purpose": {
                                                                         "desc": "공모전",
                                                                         "name": "CONTEST"
@@ -1338,7 +1344,107 @@ public interface ProjectControllerDocs {
                                                                     "bookmarked": true
                                                                 },
                                                                 {
-                                                                    "id": 3,
+                                                                    "id": 117,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "학교 공모전 팀원 구합니다. 2",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
+                                                                        },
+                                                                        {
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 29,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 119,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "학교 공모전 팀원 구합니다. 4",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
+                                                                        },
+                                                                        {
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 27,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 19,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
                                                                     "university": {
@@ -1350,8 +1456,8 @@ public interface ProjectControllerDocs {
                                                                         "desc": "프로젝트",
                                                                         "name": "PROJECT"
                                                                     },
-                                                                    "title": "토스 주관 공모전 팀원 구합니다. (추가 모집)",
-                                                                    "deadline": "2025-12-30",
+                                                                    "title": "학교 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025-11-11",
                                                                     "status": {
                                                                         "desc": "모집 중",
                                                                         "name": "RECRUITING"
@@ -1362,25 +1468,25 @@ public interface ProjectControllerDocs {
                                                                     },
                                                                     "positions": [
                                                                         {
-                                                                            "desc": "프론트엔드",
-                                                                            "name": "FRONT_END"
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
                                                                         },
                                                                         {
-                                                                            "desc": "백엔드",
-                                                                            "name": "BACK_END"
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
                                                                         }
                                                                     ],
                                                                     "skills": [
                                                                         {
-                                                                            "desc": "Vue.js",
-                                                                            "name": "VUE_JS"
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
                                                                         },
                                                                         {
-                                                                            "desc": "Django",
-                                                                            "name": "DJANGO"
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
                                                                         }
                                                                     ],
-                                                                    "bookmarkId": 3,
+                                                                    "bookmarkId": 26,
                                                                     "purpose": {
                                                                         "desc": "공모전",
                                                                         "name": "CONTEST"
@@ -1388,7 +1494,7 @@ public interface ProjectControllerDocs {
                                                                     "bookmarked": true
                                                                 },
                                                                 {
-                                                                    "id": 2,
+                                                                    "id": 6,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
                                                                     "university": {
@@ -1400,11 +1506,165 @@ public interface ProjectControllerDocs {
                                                                         "desc": "프로젝트",
                                                                         "name": "PROJECT"
                                                                     },
-                                                                    "title": "해커톤 팀원 구합니다.",
+                                                                    "title": "해커톤 팀원 안 구합니다.",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온/오프라인",
+                                                                        "name": "HYBRID"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 25,
+                                                                    "purpose": {
+                                                                        "desc": "해커톤",
+                                                                        "name": "HACKATHON"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 5,
+                                                                "number": 0,
+                                                                "totalElements": 7,
+                                                                "totalPages": 2
+                                                            }
+                                                        }
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "모집 중인 공고만 조회",
+                                            description = "`/projects/bookmarks?status=recruiting&size=3`",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "프로젝트 공고 찜 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 19,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "학교 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
+                                                                        },
+                                                                        {
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 26,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 6,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "해커톤 팀원 안 구합니다.",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온/오프라인",
+                                                                        "name": "HYBRID"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 25,
+                                                                    "purpose": {
+                                                                        "desc": "해커톤",
+                                                                        "name": "HACKATHON"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 1,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "카카오 해커톤 팀원 구합니다.",
                                                                     "deadline": "2025-10-11",
                                                                     "status": {
-                                                                        "desc": "취소",
-                                                                        "name": "CANCELED"
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
                                                                     },
                                                                     "meetingType": {
                                                                         "desc": "온/오프라인",
@@ -1430,10 +1690,180 @@ public interface ProjectControllerDocs {
                                                                             "name": "REACT"
                                                                         }
                                                                     ],
-                                                                    "bookmarkId": 6,
+                                                                    "bookmarkId": 24,
                                                                     "purpose": {
                                                                         "desc": "해커톤",
                                                                         "name": "HACKATHON"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 3,
+                                                                "number": 0,
+                                                                "totalElements": 4,
+                                                                "totalPages": 2
+                                                            }
+                                                        }
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "마감된 공고만 조회",
+                                            description = "`/projects/bookmarks?status=closed&size=3`",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "프로젝트 공고 찜 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 118,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "학교 공모전 팀원 구합니다. 3",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
+                                                                        },
+                                                                        {
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 30,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 117,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "학교 공모전 팀원 구합니다. 2",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
+                                                                        },
+                                                                        {
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 29,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 119,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "학교 공모전 팀원 구합니다. 4",
+                                                                    "deadline": "2025-11-11",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "디자인",
+                                                                            "name": "DESIGNER"
+                                                                        },
+                                                                        {
+                                                                            "desc": "게임",
+                                                                            "name": "GAME"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 27,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
                                                                     },
                                                                     "bookmarked": true
                                                                 }
@@ -1450,6 +1880,38 @@ public interface ProjectControllerDocs {
                                     )
                             }
                     )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "유효하지 않은 요청 값 또는 비즈니스 검증 실패로 인해 요청이 거부된 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "status(상태) 값이 잘못된 경우",
+                                            description = "`/projects/bookmarks?status=apple`",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_ENUM_VALUE",
+                                                        "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
+                                                        "data": "쿼리 파라미터 'status'의 값 'apple'이(가) 유효하지 않습니다."
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "status(상태) 값이 허용되지 않는 경우",
+                                            description = "`/projects/bookmarks?status=canceled`",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_ARGUMENT",
+                                                        "message": "유효하지 않은 인자 값입니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+
             ),
             @ApiResponse(
                     responseCode = "401",
@@ -1489,6 +1951,7 @@ public interface ProjectControllerDocs {
             )
     })
     ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getMyBookmarks(
+            @RequestParam(value = "status", required = false) RecruitmentStatus status,
             @PageableDefault(size = 9) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     );
@@ -1574,7 +2037,7 @@ public interface ProjectControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "입력 값이 유효하지 않은 경우",
+                    description = "요청 값이 유효하지 않은 경우",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),

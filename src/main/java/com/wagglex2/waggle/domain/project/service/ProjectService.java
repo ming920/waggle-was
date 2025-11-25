@@ -1,6 +1,7 @@
 package com.wagglex2.waggle.domain.project.service;
 
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
+import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectCreationRequestDto;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectSearchCondition;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectUpdateRequestDto;
@@ -17,7 +18,7 @@ public interface ProjectService {
     Page<ProjectSummaryResponseDto> getProjectSummaries(Long viewerId, ProjectSearchCondition condition, Pageable pageable);
     List<ProjectSummaryResponseDto> getProjectSummariesByIds(Long viewerId, List<Long> projectIds);
     Page<RecruitmentWithAppsResponseDto> getAllByUserId(Long userId, Pageable pageable);
-    Page<ProjectSummaryResponseDto> getBookmarkedProjectsByUserId(Long userId, Pageable pageable);
+    Page<ProjectSummaryResponseDto> getBookmarkedProjectsByUserId(Long userId, RecruitmentStatus status, Pageable pageable);
     void updateProject(Long userId, Long projectId, ProjectUpdateRequestDto updateDto);
     void deleteProject(Long userId, Long projectId);
 }
