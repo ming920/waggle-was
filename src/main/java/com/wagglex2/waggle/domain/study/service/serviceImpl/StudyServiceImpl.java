@@ -95,7 +95,7 @@ public class StudyServiceImpl implements StudyService {
         Optional<Long> bookmarkIdOptional =
                 bookmarkService.findIdByUserIdAndRecruitmentId(viewerId, studyId);
 
-        return StudyResponseDto.fromEntity(
+        return StudyDetailResponseDto.fromEntity(
                 study,
                 bookmarkIdOptional.isPresent(),
                 bookmarkIdOptional.orElse(null)

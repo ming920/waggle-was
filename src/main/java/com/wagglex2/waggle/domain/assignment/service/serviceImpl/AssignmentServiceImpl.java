@@ -202,7 +202,7 @@ public class AssignmentServiceImpl implements AssignmentService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.ASSIGNMENT_NOT_FOUND));
 
         if (!userId.equals(assignment.getUser().getId())) {
-            throw new BusinessException(ErrorCode.FORBIDDEN);
+            throw new BusinessException(ErrorCode.CANNOT_UPDATE_ANOTHER_USER_ASSIGNMENT);
         }
 
         if (assignment.getStatus() == RecruitmentStatus.CANCELED) {
