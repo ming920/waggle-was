@@ -8,7 +8,7 @@ import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
-import com.wagglex2.waggle.domain.common.event.CreateRecruitmentEvent;
+import com.wagglex2.waggle.domain.common.event.RecruitmentCreatedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -60,7 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         Long projectId = projectRepository.save(newProject).getId();
 
-        publisher.publishEvent(new CreateRecruitmentEvent(userId, projectId));
+        publisher.publishEvent(new RecruitmentCreatedEvent(userId, projectId));
 
         return projectId;
     }

@@ -8,7 +8,7 @@ import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
-import com.wagglex2.waggle.domain.common.event.CreateRecruitmentEvent;
+import com.wagglex2.waggle.domain.common.event.RecruitmentCreatedEvent;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
@@ -56,7 +56,7 @@ public class StudyServiceImpl implements StudyService {
 
         Long studyId = studyRepository.save(newStudy).getId();
 
-        publisher.publishEvent(new CreateRecruitmentEvent(userId, studyId));
+        publisher.publishEvent(new RecruitmentCreatedEvent(userId, studyId));
 
         return studyId;
     }
