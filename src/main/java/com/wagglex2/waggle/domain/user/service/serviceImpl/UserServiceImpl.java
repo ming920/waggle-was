@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
         User user = findByIdWithSkills(userId);
 
         log.info("회원정보 불러오기 성공 : userId = {}", userId);
-        return UserResponseDto.from(user, defaultProfileImageUrl);
+        return UserResponseDto.from(user);
     }
 
     /**
@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
 
         log.info("회원정보 수정 성공 : userId = {}", userId);
 
-        return UserResponseDto.from(user, defaultProfileImageUrl);
+        return UserResponseDto.from(user);
     }
 
     /**
@@ -291,6 +291,7 @@ public class UserServiceImpl implements UserService {
      * @return 업로드된 사용자 정보를 담은 UserResponseDto
      */
     @Override
+    @Transactional
     @PreAuthorize("#userId == authentication.principal.userId")
     public UserResponseDto uploadProfileImage(Long userId, MultipartFile file) {
         User user = findById(userId);
@@ -302,26 +303,12 @@ public class UserServiceImpl implements UserService {
         String imageUrl = s3Service.uploadImage(file, folderPath);
 
         // 엔티티 업데이트 (트랜잭션 안)
-        updateProfileImage(userId, imageUrl);
+        user.updateProfileImageUrl(imageUrl);
 
         deleteOldProfileImage(oldImageUrl);
 
         User updatedUser = findByIdWithSkills(userId);
-        return UserResponseDto.from(updatedUser, defaultProfileImageUrl);
-    }
-
-    /**
-     * 사용자의 프로필 이미지 URL을 DB에 업데이트한다.
-     *
-     * <p>트랜잭션 안에서만 실행되며, S3 작업은 포함하지 않는다.</p>
-     *
-     * @param userId      업데이트할 사용자 ID
-     * @param newImageUrl 새로운 프로필 이미지 URL
-     */
-    @Transactional
-    protected void updateProfileImage(Long userId, String newImageUrl) {
-        User user = findById(userId);
-        user.updateProfileImageUrl(newImageUrl);
+        return UserResponseDto.from(updatedUser);
     }
 
     /**
@@ -358,16 +345,17 @@ public class UserServiceImpl implements UserService {
      * @return 기본 이미지로 변경된 사용자 정보를 담은 UserResponseDto
      */
     @Override
+    @Transactional
     @PreAuthorize("#userId == authentication.principal.userId")
     public UserResponseDto deleteProfileImage(Long userId) {
         User user = findById(userId);
 
         String oldImageUrl = user.getProfileImageUrl();
 
-        updateProfileImage(userId, defaultProfileImageUrl);
+        user.updateProfileImageUrl(defaultProfileImageUrl);
         deleteOldProfileImage(oldImageUrl);
 
         User updatedUser = findByIdWithSkills(userId);
-        return UserResponseDto.from(updatedUser, defaultProfileImageUrl);
+        return UserResponseDto.from(updatedUser);
     }
 }
