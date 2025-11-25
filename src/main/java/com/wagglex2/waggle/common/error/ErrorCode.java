@@ -68,6 +68,7 @@ public enum ErrorCode {
     CANNOT_REMOVE_NOT_LEADER(HttpStatus.FORBIDDEN, "CANNOT_DELETE_NOT_LEADER", "리더만 멤버를 삭제할 수 있습니다."),
     CANNOT_REMOVE_SELF(HttpStatus.FORBIDDEN, "CANNOT_DELETE_MYSELF", "자기 자신은 삭제할 수 없습니다."),
     CANNOT_DELETE_ANOTHER_USER_NOTIFICATION(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_NOTIFICATION", "다른 사용자의 알림은 삭제할 수 없습니다."),
+    CANNOT_READ_ANOTHER_USER_NOTIFICATION(HttpStatus.FORBIDDEN, "CANNOT_READ_ANOTHER_USER_NOTIFICATION", "다른 사용자의 알림은 읽을 수 없습니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),

@@ -21,6 +21,7 @@ public interface NotificationService {
      */
     void createNotification(Long senderId, Long receiverId, Long applicationId, NotificationType type);
     Page<NotificationResponseDto> getAllByUserIdAndCategory(Long receiverId, RecruitmentCategory category, Pageable pageable);
+    void markAsRead(Long receiverId, Long notificationId);
     void deleteById(Long userId, Long notificationId);
 
     /**
