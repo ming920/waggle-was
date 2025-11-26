@@ -6,6 +6,7 @@ import com.wagglex2.waggle.domain.auth.dto.request.EmailRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.user.dto.request.*;
+import com.wagglex2.waggle.domain.user.dto.response.PublicUserResponseDto;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -1092,6 +1093,118 @@ public interface UserControllerDocs {
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody WithdrawRequestDto dto,
             HttpServletResponse response
+    );
+
+
+    @Operation(
+            summary = "다른 사용자 프로필 조회",
+            description = "다른 사용자의 프로필을 조회한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
+            parameters = {
+                    @Parameter(
+                            name = "userId",
+                            description = "사용자 ID",
+                            in = ParameterIn.PATH,
+                            example = "34"
+                    )
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PublicUserResponseDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "사용자 정보 조회에 성공했습니다.",
+                                                        "data": {
+                                                            "nickname": "매운새우깡",
+                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                            "positionType": {
+                                                                "desc": "백엔드",
+                                                                "name": "BACK_END"
+                                                            },
+                                                            "skills": [
+                                                                {
+                                                                    "desc": "Java",
+                                                                    "name": "JAVA"
+                                                                },
+                                                                {
+                                                                    "desc": "Spring Boot",
+                                                                    "name": "SPRING_BOOT"
+                                                                }
+                                                            ],
+                                                            "shortIntro": "안녕하세요. 개발에 관심이 많은 신입입니다."
+                                                        }
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "해당 유저를 찾을 수 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "USER_NOT_FOUND",
+                                                        "message": "사용자를 찾을 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "서버 오류 발생",
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    ResponseEntity<APIResponse<PublicUserResponseDto>>  getPublicUser(
+            @PathVariable("userId") Long userId
     );
 
 
