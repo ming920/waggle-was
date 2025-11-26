@@ -137,15 +137,6 @@ public interface ApplicationControllerDocs {
                                                         ]
                                                     }
                                                     """
-                                    ),
-                                    @ExampleObject(
-                                            name = "요청을 보낸 카테고리 값과 실제 공고의 카테고리 값이 다른 경우",
-                                            value = """
-                                                    {
-                                                        "code": "MISMATCHED_RECRUITMENT_CATEGORY",
-                                                        "message": "지원하려는 공고의 카테고리가 요청한 카테고리와 일치하지 않습니다."
-                                                    }
-                                                    """
                                     )
                             }
                     )
@@ -222,6 +213,15 @@ public interface ApplicationControllerDocs {
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
+                                            name = "요청을 보낸 카테고리 값과 실제 공고의 카테고리 값이 다른 경우",
+                                            value = """
+                                                    {
+                                                        "code": "MISMATCHED_RECRUITMENT_CATEGORY",
+                                                        "message": "지원하려는 공고의 카테고리가 요청한 카테고리와 일치하지 않습니다."
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
                                             name = "공고의 모집 기간이 이미 종료된 경우",
                                             value = """
                                                     {
@@ -236,6 +236,16 @@ public interface ApplicationControllerDocs {
                                                     {
                                                         "code": "ALREADY_APPLIED_RECRUITMENT",
                                                         "message": "이미 지원한 공고입니다."
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "모집하지 않는 진행 방식으로 지원한 경우",
+                                            description = "프로젝트 공고에 해당",
+                                            value = """
+                                                    {
+                                                        "code": "MISMATCHED_MEETING_TYPE",
+                                                        "message": "모집하지 않는 진행 방식입니다."
                                                     }
                                                     """
                                     ),
