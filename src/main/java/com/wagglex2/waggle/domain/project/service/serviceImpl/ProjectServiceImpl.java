@@ -8,7 +8,7 @@ import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
-import com.wagglex2.waggle.domain.common.event.RecruitmentCreatedEvent;
+import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -18,8 +18,10 @@ import com.wagglex2.waggle.domain.project.dto.request.ProjectUpdateRequestDto;
 import com.wagglex2.waggle.domain.project.dto.response.ProjectDetailResponseDto;
 import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto;
 import com.wagglex2.waggle.domain.project.entity.Project;
+import com.wagglex2.waggle.domain.project.event.ProjectCreatedEvent;
 import com.wagglex2.waggle.domain.project.repository.ProjectRepository;
 import com.wagglex2.waggle.domain.project.service.ProjectService;
+import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +50,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserService userService;
     private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
+    private final TeamMemberService teamMemberService;
     private final PageableValidator pageableValidator;
     private final ApplicationEventPublisher publisher;
 
@@ -60,7 +63,13 @@ public class ProjectServiceImpl implements ProjectService {
 
         Long projectId = projectRepository.save(newProject).getId();
 
-        publisher.publishEvent(new RecruitmentCreatedEvent(userId, projectId));
+        publisher.publishEvent(
+                new ProjectCreatedEvent(
+                        userId,
+                        projectId,
+                        requestDto.getAuthorPosition()
+                )
+        );
 
         return projectId;
     }
@@ -92,8 +101,14 @@ public class ProjectServiceImpl implements ProjectService {
         Optional<Long> bookmarkIdOptional =
                 bookmarkService.findIdByUserIdAndRecruitmentId(viewerId, projectId);
 
+        PositionType authorPosition = teamMemberService.getPositionInProject(
+                projectId,
+                project.getUser().getId()
+        );
+
         return ProjectDetailResponseDto.fromEntity(
                 project,
+                authorPosition,
                 bookmarkIdOptional.isPresent(),
                 bookmarkIdOptional.orElse(null)
         );
