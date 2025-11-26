@@ -9,6 +9,7 @@ import com.wagglex2.waggle.domain.review.dto.response.ReviewResponseDto;
 import com.wagglex2.waggle.domain.review.service.ReviewService;
 import com.wagglex2.waggle.domain.user.controller.docs.UserControllerDocs;
 import com.wagglex2.waggle.domain.user.dto.request.*;
+import com.wagglex2.waggle.domain.user.dto.response.PublicUserResponseDto;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -220,6 +221,24 @@ public class UserController implements UserControllerDocs {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.ok("회원탈퇴에 성공했습니다."));
+    }
+
+    /**
+     * 공개 사용자 정보 조회 API
+     *
+     * - 특정 사용자의 공개 프로필 정보를 조회한다.
+     * - nickname, profileImageUrl, positionType, skills, shortIntro
+     *   타인에게 공개 가능한 최소 정보만 반환한다.
+     *
+     */
+    @GetMapping("/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<PublicUserResponseDto>>  getPublicUser(
+            @PathVariable("userId") Long userId
+    ) {
+        PublicUserResponseDto dto = userService.getPublicUserInfo(userId);
+
+        return ResponseEntity.ok(APIResponse.ok("사용자 정보 조회에 성공했습니다.", dto));
     }
 
     /**

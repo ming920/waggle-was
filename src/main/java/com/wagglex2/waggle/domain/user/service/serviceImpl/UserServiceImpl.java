@@ -7,6 +7,7 @@ import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.PasswordRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.UserUpdateRequestDto;
+import com.wagglex2.waggle.domain.user.dto.response.PublicUserResponseDto;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
@@ -187,6 +188,13 @@ public class UserServiceImpl implements UserService {
 
         log.info("회원정보 불러오기 성공 : userId = {}", userId);
         return UserResponseDto.from(user);
+    }
+
+    @Override
+    public PublicUserResponseDto getPublicUserInfo(Long userId) {
+        User user = findByIdWithSkills(userId);
+
+        return PublicUserResponseDto.from(user);
     }
 
     /**
