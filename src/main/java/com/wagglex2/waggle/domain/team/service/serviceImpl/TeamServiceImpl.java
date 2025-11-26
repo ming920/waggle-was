@@ -5,6 +5,7 @@ import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.validator.PageableValidator;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.service.RecruitmentService;
+import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.team.dto.response.TeamResponseDto;
@@ -75,6 +76,18 @@ public class TeamServiceImpl implements TeamService {
 
         Team team = new Team(recruitment);
         TeamMember leader = new TeamMember(team, user, TeamRole.LEADER);
+        team.addMember(leader);
+        teamRepository.save(team);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.MANDATORY) // 반드시 트랜잭션 내에서 실행
+    public void createByRecruitmentId(Long userId, Long recruitmentId, PositionType authorPosition) {
+        User user = userService.findById(userId);
+        BaseRecruitment recruitment = recruitmentService.findById(recruitmentId);
+
+        Team team = new Team(recruitment);
+        TeamMember leader = new TeamMember(team, user, TeamRole.LEADER, authorPosition);
         team.addMember(leader);
         teamRepository.save(team);
     }

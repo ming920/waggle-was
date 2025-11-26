@@ -1,5 +1,6 @@
 package com.wagglex2.waggle.domain.team.service;
 
+import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.team.dto.response.TeamResponseDto;
@@ -14,6 +15,7 @@ public interface TeamService {
     Team findByRecruitmentId(Long recruitmentId);
     boolean existsById(Long id);
     void createByRecruitmentId(Long userId, Long recruitmentId);
+    void createByRecruitmentId(Long userId, Long recruitmentId, PositionType authorPosition);
     Page<TeamResponseDto> getByUserIdAndCategoryAndStatus(Long userId, RecruitmentCategory category, RecruitmentStatus status, Pageable pageable);
     void deleteByRecruitmentId(Long recruitmentId);
 }

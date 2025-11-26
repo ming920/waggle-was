@@ -5,6 +5,7 @@ import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.service.RecruitmentService;
+import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.team.service.TeamService;
@@ -41,6 +42,11 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         }
 
         return new TeamMember(team, application.getApplicant(), TeamRole.MEMBER);
+    }
+
+    @Override
+    public PositionType getPositionInProject(Long projectId, Long userId) {
+        return teamMemberRepository.getPositionInProject(projectId, userId);
     }
 
     @Override
