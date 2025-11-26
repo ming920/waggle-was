@@ -8,6 +8,7 @@ import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.entity.BaseRecruitment;
 import com.wagglex2.waggle.domain.common.service.RecruitmentService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +53,12 @@ public class BookmarkServiceImpl implements BookmarkService {
     }
 
     @Override
-    public Page<Long> findBookmarkedRecruitmentIdsByUserId(Long userId, RecruitmentCategory category, Pageable pageable) {
-        return bookmarkRepository.findBookmarkedRecruitmentIdsByUserId(userId, category, pageable);
+    public Page<Long> findBookmarkedRecruitmentIdsByUserId(Long userId, RecruitmentCategory category, RecruitmentStatus status, Pageable pageable) {
+        if (status == RecruitmentStatus.CANCELED) {
+            throw new BusinessException(ErrorCode.INVALID_ARGUMENT);
+        }
+
+        return bookmarkRepository.findBookmarkedRecruitmentIdsByUserId(userId, category, status, pageable);
     }
 
     @Override
@@ -74,5 +79,11 @@ public class BookmarkServiceImpl implements BookmarkService {
         }
 
         bookmarkRepository.delete(bookmark);
+    }
+
+    @Transactional
+    @Override
+    public void deleteAllByRecruitmentId(Long recruitmentId) {
+        bookmarkRepository.deleteAllByRecruitmentId(recruitmentId);
     }
 }

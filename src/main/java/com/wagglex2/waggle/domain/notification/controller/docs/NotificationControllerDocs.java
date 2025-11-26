@@ -21,22 +21,22 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Notification(알림)", description = "알림 관련 API")
 public interface NotificationControllerDocs {
 
     @Operation(
             summary = "알림 조회",
-            description = "나에게 온 알림을 최신순으로 조회한다.",
+            description = "사용자별로 수신한 전체/카테고리별 알림을 최신순으로 조회한다.",
             security = @SecurityRequirement(name = "Bearer Token"),
             parameters = {
                     @Parameter(
                             name = "category",
-                            description = "조회하려는 알림의 공고 카테고리",
+                            description = """
+                                    조회하려는 알림의 공고 카테고리<br>
+                                    미지정 시, 전체 알림 조회
+                                    """,
                             in = ParameterIn.QUERY
                     ),
                     @Parameter(
@@ -69,6 +69,7 @@ public interface NotificationControllerDocs {
                             examples = {
                                     @ExampleObject(
                                             name = "전체 알림",
+                                            description = "`/notifications`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -136,6 +137,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "프로젝트 알림",
+                                            description = "`/notifications?category=project`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -167,6 +169,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "과제 알림",
+                                            description = "`/notifications?category=assignment`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -198,6 +201,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "스터디 알림",
+                                            description = "`/notifications?category=study`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -241,6 +245,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "알림 없음",
+                                            description = "`/notifications`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -267,6 +272,8 @@ public interface NotificationControllerDocs {
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
                             examples = @ExampleObject(
+                                    name = "카테고리 값이 잘못된 경우",
+                                    description = "`/notifications?category=apple`",
                                     value = """
                                             {
                                                 "code": "INVALID_ENUM_VALUE",
@@ -319,6 +326,122 @@ public interface NotificationControllerDocs {
     ResponseEntity<APIResponse<Page<NotificationResponseDto>>> getMyNotificationsByCategory(
             @RequestParam(value = "category", required = false) RecruitmentCategory category,
             @PageableDefault(size = 5) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+
+    @Operation(
+            summary = "알림 읽음 처리",
+            description = """
+                    알림을 읽음 처리한다.<br>
+                    이미 읽음 처리된 알림이라도, 예외 없이 성공(200)으로 응답한다.
+                    """,
+            security = @SecurityRequirement(name = "Bearer Token"),
+            parameters = {
+                    @Parameter(
+                            name = "notificationId",
+                            description = "읽음 처리하려는 알림 ID",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            example = "13"
+                    )
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "알림 읽음 처리 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "알림을 읽음 처리하였습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "알림을 읽음 처리할 권한이 없는 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "CANNOT_READ_ANOTHER_USER_NOTIFICATION",
+                                                        "message": "다른 사용자의 알림은 읽을 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "해당 알림이 존재하지 않는 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "NOTIFICATION_NOT_FOUND",
+                                                        "message": "알림을 찾을 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    @PatchMapping("{notificationId}/read")
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<APIResponse<Void>> markAsRead(
+            @PathVariable("notificationId") Long notificationId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     );
 
@@ -460,6 +583,7 @@ public interface NotificationControllerDocs {
                             examples = {
                                     @ExampleObject(
                                             name = "전체 알림",
+                                            description = "`/notifications`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -469,6 +593,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "프로젝트 알림",
+                                            description = "`/notifications?category=project`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -478,6 +603,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "과제 알림",
+                                            description = "`/notifications?category=assignment`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -487,6 +613,7 @@ public interface NotificationControllerDocs {
                                     ),
                                     @ExampleObject(
                                             name = "스터디 알림",
+                                            description = "`/notifications?category=study`",
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
@@ -495,6 +622,25 @@ public interface NotificationControllerDocs {
                                                     """
                                     )
                             }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 값이 유효하지 않은 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = @ExampleObject(
+                                    name = "카테고리 값이 잘못된 경우",
+                                    description = "`/notifications?category=apple`",
+                                    value = """
+                                            {
+                                                "code": "INVALID_ENUM_VALUE",
+                                                "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
+                                                "data": "쿼리 파라미터 'category'의 값 'apple'이(가) 유효하지 않습니다."
+                                            }
+                                            """
+                            )
                     )
             ),
             @ApiResponse(

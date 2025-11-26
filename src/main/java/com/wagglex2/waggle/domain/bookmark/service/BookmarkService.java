@@ -1,6 +1,8 @@
 package com.wagglex2.waggle.domain.bookmark.service;
 
+import com.wagglex2.waggle.domain.bookmark.event.BookmarkEventListener;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,7 +20,7 @@ public interface BookmarkService {
      * @param pageable 페이징 정보
      * @return 사용자가 찜한 공고 ID를 담은 Page 객체
      */
-    Page<Long> findBookmarkedRecruitmentIdsByUserId(Long userId, RecruitmentCategory category, Pageable pageable);
+    Page<Long> findBookmarkedRecruitmentIdsByUserId(Long userId, RecruitmentCategory category, RecruitmentStatus status, Pageable pageable);
 
     /**
      * 특정 사용자가 특정 공고를 찜했는지 여부를 조회한다.
@@ -30,4 +32,14 @@ public interface BookmarkService {
      */
     Optional<Long> findIdByUserIdAndRecruitmentId(Long userId, Long recruitmentId);
     void deleteBookmark(Long userId, Long bookmarkId);
+
+    /**
+     * 특정 공고가 삭제될 경우, 해당 공고에 대한 모든 찜을 삭제한다.
+     * <p>
+     * 이 메서드는 {@link BookmarkEventListener} 이벤트 리스너에서 호출되어,
+     * 공고 삭제에 따른 찜 삭제를 처리한다.
+     *
+     * @param recruitmentId 삭제된 공고의 ID
+     */
+    void deleteAllByRecruitmentId(Long recruitmentId);
 }

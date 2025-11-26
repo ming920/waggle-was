@@ -8,10 +8,13 @@ import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
+import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
+import com.wagglex2.waggle.domain.study.dto.request.StudySearchCondition;
 import com.wagglex2.waggle.domain.study.dto.request.StudyUpdateRequestDto;
-import com.wagglex2.waggle.domain.study.dto.response.StudyResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudyDetailResponseDto;
+import com.wagglex2.waggle.domain.study.dto.response.StudySummaryResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.repository.StudyRepository;
 import com.wagglex2.waggle.domain.study.service.StudyService;
@@ -22,6 +25,7 @@ import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +52,7 @@ public class StudyServiceImpl implements StudyService {
     private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     @Override
@@ -67,7 +72,7 @@ public class StudyServiceImpl implements StudyService {
 
     @Transactional
     @Override
-    public StudyResponseDto getStudy(Long viewerId, Long studyId) {
+    public StudyDetailResponseDto getStudy(Long viewerId, Long studyId) {
         Study study = studyRepository.findWithAllById(studyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.STUDY_NOT_FOUND));
 
@@ -92,11 +97,20 @@ public class StudyServiceImpl implements StudyService {
         Optional<Long> bookmarkIdOptional =
                 bookmarkService.findIdByUserIdAndRecruitmentId(viewerId, studyId);
 
-        return StudyResponseDto.fromEntity(
+        return StudyDetailResponseDto.fromEntity(
                 study,
                 bookmarkIdOptional.isPresent(),
                 bookmarkIdOptional.orElse(null)
         );
+    }
+
+    @Override
+    public Page<StudySummaryResponseDto> getStudySummaries(
+            Long viewerId,
+            StudySearchCondition condition,
+            Pageable pageable
+    ) {
+        return studyRepository.getStudySummaries(viewerId, condition, pageable);
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
@@ -189,5 +203,7 @@ public class StudyServiceImpl implements StudyService {
 
         // 논리적 삭제
         study.cancel();
+
+        publisher.publishEvent(new RecruitmentDeletedEvent(studyId));
     }
 }

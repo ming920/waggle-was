@@ -25,10 +25,7 @@ public record UserResponseDto(
         String shortIntro,
         String profileImageUrl
 ) {
-    public static UserResponseDto from(User user, String defaultImageUrl) {
-        String imageUrl = user.getProfileImageUrl() != null 
-            ? user.getProfileImageUrl() 
-            : defaultImageUrl;
+    public static UserResponseDto from(User user) {
 
         return new UserResponseDto(
                 user.getUsername(),
@@ -39,7 +36,7 @@ public record UserResponseDto(
                 user.getPosition(),
                 user.getSkills(),
                 user.getShortIntro(),
-                imageUrl
+                user.getProfileImageUrl()
         );
     }
 }

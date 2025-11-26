@@ -117,11 +117,12 @@ public class ProjectController implements ProjectControllerDocs {
     @GetMapping("/bookmarks")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<APIResponse<Page<ProjectSummaryResponseDto>>> getMyBookmarks(
+            @RequestParam(value = "status", required = false) RecruitmentStatus status,
             @PageableDefault(size = 9) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Page<ProjectSummaryResponseDto> bookmarkedProjects =
-                projectService.getBookmarkedProjectsByUserId(userDetails.getUserId(), pageable);
+                projectService.getBookmarkedProjectsByUserId(userDetails.getUserId(), status, pageable);
 
         return ResponseEntity.ok(
                 APIResponse.ok("프로젝트 공고 찜 목록을 성공적으로 조회하였습니다.", bookmarkedProjects)

@@ -8,6 +8,8 @@ import com.wagglex2.waggle.domain.auth.dto.request.EmailRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.EmailVerificationRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.SignInRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.response.SignInResponseDto;
+import com.wagglex2.waggle.domain.auth.dto.response.SignInResult;
 import com.wagglex2.waggle.domain.auth.dto.response.TokenPair;
 import com.wagglex2.waggle.domain.auth.service.AuthService;
 import com.wagglex2.waggle.domain.user.service.UserService;
@@ -69,26 +71,32 @@ public class AuthController implements AuthControllerDocs {
 
 
     @PostMapping("/sign-in")
-    public ResponseEntity<APIResponse<Void>> signIn(
+    public ResponseEntity<APIResponse<SignInResponseDto>> signIn(
             @Valid @RequestBody SignInRequestDto dto,
             HttpServletResponse response
     ) {
 
         // 1. 로그인 처리
-        TokenPair tokens = authService.login(dto);
+        SignInResult signInResult = authService.login(dto);
 
         // 2. Access Token -> 헤더에 추가
-        response.setHeader("Authorization", "Bearer " + tokens.accessToken());
+        response.setHeader("Authorization", "Bearer " + signInResult.tokenPair().accessToken());
 
         // 3. Refresh Token -> 쿠키에 추가
         addCookie(response,
-                tokens.refreshToken(),
+                signInResult.tokenPair().refreshToken(),
                 REFRESH_TOKEN_COOKIE_NAME,
                 jwtUtil.getRefreshExpMills() / 1000
         );
 
+        SignInResponseDto signInResponseDto = new SignInResponseDto(
+                signInResult.userId(),
+                signInResult.username(),
+                signInResult.status()
+        );
+
         return ResponseEntity.status(HttpStatus.OK)
-                .body(APIResponse.ok("로그인에 성공했습니다."));
+                .body(APIResponse.ok("로그인에 성공했습니다.", signInResponseDto));
     }
 
 

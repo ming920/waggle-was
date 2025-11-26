@@ -1,6 +1,7 @@
 package com.wagglex2.waggle.domain.user.service;
 
 import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.PasswordRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.UserUpdateRequestDto;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
@@ -16,6 +17,7 @@ public interface UserService {
     boolean existsByUsername(String username);
     boolean existsByNickname(String nickname);
     Long signUp(SignUpRequestDto dto);
+    void updateBasicInfo(Long id, UserBasicInfoRequestDto dto);
     void changePassword(Long userId, PasswordRequestDto dto);
     UserResponseDto getUserInfo(Long userId);
     UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto dto);

@@ -5,6 +5,7 @@ import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
 import com.wagglex2.waggle.domain.auth.dto.request.SignInRequestDto;
+import com.wagglex2.waggle.domain.auth.dto.response.SignInResult;
 import com.wagglex2.waggle.domain.auth.dto.response.TokenPair;
 import com.wagglex2.waggle.domain.auth.service.AuthService;
 import com.wagglex2.waggle.domain.user.entity.User;
@@ -151,10 +152,10 @@ public class AuthServiceImpl implements AuthService {
      * @param toEmail   인증번호를 받은 이메일
      * @param inputCode 사용자가 입력한 인증번호
      * @throws BusinessException <ul>
-     *                                                                                           <li>{@link ErrorCode#INVALID_REQUEST} : 이메일 또는 인증번호가 누락됨</li>
-     *                                                                                           <li>{@link ErrorCode#VERIFICATION_CODE_EXPIRED} : 인증번호가 존재하지 않거나 만료됨</li>
-     *                                                                                           <li>{@link ErrorCode#INVALID_VERIFICATION_CODE} : 입력된 인증번호 불일치</li>
-     *                                                                                       </ul>
+     *                                                                                                                     <li>{@link ErrorCode#INVALID_REQUEST} : 이메일 또는 인증번호가 누락됨</li>
+     *                                                                                                                     <li>{@link ErrorCode#VERIFICATION_CODE_EXPIRED} : 인증번호가 존재하지 않거나 만료됨</li>
+     *                                                                                                                     <li>{@link ErrorCode#INVALID_VERIFICATION_CODE} : 입력된 인증번호 불일치</li>
+     *                                                                                                                 </ul>
      */
     @Override
     public void verifyCode(String toEmail, String inputCode) {
@@ -207,13 +208,13 @@ public class AuthServiceImpl implements AuthService {
      * @param dto 로그인 요청 DTO (username, password)
      * @return Access / Refresh Token 쌍
      * @throws BusinessException <ul>
-     *                                                                                 <li>{@link ErrorCode#INVALID_CREDENTIALS} : 잘못된 로그인 정보</li>
-     *                                                                                 <li>{@link ErrorCode#REDIS_CONNECTION_ERROR} : Redis 연결 실패</li>
-     *                                                                                 <li>{@link ErrorCode#INTERNAL_SERVER_ERROR} : 기타 서버 내부 오류</li>
-     *                                                                               </ul>
+     *                            <li>{@link ErrorCode#INVALID_CREDENTIALS} : 잘못된 로그인 정보</li>
+     *                            <li>{@link ErrorCode#REDIS_CONNECTION_ERROR} : Redis 연결 실패</li>
+     *                            <li>{@link ErrorCode#INTERNAL_SERVER_ERROR} : 기타 서버 내부 오류</li>
+     *                           </ul>
      */
     @Override
-    public TokenPair login(SignInRequestDto dto) {
+    public SignInResult login(SignInRequestDto dto) {
         try {
             // 1. 인증 시도
             Authentication authentication = authenticationManager.authenticate(
@@ -247,7 +248,12 @@ public class AuthServiceImpl implements AuthService {
 
             log.info("리프레시 토큰 Redis에 저장 성공 : {}", userId);
 
-            return new TokenPair(accessToken, refreshToken);
+            return new SignInResult(
+                    userId,
+                    userDetails.getUsername(),
+                    userDetails.getStatus(),
+                    new TokenPair(accessToken, refreshToken)
+            );
 
         } catch (BadCredentialsException e) {
             log.warn("로그인 실패 - 잘못된 인증 정보 : {}", dto.username());

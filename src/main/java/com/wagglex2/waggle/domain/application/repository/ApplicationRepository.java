@@ -68,6 +68,24 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     List<Application> findAllByRecruitmentIds(@Param("recruitmentIds") List<Long> recruitmentIds);
 
     /**
+     * 특정 공고에 대해 대한 모든 지원을 취소 상태(CANCELED)로 변경한다.
+     * <p>
+     * 특정 공고가 삭제되는 경우, 그와 관련된 지원의 상태를 변경하는 용도이다.<br>
+     * 대상은 삭제 처리 되지 않고, 대기 상태(SUBMITTED)인 지원이다.
+     *
+     * @param recruitmentId 공고 ID
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("""
+        UPDATE Application a
+        SET a.status = com.wagglex2.waggle.domain.application.type.ApplicationStatus.CANCELED
+        WHERE a.recruitment.id = :recruitmentId
+        AND a.isDeleted = false
+        AND a.status = com.wagglex2.waggle.domain.application.type.ApplicationStatus.SUBMITTED
+    """)
+    void cancelAllByRecruitmentId(Long recruitmentId);
+
+    /**
      * 마감된 공고에 대한 모든 지원 상태를 CLOSED로 변경한다.
      *
      * @return 업데이트된 지원 건수

@@ -3,6 +3,7 @@ package com.wagglex2.waggle.domain.application.service;
 import com.wagglex2.waggle.domain.application.dto.request.ApplicationCommonRequestDto;
 import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.dto.response.ApplicationCommonResponseDto;
+import com.wagglex2.waggle.domain.application.event.ApplicationEventListener;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,17 @@ public interface ApplicationService {
     Page<ApplicationCommonResponseDto> getAllByUserIdAndRecruitmentCategory(Long userId, RecruitmentCategory category, Pageable pageable);
     void acceptApplication(Long deciderId, Long applicationId);
     void rejectApplication(Long deciderId, Long applicationId);
-    void cancelApplication(Long userId, Long applicationId);
+    void deleteApplication(Long userId, Long applicationId);
+
+    /**
+     * 특정 공고가 삭제될 경우, 해당 공고에 대한 모든 지원 내역을 취소 상태로 변경한다.
+     * <p>
+     * 이 메서드는 {@link ApplicationEventListener} 이벤트 리스너에서 호출되어
+     * 공고 삭제에 따른 지원 상태 변경을 처리한다.
+     *
+     * @param recruitmentId 삭제된 공고의 ID
+     */
+    void cancelApplication(Long recruitmentId);
 
     /**
      * 마감된 공고에 대한 모든 지원 상태를 CLOSED로 변경한다.

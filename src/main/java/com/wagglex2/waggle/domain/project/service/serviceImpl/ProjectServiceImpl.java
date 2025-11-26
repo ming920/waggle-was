@@ -9,6 +9,7 @@ import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
+import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectCreationRequestDto;
 import com.wagglex2.waggle.domain.project.dto.request.ProjectSearchCondition;
@@ -25,6 +26,7 @@ import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +53,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
+    private final ApplicationEventPublisher publisher;
 
     @Transactional
     @Override
@@ -183,12 +186,13 @@ public class ProjectServiceImpl implements ProjectService {
 
     @PreAuthorize("#userId == authentication.principal.userId")
     @Override
-    public Page<ProjectSummaryResponseDto> getBookmarkedProjectsByUserId(Long userId, Pageable pageable) {
+    public Page<ProjectSummaryResponseDto> getBookmarkedProjectsByUserId(Long userId, RecruitmentStatus status, Pageable pageable) {
         // 찜한 프로젝트 공고 id 조회
         Page<Long> targetIds =
                 bookmarkService.findBookmarkedRecruitmentIdsByUserId(
                         userId,
                         RecruitmentCategory.PROJECT,
+                        status,
                         pageable
                 );
 
@@ -244,5 +248,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         // 논리적 삭제
         project.cancel();
+
+        publisher.publishEvent(new RecruitmentDeletedEvent(projectId));
     }
 }

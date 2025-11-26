@@ -17,12 +17,12 @@ import java.util.Set;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class StudyResponseDto extends BaseRecruitmentDetailResponseDto {
+public class StudyDetailResponseDto extends BaseRecruitmentDetailResponseDto {
     private final ParticipantInfoResponseDto participants;
     private final Set<Skill> skills;
     private final PeriodResponseDto period;
 
-    private StudyResponseDto(
+    private StudyDetailResponseDto(
             Long id, Long authorId, String authorNickname, RecruitmentCategory category,
             University university, String title, String content, LocalDateTime deadline,
             LocalDateTime createdAt, RecruitmentStatus status, int viewCount,
@@ -35,13 +35,14 @@ public class StudyResponseDto extends BaseRecruitmentDetailResponseDto {
         this.period = period;
     }
 
-    public static StudyResponseDto fromEntity(Study study, boolean isBookmarked, Long bookmarkId) {
+    public static StudyDetailResponseDto fromEntity(Study study, boolean isBookmarked, Long bookmarkId) {
+
         User author = study.getUser();
         ParticipantInfoResponseDto participants = ParticipantInfoResponseDto.from(study.getParticipants());
         PeriodResponseDto period = PeriodResponseDto.from(study.getPeriod());
         Set<Skill> skills = Set.copyOf(study.getSkills());
 
-        return new StudyResponseDto(
+        return new StudyDetailResponseDto(
                 study.getId(), author.getId(), author.getNickname(), study.getCategory(), author.getUniversity(),
                 study.getTitle(), study.getContent(), study.getDeadline(), study.getCreatedAt(),
                 study.getStatus(), study.getViewCount() + 1, participants, skills, period,
