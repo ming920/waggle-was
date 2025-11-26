@@ -8,6 +8,7 @@ import com.wagglex2.waggle.domain.application.entity.Application;
 import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
+import com.wagglex2.waggle.domain.common.event.RecruitmentCreatedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -19,10 +20,6 @@ import com.wagglex2.waggle.domain.project.dto.response.ProjectSummaryResponseDto
 import com.wagglex2.waggle.domain.project.entity.Project;
 import com.wagglex2.waggle.domain.project.repository.ProjectRepository;
 import com.wagglex2.waggle.domain.project.service.ProjectService;
-import com.wagglex2.waggle.domain.team.entity.Team;
-import com.wagglex2.waggle.domain.team.service.TeamService;
-import com.wagglex2.waggle.domain.team_member.entity.TeamMember;
-import com.wagglex2.waggle.domain.team_member.entity.type.TeamRole;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +46,6 @@ public class ProjectServiceImpl implements ProjectService {
     private static final Set<String> PROJECT_SORT_FIELDS = Set.of("createdAt");
     private final ProjectRepository projectRepository;
     private final UserService userService;
-    private final TeamService teamService;
     private final BookmarkService bookmarkService;
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
@@ -64,10 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         Long projectId = projectRepository.save(newProject).getId();
 
-        Team team = new Team(newProject);
-        TeamMember leader = new TeamMember(team, user, TeamRole.LEADER);
-        team.addMember(leader);
-        teamService.save(team);
+        publisher.publishEvent(new RecruitmentCreatedEvent(userId, projectId));
 
         return projectId;
     }
