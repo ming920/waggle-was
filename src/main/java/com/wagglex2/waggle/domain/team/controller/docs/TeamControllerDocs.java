@@ -82,9 +82,9 @@ public interface TeamControllerDocs {
                                                         "data": {
                                                             "content": [
                                                                 {
-                                                                    "id": 4,
-                                                                    "recruitmentId": 119,
-                                                                    "recruitmentTitle": "학교 공모전 팀원 구합니다. 4",
+                                                                    "id": 30,
+                                                                    "recruitmentId": 163,
+                                                                    "recruitmentTitle": "팀 멤버 포지션 할당 확인",
                                                                     "category": {
                                                                         "desc": "프로젝트",
                                                                         "name": "PROJECT"
@@ -94,28 +94,41 @@ public interface TeamControllerDocs {
                                                                         "name": "RECRUITING"
                                                                     },
                                                                     "period": {
-                                                                        "startDate": "2025-11-05",
-                                                                        "endDate": "2025-11-20"
+                                                                        "startDate": "2025-12-25",
+                                                                        "endDate": "2026-03-20"
                                                                     },
-                                                                    "durationDays": 15,
-                                                                    "leaderNickname": "민민민재",
-                                                                    "memberCount": 1,
+                                                                    "durationDays": 85,
+                                                                    "leaderNickname": "새우깡",
+                                                                    "memberCount": 2,
                                                                     "members": [
                                                                         {
-                                                                            "userId": 1,
-                                                                            "nickname": "민민민재",
+                                                                            "userId": 5,
+                                                                            "nickname": "새우깡",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "role": {
                                                                                 "desc": "리더",
                                                                                 "name": "LEADER"
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "userId": 1,
+                                                                            "nickname": "민민민재",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                            "role": {
+                                                                                "desc": "멤버",
+                                                                                "name": "MEMBER"
                                                                             },
-                                                                            "position": null
+                                                                            "position": {
+                                                                                "desc": "프론트엔드",
+                                                                                "name": "FRONT_END"
+                                                                            }
                                                                         }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "id": 3,
-                                                                    "recruitmentId": 118,
-                                                                    "recruitmentTitle": "학교 공모전 팀원 구합니다. 3",
+                                                                    "id": 29,
+                                                                    "recruitmentId": 162,
+                                                                    "recruitmentTitle": "팀 멤버 포지션 할당 확인",
                                                                     "category": {
                                                                         "desc": "프로젝트",
                                                                         "name": "PROJECT"
@@ -125,52 +138,56 @@ public interface TeamControllerDocs {
                                                                         "name": "RECRUITING"
                                                                     },
                                                                     "period": {
-                                                                        "startDate": "2025-11-05",
-                                                                        "endDate": "2025-11-20"
+                                                                        "startDate": "2025-12-25",
+                                                                        "endDate": "2026-03-20"
                                                                     },
-                                                                    "durationDays": 15,
-                                                                    "leaderNickname": "민민민재",
-                                                                    "memberCount": 1,
+                                                                    "durationDays": 85,
+                                                                    "leaderNickname": "새우깡",
+                                                                    "memberCount": 4,
                                                                     "members": [
                                                                         {
-                                                                            "userId": 1,
-                                                                            "nickname": "민민민재",
+                                                                            "userId": 5,
+                                                                            "nickname": "새우깡",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "role": {
                                                                                 "desc": "리더",
                                                                                 "name": "LEADER"
-                                                                            },
-                                                                            "position": null
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "id": 2,
-                                                                    "recruitmentId": 117,
-                                                                    "recruitmentTitle": "학교 공모전 팀원 구합니다. 2",
-                                                                    "category": {
-                                                                        "desc": "프로젝트",
-                                                                        "name": "PROJECT"
-                                                                    },
-                                                                    "status": {
-                                                                        "desc": "모집 중",
-                                                                        "name": "RECRUITING"
-                                                                    },
-                                                                    "period": {
-                                                                        "startDate": "2025-11-05",
-                                                                        "endDate": "2025-11-20"
-                                                                    },
-                                                                    "durationDays": 15,
-                                                                    "leaderNickname": "민민민재",
-                                                                    "memberCount": 1,
-                                                                    "members": [
+                                                                            }
+                                                                        },
                                                                         {
                                                                             "userId": 1,
                                                                             "nickname": "민민민재",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "role": {
-                                                                                "desc": "리더",
-                                                                                "name": "LEADER"
+                                                                                "desc": "멤버",
+                                                                                "name": "MEMBER"
                                                                             },
-                                                                            "position": null
+                                                                            "position": {
+                                                                                "desc": "프론트엔드",
+                                                                                "name": "FRONT_END"
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "userId": 34,
+                                                                            "nickname": "매운새우깡",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                            "role": {
+                                                                                "desc": "멤버",
+                                                                                "name": "MEMBER"
+                                                                            },
+                                                                            "position": {
+                                                                                "desc": "프론트엔드",
+                                                                                "name": "FRONT_END"
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "userId": 40,
+                                                                            "nickname": "박데통",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                            "role": {
+                                                                                "desc": "멤버",
+                                                                                "name": "MEMBER"
+                                                                            }
                                                                         }
                                                                     ]
                                                                 }
@@ -178,7 +195,7 @@ public interface TeamControllerDocs {
                                                             "page": {
                                                                 "size": 5,
                                                                 "number": 0,
-                                                                "totalElements": 3,
+                                                                "totalElements": 2,
                                                                 "totalPages": 1
                                                             }
                                                         }

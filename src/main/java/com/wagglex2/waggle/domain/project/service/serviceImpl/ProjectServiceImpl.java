@@ -163,6 +163,7 @@ public class ProjectServiceImpl implements ProjectService {
                                         a.getId(),
                                         a.getApplicant().getId(),
                                         a.getApplicant().getNickname(),
+                                        a.getApplicant().getProfileImageUrl(),
                                         a.getMeetingType(),
                                         a.getGrade(),
                                         a.getContent(),

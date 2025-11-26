@@ -23,13 +23,13 @@ public class StudyDetailResponseDto extends BaseRecruitmentDetailResponseDto {
     private final PeriodResponseDto period;
 
     private StudyDetailResponseDto(
-            Long id, Long authorId, String authorNickname, RecruitmentCategory category,
+            Long id, Long authorId, String authorNickname, String authorProfileImageUrl, RecruitmentCategory category,
             University university, String title, String content, LocalDateTime deadline,
             LocalDateTime createdAt, RecruitmentStatus status, int viewCount,
             ParticipantInfoResponseDto participants, Set<Skill> skills, PeriodResponseDto period,
             boolean isBookmarked, Long bookmarkId
     ) {
-        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
+        super(id, authorId, authorNickname, authorProfileImageUrl, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
         this.participants = participants;
         this.skills = skills;
         this.period = period;
@@ -43,7 +43,7 @@ public class StudyDetailResponseDto extends BaseRecruitmentDetailResponseDto {
         Set<Skill> skills = Set.copyOf(study.getSkills());
 
         return new StudyDetailResponseDto(
-                study.getId(), author.getId(), author.getNickname(), study.getCategory(), author.getUniversity(),
+                study.getId(), author.getId(), author.getNickname(), author.getProfileImageUrl(), study.getCategory(), author.getUniversity(),
                 study.getTitle(), study.getContent(), study.getDeadline(), study.getCreatedAt(),
                 study.getStatus(), study.getViewCount() + 1, participants, skills, period,
                 isBookmarked, bookmarkId

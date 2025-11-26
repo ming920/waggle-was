@@ -23,12 +23,13 @@ public class AssignmentDetailResponseDto extends BaseRecruitmentDetailResponseDt
     private final Set<Integer> grades;
 
     private AssignmentDetailResponseDto(
-            Long id, Long authorId, String authorNickname, RecruitmentCategory category, University university,
-            String title, String content, LocalDateTime deadline, LocalDateTime createdAt,
-            RecruitmentStatus status, int viewCount, String department, String lecture, String lectureCode,
-            ParticipantInfoResponseDto participants, Set<Integer> grades, boolean isBookmarked, Long bookmarkId
+            Long id, Long authorId, String authorNickname, String authorProfileImageUrl,
+            RecruitmentCategory category, University university, String title, String content,
+            LocalDateTime deadline, LocalDateTime createdAt, RecruitmentStatus status, int viewCount,
+            String department, String lecture, String lectureCode, ParticipantInfoResponseDto participants,
+            Set<Integer> grades, boolean isBookmarked, Long bookmarkId
     ) {
-        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
+        super(id, authorId, authorNickname, authorProfileImageUrl, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
         this.department = department;
         this.lecture = lecture;
         this.lectureCode = lectureCode;
@@ -42,7 +43,7 @@ public class AssignmentDetailResponseDto extends BaseRecruitmentDetailResponseDt
         Set<Integer> grades = Set.copyOf(assignment.getGrades());
 
         return new AssignmentDetailResponseDto(
-                assignment.getId(), author.getId(), author.getNickname(), assignment.getCategory(), author.getUniversity(),
+                assignment.getId(), author.getId(), author.getNickname(), author.getProfileImageUrl(), assignment.getCategory(), author.getUniversity(),
                 assignment.getTitle(), assignment.getContent(), assignment.getDeadline(), assignment.getCreatedAt(),
                 assignment.getStatus(), assignment.getViewCount(), assignment.getDepartment(), assignment.getLecture(),
                 assignment.getLectureCode(), participants, grades, isBookmarked, bookmarkId

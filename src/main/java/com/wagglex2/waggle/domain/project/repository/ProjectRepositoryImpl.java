@@ -115,7 +115,7 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                                 project.id,
                                 project.user.id,
                                 project.user.nickname,
-                                // TODO profileImg
+                                project.user.profileImageUrl,
                                 project.user.university,
                                 project.category,
                                 project.title,

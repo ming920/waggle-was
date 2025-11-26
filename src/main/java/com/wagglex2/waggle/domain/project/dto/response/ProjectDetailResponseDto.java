@@ -27,14 +27,14 @@ public class ProjectDetailResponseDto extends BaseRecruitmentDetailResponseDto {
     private final PeriodResponseDto period;
 
     public ProjectDetailResponseDto(
-            Long id, Long authorId, String authorNickname, RecruitmentCategory category,
+            Long id, Long authorId, String authorNickname, String authorProfileImageUrl, RecruitmentCategory category,
             University university, String title, String content, LocalDateTime deadline,
             LocalDateTime createdAt, RecruitmentStatus status, int viewCount,
             ProjectPurpose purpose, MeetingType meetingType, Set<PositionInfoResponseDto> positions,
             Set<Skill> skills, Set<Integer> grades, PeriodResponseDto period,
             boolean isBookmarked, Long bookmarkId
     ) {
-        super(id, authorId, authorNickname, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
+        super(id, authorId, authorNickname, authorProfileImageUrl, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
         this.purpose = purpose;
         this.meetingType = meetingType;
         this.positions = positions;
@@ -53,7 +53,7 @@ public class ProjectDetailResponseDto extends BaseRecruitmentDetailResponseDto {
                 .collect(Collectors.toUnmodifiableSet());
 
         return new ProjectDetailResponseDto(
-                project.getId(), author.getId(), author.getNickname(), project.getCategory(),
+                project.getId(), author.getId(), author.getNickname(), author.getProfileImageUrl(), project.getCategory(),
                 author.getUniversity(), project.getTitle(), project.getContent(), project.getDeadline(),
                 project.getCreatedAt(), project.getStatus(), project.getViewCount() + 1,
                 project.getPurpose(), project.getMeetingType(), positions, skills, grades, period,

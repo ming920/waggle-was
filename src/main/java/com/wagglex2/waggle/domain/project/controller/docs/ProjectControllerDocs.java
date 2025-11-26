@@ -221,9 +221,10 @@ public interface ProjectControllerDocs {
                                                         "code": "SUCCESS",
                                                         "message": "프로젝트 공고를 성공적으로 조회하였습니다.",
                                                         "data": {
-                                                            "id": 141,
+                                                            "id": 1,
                                                             "authorId": 5,
                                                             "authorNickname": "새우깡",
+                                                            "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                             "category": {
                                                                 "desc": "프로젝트",
                                                                 "name": "PROJECT"
@@ -233,22 +234,22 @@ public interface ProjectControllerDocs {
                                                                 "domain": "yu.ac.kr",
                                                                 "name": "YOUNGNAM_UNIV"
                                                             },
-                                                            "title": "토스 주관 공모전 팀원 구합니다.",
-                                                            "content": "1등 팀 채용한답니다. 열심히 합시다.",
-                                                            "deadline": "2025-12-20 23:59:59",
-                                                            "createdAt": "2025-11-17 15:10:51",
+                                                            "title": "카카오 해커톤 팀원 구합니다.",
+                                                            "content": "카카오에서 개최하는 해커톤 같이 할 사람 구해요.",
+                                                            "deadline": "2025-10-11 23:59:59",
+                                                            "createdAt": "2025-10-08 00:53:36",
                                                             "status": {
                                                                 "desc": "모집 중",
                                                                 "name": "RECRUITING"
                                                             },
-                                                            "viewCount": 1,
+                                                            "viewCount": 91,
                                                             "purpose": {
-                                                                "desc": "공모전",
-                                                                "name": "CONTEST"
+                                                                "desc": "해커톤",
+                                                                "name": "HACKATHON"
                                                             },
                                                             "meetingType": {
-                                                                "desc": "오프라인",
-                                                                "name": "OFFLINE"
+                                                                "desc": "온/오프라인",
+                                                                "name": "HYBRID"
                                                             },
                                                             "positions": [
                                                                 {
@@ -274,23 +275,24 @@ public interface ProjectControllerDocs {
                                                             ],
                                                             "skills": [
                                                                 {
-                                                                    "desc": "React",
-                                                                    "name": "REACT"
-                                                                },
-                                                                {
                                                                     "desc": "Spring Boot",
                                                                     "name": "SPRING_BOOT"
+                                                                },
+                                                                {
+                                                                    "desc": "React",
+                                                                    "name": "REACT"
                                                                 }
                                                             ],
                                                             "grades": [
-                                                                2,
-                                                                3
+                                                                3,
+                                                                4
                                                             ],
                                                             "period": {
-                                                                "startDate": "2025-12-25",
-                                                                "endDate": "2026-03-20"
+                                                                "startDate": "2025-10-05",
+                                                                "endDate": "2025-10-20"
                                                             },
-                                                            "bookmarked": false
+                                                            "bookmarkId": 24,
+                                                            "bookmarked": true
                                                         }
                                                     }
                                                     """
@@ -479,9 +481,10 @@ public interface ProjectControllerDocs {
                                                         "data": {
                                                             "content": [
                                                                 {
-                                                                    "id": 113,
-                                                                    "authorId": 1,
-                                                                    "authorNickname": "민민민재",
+                                                                    "id": 162,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -491,8 +494,8 @@ public interface ProjectControllerDocs {
                                                                         "desc": "프로젝트",
                                                                         "name": "PROJECT"
                                                                     },
-                                                                    "title": "학교 공모전 팀원 구합니다.",
-                                                                    "deadline": "2025-11-11",
+                                                                    "title": "팀 멤버 포지션 할당 확인",
+                                                                    "deadline": "2025-12-20",
                                                                     "status": {
                                                                         "desc": "모집 중",
                                                                         "name": "RECRUITING"
@@ -503,75 +506,22 @@ public interface ProjectControllerDocs {
                                                                     },
                                                                     "positions": [
                                                                         {
-                                                                            "desc": "게임",
-                                                                            "name": "GAME"
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
                                                                         },
-                                                                        {
-                                                                            "desc": "디자인",
-                                                                            "name": "DESIGNER"
-                                                                        }
-                                                                    ],
-                                                                    "skills": [
-                                                                        {
-                                                                            "desc": "Figma",
-                                                                            "name": "FIGMA"
-                                                                        },
-                                                                        {
-                                                                            "desc": "Unity",
-                                                                            "name": "UNITY"
-                                                                        }
-                                                                    ],
-                                                                    "purpose": {
-                                                                        "desc": "공모전",
-                                                                        "name": "CONTEST"
-                                                                    },
-                                                                    "bookmarked": false
-                                                                },
-                                                                {
-                                                                    "id": 23,
-                                                                    "authorId": 20,
-                                                                    "authorNickname": "우주멋쟁이",
-                                                                    "university": {
-                                                                        "desc": "영남대",
-                                                                        "domain": "yu.ac.kr",
-                                                                        "name": "YOUNGNAM_UNIV"
-                                                                    },
-                                                                    "category": {
-                                                                        "desc": "프로젝트",
-                                                                        "name": "PROJECT"
-                                                                    },
-                                                                    "title": "졸업작품 팀원 모집합니다",
-                                                                    "deadline": "2025-10-25",
-                                                                    "status": {
-                                                                        "desc": "모집 중",
-                                                                        "name": "RECRUITING"
-                                                                    },
-                                                                    "meetingType": {
-                                                                        "desc": "온라인",
-                                                                        "name": "ONLINE"
-                                                                    },
-                                                                    "positions": [
                                                                         {
                                                                             "desc": "백엔드",
                                                                             "name": "BACK_END"
-                                                                        },
-                                                                        {
-                                                                            "desc": "프론트엔드",
-                                                                            "name": "FRONT_END"
                                                                         }
                                                                     ],
                                                                     "skills": [
                                                                         {
-                                                                            "desc": "Java",
-                                                                            "name": "JAVA"
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
                                                                         },
                                                                         {
                                                                             "desc": "Spring Boot",
                                                                             "name": "SPRING_BOOT"
-                                                                        },
-                                                                        {
-                                                                            "desc": "React",
-                                                                            "name": "REACT"
                                                                         }
                                                                     ],
                                                                     "purpose": {
@@ -581,9 +531,10 @@ public interface ProjectControllerDocs {
                                                                     "bookmarked": false
                                                                 },
                                                                 {
-                                                                    "id": 19,
-                                                                    "authorId": 5,
-                                                                    "authorNickname": "새우깡",
+                                                                    "id": 158,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -593,11 +544,11 @@ public interface ProjectControllerDocs {
                                                                         "desc": "프로젝트",
                                                                         "name": "PROJECT"
                                                                     },
-                                                                    "title": "학교 공모전 팀원 구합니다.",
-                                                                    "deadline": "2025-11-11",
+                                                                    "title": "토스 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025-12-21",
                                                                     "status": {
-                                                                        "desc": "모집 중",
-                                                                        "name": "RECRUITING"
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
                                                                     },
                                                                     "meetingType": {
                                                                         "desc": "오프라인",
@@ -605,12 +556,12 @@ public interface ProjectControllerDocs {
                                                                     },
                                                                     "positions": [
                                                                         {
-                                                                            "desc": "게임",
-                                                                            "name": "GAME"
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
                                                                         },
                                                                         {
-                                                                            "desc": "디자인",
-                                                                            "name": "DESIGNER"
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
                                                                         }
                                                                     ],
                                                                     "skills": [
@@ -627,15 +578,64 @@ public interface ProjectControllerDocs {
                                                                         "desc": "공모전",
                                                                         "name": "CONTEST"
                                                                     },
-                                                                    "bookmarkId": 19,
-                                                                    "bookmarked": true
+                                                                    "bookmarked": false
+                                                                },
+                                                                {
+                                                                    "id": 151,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "토스 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025-12-21",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": false
                                                                 }
                                                             ],
                                                             "page": {
                                                                 "size": 3,
                                                                 "number": 4,
-                                                                "totalElements": 16,
-                                                                "totalPages": 6
+                                                                "totalElements": 24,
+                                                                "totalPages": 8
                                                             }
                                                         }
                                                     }
@@ -654,6 +654,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 3,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -704,6 +705,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 1,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -773,6 +775,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 148,
                                                                     "authorId": 35,
                                                                     "authorNickname": "우주멋쟁이123",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -834,6 +837,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 23,
                                                                     "authorId": 20,
                                                                     "authorNickname": "우주멋쟁이",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -888,6 +892,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 3,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -938,6 +943,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 1,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1112,6 +1118,18 @@ public interface ProjectControllerDocs {
                                                         "data": {
                                                             "content": [
                                                                 {
+                                                                    "recruitmentId": 139,
+                                                                    "title": "토스 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025.12.20",
+                                                                    "applications": []
+                                                                },
+                                                                {
+                                                                    "recruitmentId": 138,
+                                                                    "title": "네이버 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025.12.20",
+                                                                    "applications": []
+                                                                },
+                                                                {
                                                                     "recruitmentId": 137,
                                                                     "title": "네이버 주관 공모전 팀원 구합니다.",
                                                                     "deadline": "2025.12.20",
@@ -1120,25 +1138,26 @@ public interface ProjectControllerDocs {
                                                                             "applicationId": 27,
                                                                             "applicantId": 40,
                                                                             "nickname": "박데통",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "meetingType": {
                                                                                 "desc": "온라인",
                                                                                 "name": "ONLINE"
                                                                             },
                                                                             "grade": 3,
                                                                             "content": "이 프로젝트에 지원하고 싶습니다.",
-                                                                            "appliedAt": "2025.11.21",
+                                                                            "appliedAt": "2025.11.22",
                                                                             "position": {
                                                                                 "desc": "프론트엔드",
                                                                                 "name": "FRONT_END"
                                                                             },
                                                                             "skills": [
                                                                                 {
-                                                                                    "desc": "JavaScript",
-                                                                                    "name": "JAVASCRIPT"
-                                                                                },
-                                                                                {
                                                                                     "desc": "React",
                                                                                     "name": "REACT"
+                                                                                },
+                                                                                {
+                                                                                    "desc": "JavaScript",
+                                                                                    "name": "JAVASCRIPT"
                                                                                 }
                                                                             ]
                                                                         },
@@ -1146,25 +1165,26 @@ public interface ProjectControllerDocs {
                                                                             "applicationId": 12,
                                                                             "applicantId": 34,
                                                                             "nickname": "매운새우깡",
+                                                                            "profileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                             "meetingType": {
                                                                                 "desc": "온라인",
                                                                                 "name": "ONLINE"
                                                                             },
                                                                             "grade": 3,
                                                                             "content": "이 프로젝트에 지원하고 싶습니다.",
-                                                                            "appliedAt": "2025.11.02",
+                                                                            "appliedAt": "2025.11.03",
                                                                             "position": {
                                                                                 "desc": "백엔드",
                                                                                 "name": "BACK_END"
                                                                             },
                                                                             "skills": [
                                                                                 {
-                                                                                    "desc": "Spring Boot",
-                                                                                    "name": "SPRING_BOOT"
-                                                                                },
-                                                                                {
                                                                                     "desc": "Java",
                                                                                     "name": "JAVA"
+                                                                                },
+                                                                                {
+                                                                                    "desc": "Spring Boot",
+                                                                                    "name": "SPRING_BOOT"
                                                                                 },
                                                                                 {
                                                                                     "desc": "MySQL",
@@ -1173,25 +1193,13 @@ public interface ProjectControllerDocs {
                                                                             ]
                                                                         }
                                                                     ]
-                                                                },
-                                                                {
-                                                                    "recruitmentId": 19,
-                                                                    "title": "학교 공모전 팀원 구합니다.",
-                                                                    "deadline": "2025.11.11",
-                                                                    "applications": []
-                                                                },
-                                                                {
-                                                                    "recruitmentId": 18,
-                                                                    "title": "정부 공모전 팀원 구합니다.",
-                                                                    "deadline": "2025.11.11",
-                                                                    "applications": []
                                                                 }
                                                             ],
                                                             "page": {
                                                                 "size": 3,
                                                                 "number": 1,
-                                                                "totalElements": 9,
-                                                                "totalPages": 3
+                                                                "totalElements": 10,
+                                                                "totalPages": 4
                                                             }
                                                         }
                                                     }
@@ -1297,6 +1305,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 118,
                                                                     "authorId": 1,
                                                                     "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1347,6 +1356,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 117,
                                                                     "authorId": 1,
                                                                     "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1397,6 +1407,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 119,
                                                                     "authorId": 1,
                                                                     "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1447,6 +1458,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 19,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1497,6 +1509,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 6,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1559,6 +1572,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 19,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1609,6 +1623,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 6,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1651,6 +1666,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 1,
                                                                     "authorId": 5,
                                                                     "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1721,6 +1737,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 118,
                                                                     "authorId": 1,
                                                                     "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1771,6 +1788,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 117,
                                                                     "authorId": 1,
                                                                     "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
@@ -1821,6 +1839,7 @@ public interface ProjectControllerDocs {
                                                                     "id": 119,
                                                                     "authorId": 1,
                                                                     "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
                                                                         "domain": "yu.ac.kr",
