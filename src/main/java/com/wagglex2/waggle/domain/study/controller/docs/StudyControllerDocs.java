@@ -569,6 +569,417 @@ public interface StudyControllerDocs {
     );
 
     @Operation(
+            summary = "스터디 공고 찜 목록 조회",
+            description = "스터디 공고 찜 목록을 찜 일자 기준 최신순으로 조회한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
+            parameters = {
+                    @Parameter(
+                            name = "status",
+                            description = """
+                                    조회하려는 공고 상태<br>
+                                    기본값(미지정): `모집 중`, `마감` 모두
+                                    """,
+                            in = ParameterIn.QUERY,
+                            schema = @Schema(allowableValues = {"RECRUITING", "CLOSED"})
+                    ),
+                    @Parameter(
+                            name = "page",
+                            description = """
+                                    조회하려는 찜 목록 페이지<br>
+                                    기본값: 0 (0부터 시작)
+                                    """,
+                            in = ParameterIn.QUERY
+                    ),
+                    @Parameter(
+                            name = "size",
+                            description = """
+                                    조회하려는 스터디 공고 개수<br>
+                                    기본값: 9
+                                    """,
+                            in = ParameterIn.QUERY
+                    )
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "스터디 공고 찜 목록 조회 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = StudySummaryResponseDto.class)
+                            ),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "status(상태) 미지정",
+                                            description = "`/studies/bookmarks?size=3`",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "스터디 공고 찜 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 156,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "스터디",
+                                                                        "name": "STUDY"
+                                                                    },
+                                                                    "title": "Spring 스터디 모집",
+                                                                    "deadline": "2026-11-01",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 51,
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 153,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "스터디",
+                                                                        "name": "STUDY"
+                                                                    },
+                                                                    "title": "Spring 스터디 모집",
+                                                                    "deadline": "2026-11-01",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 50,
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 27,
+                                                                    "authorId": 20,
+                                                                    "authorNickname": "우주멋쟁이",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "스터디",
+                                                                        "name": "STUDY"
+                                                                    },
+                                                                    "title": "Spring 스터디 모집",
+                                                                    "deadline": "2025-10-31",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Java",
+                                                                            "name": "JAVA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 49,
+                                                                    "bookmarked": true
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 3,
+                                                                "number": 0,
+                                                                "totalElements": 4,
+                                                                "totalPages": 2
+                                                            }
+                                                        }
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "모집 중인 공고만 조회",
+                                            description = "`/studies/bookmarks?status=recruiting&size=3`",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "스터디 공고 찜 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 27,
+                                                                    "authorId": 20,
+                                                                    "authorNickname": "우주멋쟁이",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "스터디",
+                                                                        "name": "STUDY"
+                                                                    },
+                                                                    "title": "Spring 스터디 모집",
+                                                                    "deadline": "2025-10-31",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Java",
+                                                                            "name": "JAVA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 49,
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 150,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "스터디",
+                                                                        "name": "STUDY"
+                                                                    },
+                                                                    "title": "Spring 스터디 모집",
+                                                                    "deadline": "2026-12-01",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 22,
+                                                                    "bookmarked": true
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 3,
+                                                                "number": 0,
+                                                                "totalElements": 2,
+                                                                "totalPages": 1
+                                                            }
+                                                        }
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "마감된 공고만 조회",
+                                            description = "`/studies/bookmarks?status=closed&size=3`",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "스터디 공고 찜 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 156,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "스터디",
+                                                                        "name": "STUDY"
+                                                                    },
+                                                                    "title": "Spring 스터디 모집",
+                                                                    "deadline": "2026-11-01",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 51,
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 153,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "스터디",
+                                                                        "name": "STUDY"
+                                                                    },
+                                                                    "title": "Spring 스터디 모집",
+                                                                    "deadline": "2026-11-01",
+                                                                    "status": {
+                                                                        "desc": "마감",
+                                                                        "name": "CLOSED"
+                                                                    },
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 50,
+                                                                    "bookmarked": true
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 3,
+                                                                "number": 0,
+                                                                "totalElements": 2,
+                                                                "totalPages": 1
+                                                            }
+                                                        }
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "유효하지 않은 요청 값 또는 비즈니스 검증 실패로 인해 요청이 거부된 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "status(상태) 값이 잘못된 경우",
+                                            description = "`/studies/bookmarks?status=apple`",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_ENUM_VALUE",
+                                                        "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
+                                                        "data": "쿼리 파라미터 'status'의 값 'apple'이(가) 유효하지 않습니다."
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "status(상태) 값이 허용되지 않는 경우",
+                                            description = "`/studies/bookmarks?status=canceled`",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_ARGUMENT",
+                                                        "message": "유효하지 않은 인자 값입니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    ResponseEntity<APIResponse<Page<StudySummaryResponseDto>>> getMyBookmarks(
+            @RequestParam(value = "status", required = false) RecruitmentStatus status,
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+
+    @Operation(
             summary = "스터디 공고 수정",
             description = "본인이 작성한 스터디 공고 1건을 수정한다.",
             security = @SecurityRequirement(name = "Bearer Token"),
