@@ -326,13 +326,13 @@ public interface StudyControllerDocs {
                                             value = """
                                                     {
                                                         "code": "SUCCESS",
-                                                        "message": "과제 공고 목록을 성공적으로 조회하였습니다.",
+                                                        "message": "스터디 공고 목록을 성공적으로 조회하였습니다.",
                                                         "data": {
                                                             "content": [
                                                                 {
-                                                                    "id": 159,
-                                                                    "authorId": 5,
-                                                                    "authorNickname": "새우깡",
+                                                                    "id": 27,
+                                                                    "authorId": 20,
+                                                                    "authorNickname": "우주멋쟁이",
                                                                     "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                                     "university": {
                                                                         "desc": "영남대",
@@ -340,79 +340,24 @@ public interface StudyControllerDocs {
                                                                         "name": "YOUNGNAM_UNIV"
                                                                     },
                                                                     "category": {
-                                                                        "desc": "과제",
-                                                                        "name": "ASSIGNMENT"
+                                                                        "desc": "스터디",
+                                                                        "name": "STUDY"
                                                                     },
-                                                                    "title": "컴퓨터비전: Canny/HoG/SIFT 비교 리포트",
-                                                                    "deadline": "2025-12-06",
+                                                                    "title": "Spring 스터디 모집",
+                                                                    "deadline": "2025-10-31",
                                                                     "status": {
-                                                                        "desc": "마감",
-                                                                        "name": "CLOSED"
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
                                                                     },
-                                                                    "department": "컴퓨터공학과",
-                                                                    "lecture": "컴퓨터비전",
-                                                                    "lectureCode": "CSE415",
-                                                                    "grades": [
-                                                                        3,
-                                                                        4
-                                                                    ],
-                                                                    "bookmarked": false
-                                                                },
-                                                                {
-                                                                    "id": 155,
-                                                                    "authorId": 5,
-                                                                    "authorNickname": "새우깡",
-                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
-                                                                    "university": {
-                                                                        "desc": "영남대",
-                                                                        "domain": "yu.ac.kr",
-                                                                        "name": "YOUNGNAM_UNIV"
-                                                                    },
-                                                                    "category": {
-                                                                        "desc": "과제",
-                                                                        "name": "ASSIGNMENT"
-                                                                    },
-                                                                    "title": "컴퓨터비전: Canny/HoG/SIFT 비교 리포트",
-                                                                    "deadline": "2025-12-06",
-                                                                    "status": {
-                                                                        "desc": "마감",
-                                                                        "name": "CLOSED"
-                                                                    },
-                                                                    "department": "컴퓨터공학과",
-                                                                    "lecture": "컴퓨터비전",
-                                                                    "lectureCode": "CSE415",
-                                                                    "grades": [
-                                                                        3,
-                                                                        4
-                                                                    ],
-                                                                    "bookmarked": false
-                                                                },
-                                                                {
-                                                                    "id": 154,
-                                                                    "authorId": 5,
-                                                                    "authorNickname": "새우깡",
-                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
-                                                                    "university": {
-                                                                        "desc": "영남대",
-                                                                        "domain": "yu.ac.kr",
-                                                                        "name": "YOUNGNAM_UNIV"
-                                                                    },
-                                                                    "category": {
-                                                                        "desc": "과제",
-                                                                        "name": "ASSIGNMENT"
-                                                                    },
-                                                                    "title": "컴퓨터비전: Canny/HoG/SIFT 비교 리포트",
-                                                                    "deadline": "2025-12-06",
-                                                                    "status": {
-                                                                        "desc": "마감",
-                                                                        "name": "CLOSED"
-                                                                    },
-                                                                    "department": "컴퓨터공학과",
-                                                                    "lecture": "컴퓨터비전",
-                                                                    "lectureCode": "CSE415",
-                                                                    "grades": [
-                                                                        3,
-                                                                        4
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Java",
+                                                                            "name": "JAVA"
+                                                                        }
                                                                     ],
                                                                     "bookmarked": false
                                                                 }
@@ -420,8 +365,8 @@ public interface StudyControllerDocs {
                                                             "page": {
                                                                 "size": 3,
                                                                 "number": 0,
-                                                                "totalElements": 14,
-                                                                "totalPages": 5
+                                                                "totalElements": 1,
+                                                                "totalPages": 1
                                                             }
                                                         }
                                                     }
