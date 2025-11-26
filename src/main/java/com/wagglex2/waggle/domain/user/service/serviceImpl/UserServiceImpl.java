@@ -41,40 +41,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsernameAndStatusNot(username, UserStatus.WITHDRAWN)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
     public User findById(Long id) {
-        return userRepository.findById(id)
+        return userRepository.findByIdAndStatusNot(id, UserStatus.WITHDRAWN)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
     public User findByIdWithSkills(Long id) {
-        return userRepository.findByIdWithSkills(id)
+        return userRepository.findByIdAndStatusNotWithSkills(id, UserStatus.WITHDRAWN)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Override
     public boolean existsById(Long id) {
-        return userRepository.existsById(id);
+        return userRepository.existsByIdAndStatusNot(id, UserStatus.WITHDRAWN);
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+        return userRepository.existsByEmailAndStatusNot(email, UserStatus.WITHDRAWN);
     }
 
     @Override
     public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username);
+        return userRepository.existsByUsernameAndStatusNot(username, UserStatus.WITHDRAWN);
     }
 
     @Override
     public boolean existsByNickname(String nickname) {
-        return userRepository.existsByNickname(nickname);
+        return userRepository.existsByNicknameAndStatusNot(nickname, UserStatus.WITHDRAWN);
     }
 
     /**
