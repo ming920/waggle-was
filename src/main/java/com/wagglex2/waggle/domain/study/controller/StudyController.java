@@ -106,6 +106,21 @@ public class StudyController implements StudyControllerDocs {
         );
     }
 
+    @GetMapping("/bookmarks")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<APIResponse<Page<StudySummaryResponseDto>>> getMyBookmarks(
+            @RequestParam(value = "status", required = false) RecruitmentStatus status,
+            @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Page<StudySummaryResponseDto> bookmarkedStudies =
+                studyService.getBookmarkedStudiesByUserId(userDetails.getUserId(), status, pageable);
+
+        return ResponseEntity.ok(
+                APIResponse.ok("스터디 공고 찜 목록을 성공적으로 조회하였습니다.", bookmarkedStudies)
+        );
+    }
+
     @PutMapping("/{studyId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<APIResponse<Void>> updateStudy(

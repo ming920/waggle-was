@@ -10,6 +10,7 @@ import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsRespons
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.event.RecruitmentCreatedEvent;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
+import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.study.dto.request.StudyCreationRequestDto;
 import com.wagglex2.waggle.domain.study.dto.request.StudySearchCondition;
@@ -106,6 +107,11 @@ public class StudyServiceImpl implements StudyService {
         return studyRepository.getStudySummaries(viewerId, condition, pageable);
     }
 
+    @Override
+    public List<StudySummaryResponseDto> getStudySummariesByIds(Long viewerId, List<Long> studyIds) {
+        return studyRepository.getStudySummariesByIds(viewerId, studyIds);
+    }
+
     @PreAuthorize("#userId == authentication.principal.userId")
     @Override
     public Page<RecruitmentWithAppsResponseDto> getAllByUserId(
@@ -156,6 +162,30 @@ public class StudyServiceImpl implements StudyService {
                 .toList();
 
         return new PageImpl<>(content, pageable, studies.getTotalElements());
+    }
+
+    @PreAuthorize("#userId == authentication.principal.userId")
+    @Override
+    public Page<StudySummaryResponseDto> getBookmarkedStudiesByUserId(Long userId, RecruitmentStatus status, Pageable pageable) {
+        // 찜한 스터디 공고 id 조회
+        Page<Long> targetIds =
+                bookmarkService.findBookmarkedRecruitmentIdsByUserId(
+                        userId,
+                        RecruitmentCategory.STUDY,
+                        status,
+                        pageable
+                );
+
+        // 조회할 공고가 없으면, 빈 리스트 반환
+        if (targetIds.getContent().isEmpty()) {
+            return new PageImpl<>(List.of(), pageable, targetIds.getTotalElements());
+        }
+
+        // targetIds에 해당하는 스터디 공고 정보 조회
+        List<StudySummaryResponseDto> studySummaries =
+                getStudySummariesByIds(userId, targetIds.getContent());
+
+        return new PageImpl<>(studySummaries, pageable, targetIds.getTotalElements());
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")
