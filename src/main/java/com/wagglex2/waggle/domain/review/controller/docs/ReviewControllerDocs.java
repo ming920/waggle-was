@@ -25,7 +25,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Review", description = "리뷰 관련 API")
+@Tag(name = "Review(리뷰)", description = "리뷰 관련 API")
 public interface ReviewControllerDocs {
 
     @Operation(
@@ -182,15 +182,9 @@ public interface ReviewControllerDocs {
                     ),
                     @Parameter(
                             name = "sort",
-                            description = "정렬 기준 필드(기본값: createdAt)",
+                            description = "정렬 기준 필드(기본값: createdAt), 정렬 방향(ASC 또는 DESC, 기본값: DESC)",
                             in = ParameterIn.QUERY,
-                            example = "createdAt"
-                    ),
-                    @Parameter(
-                            name = "direction",
-                            description = "정렬 방향(ASC 또는 DESC, 기본값: DESC)",
-                            in = ParameterIn.QUERY,
-                            example = "DESC"
+                            example = "createdAt,DESC"
                     ),
                     @Parameter(
                             name = "page",
@@ -238,6 +232,36 @@ public interface ReviewControllerDocs {
                                                                 "totalPages": 3
                                                             }
                                                         }
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 정렬 기준, 페이지 크기 초과",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "잘못된 정렬 기준",
+                                            description = "http://3.35.173.28:8080/api/v1/reviews/me/written?sort=create",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_SORT_PROPERTY",
+                                                        "message": "create는 정렬할 수 없는 필드입니다. 허용된 필드: [createdAt]"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "페이지 번호가 최댓값 이상인 경우",
+                                            description = "http://3.35.173.28:8080/api/v1/reviews/me/written?page=999999",
+                                            value = """
+                                                    {
+                                                        "code": "PAGE_INDEX_OUT_OF_RANGE",
+                                                        "message": "페이지 번호는 최대 10000까지 가능합니다. (요청: 999999)"
                                                     }
                                                     """
                                     )
@@ -304,15 +328,9 @@ public interface ReviewControllerDocs {
                     ),
                     @Parameter(
                             name = "sort",
-                            description = "정렬 기준 필드(기본값: createdAt)",
+                            description = "정렬 기준 필드(기본값: createdAt), 정렬 방향(ASC 또는 DESC, 기본값: DESC)",
                             in = ParameterIn.QUERY,
-                            example = "createdAt"
-                    ),
-                    @Parameter(
-                            name = "direction",
-                            description = "정렬 방향(ASC 또는 DESC, 기본값: DESC)",
-                            in = ParameterIn.QUERY,
-                            example = "DESC"
+                            example = "createdAt,DESC"
                     ),
                     @Parameter(
                             name = "page",
@@ -361,6 +379,36 @@ public interface ReviewControllerDocs {
                                                                 "totalPages": 2
                                                             }
                                                         }
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 정렬 기준, 페이지 크기 초과",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "잘못된 정렬 기준",
+                                            description = "http://3.35.173.28:8080/api/v1/reviews/me/received?sort=create",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_SORT_PROPERTY",
+                                                        "message": "create는 정렬할 수 없는 필드입니다. 허용된 필드: [createdAt]"
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "페이지 번호가 최댓값 이상인 경우",
+                                            description = "http://3.35.173.28:8080/api/v1/reviews/me/received?page=999999",
+                                            value = """
+                                                    {
+                                                        "code": "PAGE_INDEX_OUT_OF_RANGE",
+                                                        "message": "페이지 번호는 최대 10000까지 가능합니다. (요청: 999999)"
                                                     }
                                                     """
                                     )

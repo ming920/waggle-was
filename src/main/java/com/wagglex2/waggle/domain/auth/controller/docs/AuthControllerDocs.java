@@ -23,7 +23,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Tag(name = "Auth", description = "인증 관련 API (로그인/로그아웃/회원가입/토큰 재발급)")
+@Tag(name = "Auth(인증)", description = "인증 관련 API (로그인/로그아웃/회원가입/토큰 재발급)")
 public interface AuthControllerDocs {
 
     String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";

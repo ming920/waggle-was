@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@Tag(name = "Team", description = "팀 관련 API")
+@Tag(name = "Team(팀)", description = "팀 관련 API")
 public interface TeamControllerDocs {
 
     @Operation(
@@ -53,15 +53,9 @@ public interface TeamControllerDocs {
                     ),
                     @Parameter(
                             name = "sort",
-                            description = "정렬 기준 필드(기본값: createdAt)",
+                            description = "정렬 기준 필드(기본값: createdAt), 정렬 방향(ASC 또는 DESC, 기본값: DESC)",
                             in = ParameterIn.QUERY,
-                            example = "createdAt"
-                    ),
-                    @Parameter(
-                            name = "direction",
-                            description = "정렬 방향(ASC 또는 DESC, 기본값: DESC)",
-                            in = ParameterIn.QUERY,
-                            example = "DESC"
+                            example = "createdAt,ASC"
                     ),
                     @Parameter(
                             name = "page",
@@ -196,40 +190,45 @@ public interface TeamControllerDocs {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "잘못된 정렬 기준, 페이지 크기/번호",
+                    description = "잘못된 정렬 기준, 페이지 크기 초과, ENUM 불일치, CANCELED 불가",
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(implementation = APIResponse.class),
                             examples = {
                                     @ExampleObject(
                                             name = "잘못된 정렬 기준",
+                                            description = "http://3.35.173.28:8080/api/v1/teams/me?sort=create",
                                             value = """
                                                     {
                                                         "code": "INVALID_SORT_PROPERTY",
-                                                        "message": "해당 기준은 정렬할 수 없는 필드입니다. 허용된 필드: [...]"
+                                                        "message": "create는 정렬할 수 없는 필드입니다. 허용된 필드: [createdAt]"
                                                     }
                                                     """
                                     ),
                                     @ExampleObject(
-                                            name = "페이지 크기 0 이하인 경우",
+                                            name = "쿼리 파라미터 값이 유효하지 않을 때(ENUM 불일치)",
+                                            description = "http://3.35.173.28:8080/api/v1/teams/me?status=closeddd",
                                             value = """
                                                     {
-                                                        "code": "PAGE_SIZE_OUT_OF_RANGE",
-                                                        "message": "페이지 크기는 1 이상이어야 합니다. (요청: -3)"
+                                                        "code": "INVALID_ENUM_VALUE",
+                                                        "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
+                                                        "data": "쿼리 파라미터 'status'의 값 'closeddd'이(가) 유효하지 않습니다."
                                                     }
                                                     """
                                     ),
                                     @ExampleObject(
-                                            name = "페이지 번호가 0 미만인 경우",
+                                            name = "status가 CANCELED인 경우",
+                                            description = "http://3.35.173.28:8080/api/v1/teams/me?status=canceled",
                                             value = """
                                                     {
-                                                        "code": "PAGE_INDEX_OUT_OF_RANGE",
-                                                        "message": "페이지 번호는 0 이상이어야 합니다. (요청: -1)"
+                                                        "code": "INVALID_ARGUMENT",
+                                                        "message": "유효하지 않은 인자 값입니다."
                                                     }
                                                     """
                                     ),
                                     @ExampleObject(
                                             name = "페이지 번호가 최댓값 이상인 경우",
+                                            description = "http://3.35.173.28:8080/api/v1/teams/me?page=999999&status=closed",
                                             value = """
                                                     {
                                                         "code": "PAGE_INDEX_OUT_OF_RANGE",
