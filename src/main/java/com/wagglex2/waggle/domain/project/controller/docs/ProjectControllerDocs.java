@@ -49,32 +49,32 @@ public interface ProjectControllerDocs {
                                     @ExampleObject(
                                             value = """
                                                     {
-                                                         "title": "토스 주관 공모전 팀원 구합니다.",
-                                                         "content": "1등 팀 채용한답니다. 열심히 합시다.",
-                                                         "purpose": "CONTEST",
-                                                         "meetingType": "OFFLINE",
-                                                         "positions": [
-                                                             {
-                                                                 "position": "FRONT_END",
-                                                                 "maxParticipants": 3
-                                                             },
-                                                             {
-                                                                 "position": "BACK_END",
-                                                                 "maxParticipants": 3
-                                                             }
-                                                         ],
-                                                         "skills": ["REACT", "SPRING_BOOT"],
-                                                         "grades": [
-                                                             { "grade": 2 },
-                                                             { "grade": 3 }
-                                                         ],
-                                                         "period": {
-                                                             "startDate": "2025-12-25",
-                                                             "endDate": "2026-03-20"
-                                                         },
-                                                         "deadline": "2025-12-20T23:59:59"
-                                                     }
-                                                    
+                                                        "title": "아자아자 화이팅x2",
+                                                        "content": "모두 힘 냅시다. 여러분x2",
+                                                        "purpose": "CONTEST",
+                                                        "meetingType": "ONLINE",
+                                                        "authorPosition" : "BACK_END",
+                                                        "positions": [
+                                                            {
+                                                                "position": "FRONT_END",
+                                                                "maxParticipants": 3
+                                                            },
+                                                            {
+                                                                "position": "BACK_END",
+                                                                "maxParticipants": "3"
+                                                            }
+                                                        ],
+                                                        "skills": ["REACT", "GITHUB"],
+                                                        "grades": [
+                                                            { "grade": 2 },
+                                                            { "grade": 3 }
+                                                        ],
+                                                        "period": {
+                                                            "startDate": "2025-12-25",
+                                                            "endDate": "2026-03-20"
+                                                        },
+                                                        "deadline": "2025-12-20T23:59:59"
+                                                    }
                                                     """
                                     )
                             }
@@ -221,9 +221,9 @@ public interface ProjectControllerDocs {
                                                         "code": "SUCCESS",
                                                         "message": "프로젝트 공고를 성공적으로 조회하였습니다.",
                                                         "data": {
-                                                            "id": 1,
-                                                            "authorId": 5,
-                                                            "authorNickname": "새우깡",
+                                                            "id": 259,
+                                                            "authorId": 1,
+                                                            "authorNickname": "민민민재",
                                                             "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
                                                             "category": {
                                                                 "desc": "프로젝트",
@@ -234,34 +234,28 @@ public interface ProjectControllerDocs {
                                                                 "domain": "yu.ac.kr",
                                                                 "name": "YOUNGNAM_UNIV"
                                                             },
-                                                            "title": "카카오 해커톤 팀원 구합니다.",
-                                                            "content": "카카오에서 개최하는 해커톤 같이 할 사람 구해요.",
-                                                            "deadline": "2025-10-11 23:59:59",
-                                                            "createdAt": "2025-10-08 00:53:36",
+                                                            "title": "아자아자 화이팅x2",
+                                                            "content": "모두 힘 냅시다. 여러분x2",
+                                                            "deadline": "2025-12-20 23:59:59",
+                                                            "createdAt": "2025-11-27 00:28:49",
                                                             "status": {
                                                                 "desc": "모집 중",
                                                                 "name": "RECRUITING"
                                                             },
-                                                            "viewCount": 91,
+                                                            "viewCount": 1,
                                                             "purpose": {
-                                                                "desc": "해커톤",
-                                                                "name": "HACKATHON"
+                                                                "desc": "공모전",
+                                                                "name": "CONTEST"
                                                             },
                                                             "meetingType": {
-                                                                "desc": "온/오프라인",
-                                                                "name": "HYBRID"
+                                                                "desc": "온라인",
+                                                                "name": "ONLINE"
+                                                            },
+                                                            "authorPosition": {
+                                                                "desc": "백엔드",
+                                                                "name": "BACK_END"
                                                             },
                                                             "positions": [
-                                                                {
-                                                                    "position": {
-                                                                        "desc": "백엔드",
-                                                                        "name": "BACK_END"
-                                                                    },
-                                                                    "participantInfo": {
-                                                                        "maxParticipants": 3,
-                                                                        "currParticipants": 0
-                                                                    }
-                                                                },
                                                                 {
                                                                     "position": {
                                                                         "desc": "프론트엔드",
@@ -271,28 +265,37 @@ public interface ProjectControllerDocs {
                                                                         "maxParticipants": 3,
                                                                         "currParticipants": 0
                                                                     }
+                                                                },
+                                                                {
+                                                                    "position": {
+                                                                        "desc": "백엔드",
+                                                                        "name": "BACK_END"
+                                                                    },
+                                                                    "participantInfo": {
+                                                                        "maxParticipants": 3,
+                                                                        "currParticipants": 0
+                                                                    }
                                                                 }
                                                             ],
                                                             "skills": [
                                                                 {
-                                                                    "desc": "Spring Boot",
-                                                                    "name": "SPRING_BOOT"
-                                                                },
-                                                                {
                                                                     "desc": "React",
                                                                     "name": "REACT"
+                                                                },
+                                                                {
+                                                                    "desc": "GitHub",
+                                                                    "name": "GITHUB"
                                                                 }
                                                             ],
                                                             "grades": [
-                                                                3,
-                                                                4
+                                                                2,
+                                                                3
                                                             ],
                                                             "period": {
-                                                                "startDate": "2025-10-05",
-                                                                "endDate": "2025-10-20"
+                                                                "startDate": "2025-12-25",
+                                                                "endDate": "2026-03-20"
                                                             },
-                                                            "bookmarkId": 24,
-                                                            "bookmarked": true
+                                                            "bookmarked": false
                                                         }
                                                     }
                                                     """
