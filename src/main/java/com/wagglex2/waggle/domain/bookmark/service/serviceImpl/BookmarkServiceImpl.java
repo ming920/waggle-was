@@ -12,11 +12,16 @@ import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
@@ -24,6 +29,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class BookmarkServiceImpl implements BookmarkService {
 
     private final BookmarkRepository bookmarkRepository;
@@ -81,9 +87,26 @@ public class BookmarkServiceImpl implements BookmarkService {
         bookmarkRepository.delete(bookmark);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Retryable(
+            retryFor = TransientDataAccessException.class, // 일시적 DB 문제
+            noRetryFor = BusinessException.class,
+            maxAttempts = 3
+    )
     @Override
     public void deleteAllByRecruitmentId(Long recruitmentId) {
-        bookmarkRepository.deleteAllByRecruitmentId(recruitmentId);
+        int deleted = bookmarkRepository.deleteAllByRecruitmentId(recruitmentId);
+
+        log.info("[찜 삭제] 공고 삭제에 따른 찜 삭제 건수: {} (recruitmentId={})",
+                deleted, recruitmentId);
+    }
+
+    /**
+     * 이벤트 처리 재시도 실패 시 처리
+     */
+    @Recover
+    protected void recoverEvent(TransientDataAccessException e, Long recruitmentId) {
+        log.error("공고 삭제에 따른 찜 삭제 실패(재시도 모두 실패) (recruitmentId={}, 예외타입={}, 메시지={})",
+                recruitmentId, e.getClass().getSimpleName(), e.getMessage(), e);
     }
 }

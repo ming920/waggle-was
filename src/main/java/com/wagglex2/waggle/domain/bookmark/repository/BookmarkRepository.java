@@ -36,5 +36,5 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Long>, Bookm
      */
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM Bookmark b WHERE b.recruitment.id = :recruitmentId")
-    void deleteAllByRecruitmentId(Long recruitmentId);
+    int deleteAllByRecruitmentId(Long recruitmentId);
 }
