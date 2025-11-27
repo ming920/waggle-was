@@ -1,5 +1,8 @@
 # 사용자 정의 사전
 # [단어] [\t] [품사]
+
+# ----- 기본 일반 단어 / 회사명 관련 -----
+
 1학년	NNG
 2학년	NNG
 3학년	NNG
@@ -16,3 +19,188 @@
 배민	NNP
 당근	NNP
 토스	NNP
+sw	NNG
+ui	NNG
+ux	NNG
+vr	NNG
+ar	NNG
+블록체인	NNG
+
+# ----- 기술 스택 : 언어 -----
+
+html	NNP
+css	NNP
+javascript	NNP
+js	NNP
+자바스크립트	NNP
+java	NNP
+자바	NNP
+kotlin	NNP
+코틀린	NNP
+python	NNP
+파이썬	NNP
+swift	NNP
+c	NNP
+c++	NNP
+c#	NNP
+ts	NNP
+typescript	NNP
+
+# ----- 기술 스택 : 라이브러리 / 프레임워크 -----
+
+react	NNP
+리액트	NNP
+node	NNP
+node.js	NNP
+nodejs	NNP
+노드	NNP
+Express	NNP
+vue	NNP
+vue.js	NNP
+vuejs	NNP
+next	NNP
+next.js	NNP
+nextjs	NNP
+spring	NNP
+스프링	NNP
+spring boot	NNP
+springboot	NNP
+스프링부트	NNP
+스프링 부트	NNP
+django	NNP
+장고	NNP
+쟝고	NNP
+pandas	NNP
+판다스	NNP
+scikit-learn	NNP
+scikit learn	NNP
+scikitlearn	NNP
+pytorch	NNP
+파이토치	NNP
+tensorflow	NNP
+텐서플로우	NNP
+flutter	NNP
+플러터	NNP
+
+# ----- 기술 스택 : 데이터베이스 -----
+
+sql	NNP
+mysql	NNP
+redis	NNP
+mongodb	NNP
+postgresql	NNP
+
+# ----- 협업 / 툴 -----
+
+git	NNP
+깃	NNP
+github	NNP
+깃헙	NNP
+깃허브	NNP
+githubactions	NNP
+github actions	NNP
+figma	NNP
+notion	NNP
+jira	NNP
+
+# ----- 기타 기술 -----
+
+docker	NNP
+unity	NNP
+유니티	NNP
+unreal	NNP
+언리얼	NNP
+
+# ----- 활동 키워드 -----
+
+팀프로젝트	NNG
+팀 프로젝트	NNG
+팀플	NNG
+사이드프로젝트	NNG
+사이드 프로젝트	NNG
+사이드	NNG
+프로젝트	NNG
+스터디	NNG
+공모전	NNG
+대회	NNG
+직무	NNG
+스펙	NNG
+포트폴리오	NNG
+멘토링	NNG
+박람회	NNG
+취업박람회	NNG
+취업	NNG
+채용	NNG
+공채	NNG
+실습	NNG
+모집	NNG
+지원	NNG
+서류	NNG
+합격	NNG
+면접	NNG
+현업	NNG
+자소서	NNG
+이력서	NNG
+커리어	NNG
+연봉	NNG
+신입	NNG
+주니어	NNG
+시니어	NNG
+인턴	NNG
+인턴십	NNG
+인턴쉽	NNG
+부트캠프	NNG
+코테	NNG
+코딩테스트	NNG
+알고리즘	NNG
+자료구조	NNG
+네트워크	NNG
+데이터베이스	NNG
+운영체제	NNG
+배포	NNG
+인프라	NNG
+개발자	NNG
+개발	NNG
+유지보수	NNG
+프로그래밍	NNG
+cs	NNG
+데이터분석	NNG
+데이터 분석	NNG
+
+# ----- 플랫폼 / 서비스 유형 -----
+
+웹	NNG
+웹앱	NNG
+웹애플리케이션	NNG
+앱	NNG
+모바일	NNG
+안드로이드	NNP
+아이폰	NNP
+ios	NNP
+하이브리드앱	NNG
+게임	NNG
+콘솔	NNG
+3d	NNG
+ai	NNG
+머신러닝	NNG
+딥러닝	NNG
+데이터	NNG
+백오피스	NNG
+대시보드	NNG
+툴	NNG
+
+# ----- 커뮤니티 / 서비스 -----
+
+동아리	NNG
+부캠	NNG
+부트캠프	NNG
+부트 캠프	NNG
+싸피	NNP
+멋쟁이	NNG
+멋쟁이사자	NNP
+학회	NNG
+랩실	NNG
+멘토	NNG
+멘티	NNG
+창업	NNG
+스타트업	NNG
