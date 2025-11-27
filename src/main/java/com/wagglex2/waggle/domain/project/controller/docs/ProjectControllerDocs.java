@@ -384,8 +384,9 @@ public interface ProjectControllerDocs {
     @Operation(
             summary = "프로젝트 공고 목록 조회(검색)",
             description = """
-                    프로젝트 공고 목록을 최신순으로 조회(검색)한다.<br><br>
-                    모든 조건은 AND로 처리된다. 단, 검색어, 포지션, 기술 스택은 OR로 처리된다.<br>
+                    프로젝트 공고 목록을 조회(검색)한다.<br><br>
+                    기본 정렬은 생성일 기준 최신순이며, `random` 파라미터를 통해 랜덤 정렬을 지원한다.<br>
+                    모든 조건은 AND로 처리된다. 단, 각 검색어, 포지션, 기술 스택은 OR로 처리된다.<br>
                     
                     예시:
                     
@@ -448,6 +449,16 @@ public interface ProjectControllerDocs {
                             schema = @Schema(allowableValues = {"RECRUITING", "CLOSED"})
                     ),
                     @Parameter(
+                            name = "random",
+                            description = """
+                                    랜덤 정렬 여부<br>
+                                    `true`로 지정할 시, 랜덤 정렬된 데이터를 응답한다.<br>
+                                    랜덤 정렬은 타 정렬 기준과 독립적으로 수행된다.<br>
+                                    기본값(미지정): `false`
+                                    """,
+                            in = ParameterIn.QUERY
+                    ),
+                    @Parameter(
                             name = "page",
                             description = """
                                     조회하려는 프로젝트 공고 목록 페이지<br>
@@ -462,7 +473,18 @@ public interface ProjectControllerDocs {
                                     기본값: 9
                                     """,
                             in = ParameterIn.QUERY
-                    )
+                    ),
+                    @Parameter(
+                            name = "sort",
+                            description = """
+                                    정렬 기준<br>
+                                    `random=true`인 경우, 적용되지 않는다.<br>
+                                    정렬 기준: createdAt (대소문자 구분 O)<br>
+                                    정렬 방향: ASC, DESC (대소문자 구분 X)<br>
+                                    기본값(미지정): `createdAt,desc` (생성일 기준 최신순)<br>
+                                    """,
+                            in = ParameterIn.QUERY
+                    ),
             }
     )
     @ApiResponses({
@@ -1003,6 +1025,277 @@ public interface ProjectControllerDocs {
                                                         }
                                                     }
                                                     """
+                                    ),
+                                    @ExampleObject(
+                                            name = "모집 중인 공고만 랜덤 정렬 조회",
+                                            description = "`/projects?status=recruiting&random=true&size=5`",
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "프로젝트 공고 목록을 성공적으로 조회하였습니다.",
+                                                        "data": {
+                                                            "content": [
+                                                                {
+                                                                    "id": 259,
+                                                                    "authorId": 1,
+                                                                    "authorNickname": "민민민재",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "아자아자 화이팅x2",
+                                                                    "deadline": "2025-12-20",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온라인",
+                                                                        "name": "ONLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "GitHub",
+                                                                            "name": "GITHUB"
+                                                                        },
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        }
+                                                                    ],
+                                                                    "bookmarkId": 57,
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": true
+                                                                },
+                                                                {
+                                                                    "id": 170,
+                                                                    "authorId": 34,
+                                                                    "authorNickname": "매운새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "팀 멤버 포지션 할당 확인",
+                                                                    "deadline": "2025-12-20",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                },
+                                                                {
+                                                                    "id": 166,
+                                                                    "authorId": 34,
+                                                                    "authorNickname": "매운새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "팀 멤버 포지션 할당 확인",
+                                                                    "deadline": "2025-12-20",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "MySQL",
+                                                                            "name": "MYSQL"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                },
+                                                                {
+                                                                    "id": 139,
+                                                                    "authorId": 5,
+                                                                    "authorNickname": "새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "토스 주관 공모전 팀원 구합니다.",
+                                                                    "deadline": "2025-12-20",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "온라인",
+                                                                        "name": "ONLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "Figma",
+                                                                            "name": "FIGMA"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Unity",
+                                                                            "name": "UNITY"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                },
+                                                                {
+                                                                    "id": 167,
+                                                                    "authorId": 34,
+                                                                    "authorNickname": "매운새우깡",
+                                                                    "authorProfileImageUrl": "https://waggle-image-bucket.s3.ap-northeast-2.amazonaws.com/user-profile-images/default-profile-image.png",
+                                                                    "university": {
+                                                                        "desc": "영남대",
+                                                                        "domain": "yu.ac.kr",
+                                                                        "name": "YOUNGNAM_UNIV"
+                                                                    },
+                                                                    "category": {
+                                                                        "desc": "프로젝트",
+                                                                        "name": "PROJECT"
+                                                                    },
+                                                                    "title": "팀 멤버 포지션 할당 확인",
+                                                                    "deadline": "2025-12-20",
+                                                                    "status": {
+                                                                        "desc": "모집 중",
+                                                                        "name": "RECRUITING"
+                                                                    },
+                                                                    "meetingType": {
+                                                                        "desc": "오프라인",
+                                                                        "name": "OFFLINE"
+                                                                    },
+                                                                    "positions": [
+                                                                        {
+                                                                            "desc": "프론트엔드",
+                                                                            "name": "FRONT_END"
+                                                                        },
+                                                                        {
+                                                                            "desc": "백엔드",
+                                                                            "name": "BACK_END"
+                                                                        }
+                                                                    ],
+                                                                    "skills": [
+                                                                        {
+                                                                            "desc": "React",
+                                                                            "name": "REACT"
+                                                                        },
+                                                                        {
+                                                                            "desc": "Spring Boot",
+                                                                            "name": "SPRING_BOOT"
+                                                                        }
+                                                                    ],
+                                                                    "purpose": {
+                                                                        "desc": "공모전",
+                                                                        "name": "CONTEST"
+                                                                    },
+                                                                    "bookmarked": false
+                                                                }
+                                                            ],
+                                                            "page": {
+                                                                "size": 5,
+                                                                "number": 0,
+                                                                "totalElements": 24,
+                                                                "totalPages": 5
+                                                            }
+                                                        }
+                                                    }
+                                                    """
                                     )
                             }
                     )
@@ -1022,6 +1315,16 @@ public interface ProjectControllerDocs {
                                                         "code": "INVALID_ENUM_VALUE",
                                                         "message": "쿼리 파라미터 값이 유효하지 않습니다. 허용 가능한 값 목록을 확인해주세요.",
                                                         "data": "쿼리 파라미터 'purpose'의 값 'banana'이(가) 유효하지 않습니다."
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "지원하지 않는 정렬 기준",
+                                            description = "`/projects?sort=createdat,asc`",
+                                            value = """
+                                                    {
+                                                        "code": "INVALID_SORT_PROPERTY",
+                                                        "message": "createdat는 정렬할 수 없는 필드입니다. 허용된 필드: [createdAt]"
                                                     }
                                                     """
                                     )
