@@ -4,6 +4,7 @@ import com.wagglex2.waggle.domain.auth.dto.request.SignUpRequestDto;
 import com.wagglex2.waggle.domain.auth.dto.request.UserBasicInfoRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.PasswordRequestDto;
 import com.wagglex2.waggle.domain.user.dto.request.UserUpdateRequestDto;
+import com.wagglex2.waggle.domain.user.dto.response.PublicUserResponseDto;
 import com.wagglex2.waggle.domain.user.dto.response.UserResponseDto;
 import com.wagglex2.waggle.domain.user.entity.User;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ public interface UserService {
     void updateBasicInfo(Long id, UserBasicInfoRequestDto dto);
     void changePassword(Long userId, PasswordRequestDto dto);
     UserResponseDto getUserInfo(Long userId);
+    PublicUserResponseDto getPublicUserInfo(Long userId);
     UserResponseDto updateUserInfo(Long userId, UserUpdateRequestDto dto);
     void withdraw(Long userId, String rawPassword);
     UserResponseDto uploadProfileImage(Long userId, MultipartFile file);
