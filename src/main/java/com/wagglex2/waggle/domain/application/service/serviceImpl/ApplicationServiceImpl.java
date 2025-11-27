@@ -41,6 +41,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -148,7 +149,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @PreAuthorize("#deciderId == authentication.principal.userId")
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Retryable(
             retryFor = ObjectOptimisticLockingFailureException.class,
             noRetryFor = BusinessException.class,
@@ -278,7 +279,12 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.delete();
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Retryable(
+            retryFor = TransientDataAccessException.class, // 일시적 DB 문제
+            noRetryFor = BusinessException.class,
+            maxAttempts = 3
+    )
     @Override
     public void cancelApplication(Long recruitmentId) {
         applicationRepository.updateStatusAllByRecruitmentId(
@@ -288,7 +294,7 @@ public class ApplicationServiceImpl implements ApplicationService {
         );
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Retryable(
             retryFor = TransientDataAccessException.class, // 일시적 DB 문제
             noRetryFor = BusinessException.class,
