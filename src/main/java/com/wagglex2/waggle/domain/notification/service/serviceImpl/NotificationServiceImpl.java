@@ -12,11 +12,16 @@ import com.wagglex2.waggle.domain.notification.service.NotificationService;
 import com.wagglex2.waggle.domain.notification.type.NotificationType;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
@@ -24,6 +29,7 @@ import java.util.Set;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationServiceImpl implements NotificationService {
 
     private static final Set<String> NOTIFICATION_SORT_FIELDS = Set.of("createdAt");
@@ -32,7 +38,12 @@ public class NotificationServiceImpl implements NotificationService {
     private final ApplicationService applicationService;
     private final PageableValidator pageableValidator;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Retryable(
+            retryFor = TransientDataAccessException.class, // 일시적 DB 문제
+            noRetryFor = BusinessException.class,
+            maxAttempts = 3
+    )
     @Override
     public void createNotification(Long senderId, Long receiverId, Long applicationId, NotificationType type) {
         Notification newNotification = new Notification(
@@ -43,6 +54,9 @@ public class NotificationServiceImpl implements NotificationService {
         );
 
         notificationRepository.save(newNotification);
+
+        log.info("[알림 생성] 새 알림 생성 (senderId={}, receiverId={}, applicationId={}, type={})",
+                senderId, receiverId, applicationId, type);
     }
 
     @PreAuthorize("#receiverId == authentication.principal.userId")
@@ -105,5 +119,20 @@ public class NotificationServiceImpl implements NotificationService {
 
         // 카테고리별 삭제
         notificationRepository.deleteAllByReceiverIdAndCategory(receiverId, category);
+    }
+
+    /**
+     * 이벤트 처리 재시도 실패 시 처리
+     */
+    @Recover
+    protected void recoverEvent(
+            TransientDataAccessException e,
+            Long senderId,
+            Long receiverId,
+            Long applicationId,
+            NotificationType type
+    ) {
+        log.error("알림 생성 실패(재시도 모두 실패) (senderId={}, receiverId={}, applicationId={}, type={})",
+                senderId, receiverId, applicationId, type);
     }
 }
