@@ -4,6 +4,7 @@ import com.wagglex2.waggle.domain.common.dto.request.GradeRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.PeriodRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.PositionInfoCreationRequestDto;
 import com.wagglex2.waggle.domain.common.type.PositionParticipantInfo;
+import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.Skill;
 import com.wagglex2.waggle.domain.project.entity.Project;
 import com.wagglex2.waggle.domain.project.type.MeetingType;
@@ -52,12 +53,12 @@ public class ProjectCreationRequestDto extends ProjectCommonRequestDto {
     private final Set<PositionInfoCreationRequestDto> positions;
 
     public ProjectCreationRequestDto(
-            String title, String content, LocalDateTime deadline,
-            ProjectPurpose purpose, MeetingType meetingType, Set<Skill> skills,
+            String title, String content, LocalDateTime deadline, ProjectPurpose purpose,
+            MeetingType meetingType, PositionType authorPosition, Set<Skill> skills,
             Set<GradeRequestDto> grades, PeriodRequestDto period,
             Set<PositionInfoCreationRequestDto> positions
     ) {
-        super(title, content, deadline, purpose, meetingType, skills, grades, period);
+        super(title, content, deadline, purpose, meetingType, authorPosition, skills, grades, period);
         this.positions = positions;
     }
 

@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class ProjectDetailResponseDto extends BaseRecruitmentDetailResponseDto {
     private final ProjectPurpose purpose;
     private final MeetingType meetingType;
+    private final PositionType authorPosition;
     private final Set<PositionInfoResponseDto> positions;
     private final Set<Skill> skills;
     private final Set<Integer> grades;
@@ -28,22 +29,22 @@ public class ProjectDetailResponseDto extends BaseRecruitmentDetailResponseDto {
 
     public ProjectDetailResponseDto(
             Long id, Long authorId, String authorNickname, String authorProfileImageUrl, RecruitmentCategory category,
-            University university, String title, String content, LocalDateTime deadline,
-            LocalDateTime createdAt, RecruitmentStatus status, int viewCount,
-            ProjectPurpose purpose, MeetingType meetingType, Set<PositionInfoResponseDto> positions,
-            Set<Skill> skills, Set<Integer> grades, PeriodResponseDto period,
-            boolean isBookmarked, Long bookmarkId
+            University university, String title, String content, LocalDateTime deadline, LocalDateTime createdAt,
+            RecruitmentStatus status, int viewCount, ProjectPurpose purpose, MeetingType meetingType,
+            PositionType authorPosition, Set<PositionInfoResponseDto> positions, Set<Skill> skills, Set<Integer> grades,
+            PeriodResponseDto period, boolean isBookmarked, Long bookmarkId
     ) {
         super(id, authorId, authorNickname, authorProfileImageUrl, category, university, title, content, deadline, createdAt, status, viewCount, isBookmarked, bookmarkId);
         this.purpose = purpose;
         this.meetingType = meetingType;
+        this.authorPosition = authorPosition;
         this.positions = positions;
         this.skills = skills;
         this.grades = grades;
         this.period = period;
     }
 
-    public static ProjectDetailResponseDto fromEntity(Project project, boolean isBookmarked, Long bookmarkId) {
+    public static ProjectDetailResponseDto fromEntity(Project project, PositionType authorPosition, boolean isBookmarked, Long bookmarkId) {
         User author = project.getUser();
         PeriodResponseDto period = PeriodResponseDto.from(project.getPeriod());
         Set<Skill> skills = Set.copyOf(project.getSkills());
@@ -56,7 +57,7 @@ public class ProjectDetailResponseDto extends BaseRecruitmentDetailResponseDto {
                 project.getId(), author.getId(), author.getNickname(), author.getProfileImageUrl(), project.getCategory(),
                 author.getUniversity(), project.getTitle(), project.getContent(), project.getDeadline(),
                 project.getCreatedAt(), project.getStatus(), project.getViewCount() + 1,
-                project.getPurpose(), project.getMeetingType(), positions, skills, grades, period,
+                project.getPurpose(), project.getMeetingType(), authorPosition, positions, skills, grades, period,
                 isBookmarked, bookmarkId
         );
     }

@@ -125,6 +125,7 @@ public class ProjectServiceIntegrationTest {
                 deadline,
                 ProjectPurpose.CONTEST,
                 MeetingType.HYBRID,
+                PositionType.BACK_END,
                 Set.of(Skill.REACT, Skill.SPRING_BOOT),
                 Set.of(new GradeRequestDto(3)),
                 periodDto,

@@ -16,7 +16,7 @@ import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
-import com.wagglex2.waggle.domain.common.event.RecruitmentCreatedEvent;
+import com.wagglex2.waggle.domain.common.event.SimpleRecruitmentCreatedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -59,7 +59,7 @@ public class AssignmentServiceImpl implements AssignmentService {
 
         Long assignmentId = assignmentRepository.save(newAssignment).getId();
 
-        publisher.publishEvent(new RecruitmentCreatedEvent(userId, assignmentId));
+        publisher.publishEvent(new SimpleRecruitmentCreatedEvent(userId, assignmentId));
 
         return assignmentId;
     }

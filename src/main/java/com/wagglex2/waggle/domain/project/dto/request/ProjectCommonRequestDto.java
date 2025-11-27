@@ -5,6 +5,7 @@ import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.domain.common.dto.request.BaseRecruitmentRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.GradeRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.PeriodRequestDto;
+import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.Skill;
 import com.wagglex2.waggle.domain.project.type.MeetingType;
 import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
@@ -53,6 +54,9 @@ public abstract class ProjectCommonRequestDto extends BaseRecruitmentRequestDto 
     @NotNull(message = "진행 방식이 누락되었습니다.")
     private final MeetingType meetingType;
 
+    @NotNull(message = "작성자 포지션이 누락되었습니다.")
+    private final PositionType authorPosition;
+
     @NotEmpty(message = "기술 스택이 누락되었습니다.")
     private final Set<Skill> skills;
 
@@ -65,13 +69,14 @@ public abstract class ProjectCommonRequestDto extends BaseRecruitmentRequestDto 
     private final PeriodRequestDto period;
 
     protected ProjectCommonRequestDto(
-            String title, String content, LocalDateTime deadline,
-            ProjectPurpose purpose, MeetingType meetingType, Set<Skill> skills,
+            String title, String content, LocalDateTime deadline, ProjectPurpose purpose,
+            MeetingType meetingType, PositionType authorPosition, Set<Skill> skills,
             Set<GradeRequestDto> grades, PeriodRequestDto period
     ) {
         super(title, content, deadline);
         this.purpose = purpose;
         this.meetingType = meetingType;
+        this.authorPosition = authorPosition;
         this.skills = skills;
         this.grades = grades;
         this.period = period;
