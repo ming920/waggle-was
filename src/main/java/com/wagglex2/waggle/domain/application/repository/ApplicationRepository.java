@@ -104,7 +104,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
         AND a.isDeleted = false
         AND a.status = :from
     """)
-    void updateStatusAllByRecruitmentId(
+    int updateStatusAllByRecruitmentId(
             @Param("recruitmentId") Long recruitmentId,
             @Param("from") ApplicationStatus from,
             @Param("to") ApplicationStatus to

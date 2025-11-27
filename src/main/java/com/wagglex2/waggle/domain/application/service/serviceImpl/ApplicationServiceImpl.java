@@ -287,10 +287,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     )
     @Override
     public void cancelApplication(Long recruitmentId) {
-        applicationRepository.updateStatusAllByRecruitmentId(
+        int updated = applicationRepository.updateStatusAllByRecruitmentId(
                 recruitmentId,
                 ApplicationStatus.SUBMITTED,
                 ApplicationStatus.CANCELED
+        );
+
+        log.info(
+                "[지원 삭제 처리] 삭제 처리된 지원 건수: {} (recruitmentId={})",
+                updated,
+                recruitmentId
         );
     }
 
@@ -302,10 +308,16 @@ public class ApplicationServiceImpl implements ApplicationService {
     )
     @Override
     public void updateAllByRecruitmentReopened(Long recruitmentId) {
-        applicationRepository.updateStatusAllByRecruitmentId(
+        int updated = applicationRepository.updateStatusAllByRecruitmentId(
                 recruitmentId,
                 ApplicationStatus.CLOSED,
                 ApplicationStatus.SUBMITTED
+        );
+
+        log.info(
+                "[모집 재개] 지원 상태 변경 건수: {} (recruitmentId={})",
+                updated,
+                recruitmentId
         );
     }
 
