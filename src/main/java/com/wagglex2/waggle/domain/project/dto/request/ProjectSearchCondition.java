@@ -12,7 +12,8 @@ public record ProjectSearchCondition(
         ProjectPurpose purpose,
         Set<PositionType> positions,
         Set<Skill> skills,
-        RecruitmentStatus status
+        RecruitmentStatus status,
+        boolean isRandom
 ) {
     public ProjectSearchCondition {
         // Collection의 불변성 보장

@@ -25,6 +25,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -1070,7 +1071,8 @@ public interface ProjectControllerDocs {
             @RequestParam(value = "positions", required = false) List<PositionType> positions,
             @RequestParam(value = "skills", required = false) List<Skill> skills,
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
-            @PageableDefault(size = 9) Pageable pageable,
+            @RequestParam(value = "random", required = false) boolean isRandom,
+            @PageableDefault(size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     );
 

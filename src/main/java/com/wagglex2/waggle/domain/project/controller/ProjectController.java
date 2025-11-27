@@ -72,7 +72,8 @@ public class ProjectController implements ProjectControllerDocs {
             @RequestParam(value = "positions", required = false) List<PositionType> positions,
             @RequestParam(value = "skills", required = false) List<Skill> skills,
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
-            @PageableDefault(size = 9) Pageable pageable,
+            @RequestParam(value = "random", required = false) boolean isRandom,
+            @PageableDefault(size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Set<String> nouns = (keywords != null) ? komoranUtil.getNouns(keywords) : Set.of();
@@ -84,7 +85,8 @@ public class ProjectController implements ProjectControllerDocs {
                 purpose,
                 positionSet,
                 skillSet,
-                status
+                status,
+                isRandom
         );
 
         Page<ProjectSummaryResponseDto> projectSummaries =

@@ -121,6 +121,9 @@ public class ProjectServiceImpl implements ProjectService {
             ProjectSearchCondition condition,
             Pageable pageable
     ) {
+        pageableValidator.validate(pageable);
+        pageableValidator.validateSort(pageable, PROJECT_SORT_FIELDS);
+
         return projectRepository.getProjectSummaries(viewerId, condition, pageable);
     }
 
