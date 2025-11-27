@@ -17,6 +17,7 @@ import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.event.SimpleRecruitmentCreatedEvent;
+import com.wagglex2.waggle.domain.common.event.RecruitmentReopenedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -204,7 +205,15 @@ public class AssignmentServiceImpl implements AssignmentService {
             return;
         }
 
+        RecruitmentStatus before = assignment.getStatus();
         assignment.update(updateDto);
+        RecruitmentStatus after = assignment.getStatus();
+
+        // 마감일 수정에 의해 모집이 재개 경우
+        if (before == RecruitmentStatus.CLOSED
+                && after == RecruitmentStatus.RECRUITING) {
+            publisher.publishEvent(new RecruitmentReopenedEvent(assignmentId));
+        }
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

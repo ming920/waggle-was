@@ -9,6 +9,7 @@ import com.wagglex2.waggle.domain.application.service.ApplicationService;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.type.PositionType;
+import com.wagglex2.waggle.domain.common.event.RecruitmentReopenedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import com.wagglex2.waggle.domain.common.event.RecruitmentDeletedEvent;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
@@ -235,7 +236,15 @@ public class ProjectServiceImpl implements ProjectService {
             return;
         }
 
+        RecruitmentStatus before = project.getStatus();
         project.update(updateDto);
+        RecruitmentStatus after = project.getStatus();
+
+        // 마감일 수정에 의해 모집이 재개 경우
+        if (before == RecruitmentStatus.CLOSED
+                && after == RecruitmentStatus.RECRUITING) {
+            publisher.publishEvent(new RecruitmentReopenedEvent(projectId));
+        }
     }
 
     @PreAuthorize("#userId == authentication.principal.userId")

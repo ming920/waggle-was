@@ -32,6 +32,7 @@ import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.TransientDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -40,6 +41,7 @@ import org.springframework.retry.annotation.Retryable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -147,7 +149,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @PreAuthorize("#deciderId == authentication.principal.userId")
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     @Retryable(
             retryFor = ObjectOptimisticLockingFailureException.class,
             noRetryFor = BusinessException.class,
@@ -277,10 +279,46 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.delete();
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Retryable(
+            retryFor = TransientDataAccessException.class, // 일시적 DB 문제
+            noRetryFor = BusinessException.class,
+            maxAttempts = 3
+    )
     @Override
     public void cancelApplication(Long recruitmentId) {
-        applicationRepository.cancelAllByRecruitmentId(recruitmentId);
+        int updated = applicationRepository.updateStatusAllByRecruitmentId(
+                recruitmentId,
+                ApplicationStatus.SUBMITTED,
+                ApplicationStatus.CANCELED
+        );
+
+        log.info(
+                "[지원 삭제 처리] 삭제 처리된 지원 건수: {} (recruitmentId={})",
+                updated,
+                recruitmentId
+        );
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Retryable(
+            retryFor = TransientDataAccessException.class, // 일시적 DB 문제
+            noRetryFor = BusinessException.class,
+            maxAttempts = 3
+    )
+    @Override
+    public void updateAllByRecruitmentReopened(Long recruitmentId) {
+        int updated = applicationRepository.updateStatusAllByRecruitmentId(
+                recruitmentId,
+                ApplicationStatus.CLOSED,
+                ApplicationStatus.SUBMITTED
+        );
+
+        log.info(
+                "[모집 재개] 지원 상태 변경 건수: {} (recruitmentId={})",
+                updated,
+                recruitmentId
+        );
     }
 
     @Transactional
@@ -350,5 +388,14 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Recover
     protected void recover(ObjectOptimisticLockingFailureException e, Long deciderId, Long applicationId) {
         throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * 이벤트 처리 재시도 실패 시 처리
+     */
+    @Recover
+    protected void recoverEvent(TransientDataAccessException e, Long recruitmentId) {
+        log.error("공고 삭제 및 재개에 따른 지원 상태 업데이트 실패(재시도 모두 실패) (recruitmentId={}, 예외타입={}, 메시지={})",
+                recruitmentId, e.getClass().getSimpleName(), e.getMessage(), e);
     }
 }

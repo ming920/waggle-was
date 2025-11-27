@@ -1,6 +1,7 @@
 package com.wagglex2.waggle.domain.application.repository;
 
 import com.wagglex2.waggle.domain.application.entity.Application;
+import com.wagglex2.waggle.domain.application.type.ApplicationStatus;
 import com.wagglex2.waggle.domain.common.type.RecruitmentCategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,7 +69,7 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     List<Application> findAllByRecruitmentIds(@Param("recruitmentIds") List<Long> recruitmentIds);
 
     /**
-     * 특정 공고에 대해 대한 모든 지원을 취소 상태(CANCELED)로 변경한다.
+     * 특정 공고에 대한 모든 지원을 취소 상태(CANCELED)로 변경한다.
      * <p>
      * 특정 공고가 삭제되는 경우, 그와 관련된 지원의 상태를 변경하는 용도이다.<br>
      * 대상은 삭제 처리 되지 않고, 대기 상태(SUBMITTED)인 지원이다.
@@ -84,6 +85,30 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
         AND a.status = com.wagglex2.waggle.domain.application.type.ApplicationStatus.SUBMITTED
     """)
     void cancelAllByRecruitmentId(Long recruitmentId);
+
+    /**
+     * 특정 공고에 대한 모든 지원서의 상태를 조건에 맞춰 일괄 변경한다.
+     *
+     * <p>지원서 중 삭제되지 않았고 현재 상태가 {@code from}인 경우에만
+     * {@code to} 상태로 업데이트된다.
+     *
+     * @param recruitmentId 상태를 변경할 공고 ID
+     * @param from 현재 상태 조건
+     * @param to 변경할 목표 상태
+     */
+    @Modifying(clearAutomatically = true)
+    @Query("""
+        UPDATE Application a
+        SET a.status = :to
+        WHERE a.recruitment.id = :recruitmentId
+        AND a.isDeleted = false
+        AND a.status = :from
+    """)
+    int updateStatusAllByRecruitmentId(
+            @Param("recruitmentId") Long recruitmentId,
+            @Param("from") ApplicationStatus from,
+            @Param("to") ApplicationStatus to
+    );
 
     /**
      * 마감된 공고에 대한 모든 지원 상태를 CLOSED로 변경한다.
