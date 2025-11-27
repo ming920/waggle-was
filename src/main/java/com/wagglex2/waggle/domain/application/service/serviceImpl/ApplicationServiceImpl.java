@@ -394,8 +394,8 @@ public class ApplicationServiceImpl implements ApplicationService {
      * 이벤트 처리 재시도 실패 시 처리
      */
     @Recover
-    protected void recoverReopenEvent(TransientDataAccessException e, Long recruitmentId) {
-        log.error("공고 재개 시 지원 상태 업데이트 실패(재시도 모두 실패). recruitmentId={}, 예외타입={}, 메시지={}",
+    protected void recoverEvent(TransientDataAccessException e, Long recruitmentId) {
+        log.error("공고 삭제 및 재개에 따른 지원 상태 업데이트 실패(재시도 모두 실패) (recruitmentId={}, 예외타입={}, 메시지={})",
                 recruitmentId, e.getClass().getSimpleName(), e.getMessage(), e);
     }
 }
