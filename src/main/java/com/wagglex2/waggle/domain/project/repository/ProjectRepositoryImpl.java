@@ -1,6 +1,8 @@
 package com.wagglex2.waggle.domain.project.repository;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
@@ -69,9 +71,9 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
                 .select(project.id)
                 .from(project)
                 .where(builder)
+                .orderBy(getOrderSpecifiers(condition.isRandom(), pageable))
                 .offset(pageable.getOffset())  // page
                 .limit(pageable.getPageSize()) // size
-                .orderBy(project.createdAt.desc())
                 .fetch();
 
         // 해당 id의 Project 공고 조회
@@ -190,5 +192,29 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
         }
 
         return project.skills.any().in(skills);
+    }
+
+    private OrderSpecifier<?>[] getOrderSpecifiers(boolean isRandom, Pageable pageable) {
+        // 랜덤 정렬은 단독 처리
+        if (isRandom) {
+            return new OrderSpecifier<?>[]{
+                    new OrderSpecifier<>(Order.ASC, Expressions.numberTemplate(Double.class, "RAND()"))
+            };
+        }
+
+        // 그 외 일반 필드 정렬 처리
+        PathBuilder<?> entityPath = new PathBuilder<>(project.getType(), project.getMetadata());
+
+        return pageable.getSort().stream()
+                .map(order -> {
+                    Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+                    String property = order.getProperty();
+
+                    return new OrderSpecifier<>(
+                            direction,
+                            entityPath.getComparable(property, Comparable.class)
+                    );
+                })
+                .toArray(OrderSpecifier[]::new);
     }
 }
