@@ -61,17 +61,23 @@ public class KomoranUtil {
     public Set<String> getNouns(String target) {
         log.info("[Search] 입력 검색어: '{}'", target);
 
-        String lowerCase = target.toLowerCase();  // Komoran 추출 편의를 위해 소문자(영어)로 통일
-        log.debug("[Search] lowerCase 변환: '{}'", lowerCase);
+        // 전처리 - 특수문자 및 초성 제거, 소문자로 통일, 앞뒤 공백 제거
+        String preProcessed = target.replaceAll("[^a-zA-Z0-9가-힣\\s]", " ")
+                                    .replaceAll("\\s+", " ")
+                                    .toLowerCase()
+                                    .trim();
 
+        log.info("[Search] 검색어 전처리 결과: {}", preProcessed);
+
+        // Komoran 명사 추출
         Set<String> nouns = new HashSet<>(
-                komoran.analyze(lowerCase).getNouns()
+                komoran.analyze(preProcessed).getNouns()
         );
 
         log.info("[Search] Komoran 명사 추출 결과 (중복 제거): {}", nouns);
 
-        // 정확도 향상을 위해 실제 입력 데이터 토큰 추가
-        List<String> rawTokens = Arrays.stream(lowerCase.split("\\s+")).toList();
+        // 정확도 향상을 위해 원본 검색어 토큰 추가
+        List<String> rawTokens = Arrays.stream(preProcessed.split(" ")).toList();
         log.info("[Search] 원본 검색어 토큰 split 결과: {}", rawTokens);
 
         nouns.addAll(rawTokens);
