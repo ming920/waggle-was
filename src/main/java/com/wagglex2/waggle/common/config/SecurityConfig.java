@@ -88,6 +88,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "http://localhost:5173",
                 "https://waggle-waggle.com",
                 "https://www.waggle-waggle.com",
                 "https://app.waggle-waggle.com",
