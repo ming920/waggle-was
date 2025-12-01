@@ -5,6 +5,10 @@ import kr.co.shineware.nlp.komoran.core.Komoran;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -15,15 +19,43 @@ import java.util.stream.Collectors;
 @Slf4j
 public class KomoranUtil {
 
-    private static final String USER_DIC_PATH = "src/main/resources/komoran/dic.user";
+    private static final String USER_DIC_PATH = "komoran/dic.user";
     private static final Komoran komoran = createKomoran();
     private static final List<String> whitelist = List.of("c", "웹", "깃", "팀", "앱", "툴");
 
     private static Komoran createKomoran() {
         Komoran k = new Komoran(DEFAULT_MODEL.LIGHT);
-        k.setUserDic(USER_DIC_PATH);
+        
+        String tempFilePath = extractResourceToTempFile(USER_DIC_PATH);
+        if (tempFilePath != null) {
+            k.setUserDic(tempFilePath);
+        }
 
         return k;
+    }
+
+
+    private static String extractResourceToTempFile(String resourcePath) {
+        InputStream resourceStream = KomoranUtil.class.getClassLoader()
+                .getResourceAsStream(resourcePath);
+
+        if (resourceStream == null) {
+            return null;
+        }
+
+        try {
+            File tempFile = File.createTempFile("komoran_dic_", ".user");
+            tempFile.deleteOnExit();
+
+            try (FileOutputStream fos = new FileOutputStream(tempFile);
+                 InputStream is = resourceStream) {
+                is.transferTo(fos);
+            }
+
+            return tempFile.getAbsolutePath();
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public Set<String> getNouns(String target) {
