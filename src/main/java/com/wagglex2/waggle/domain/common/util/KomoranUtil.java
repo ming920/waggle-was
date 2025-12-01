@@ -85,7 +85,11 @@ public class KomoranUtil {
 
         // 한 글자 단어 불용어 처리
         Set<String> res = nouns.stream()
-                .filter(n -> n.length() > 1 || whitelist.contains(n))
+                .filter(
+                        n -> n.length() > 1
+                                || n.matches("[0-9]")
+                                || whitelist.contains(n)
+                )
                 .collect(Collectors.toUnmodifiableSet());
 
         log.info("[Search] 최종 결과 (불용어 제거 후): {}", res);
