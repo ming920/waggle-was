@@ -67,7 +67,7 @@ public class KomoranUtil {
                                     .toLowerCase()
                                     .trim();
 
-        log.info("[Search] 검색어 전처리 결과: {}", preProcessed);
+        log.info("[Search] 검색어 전처리 결과: '{}'", preProcessed);
 
         // Komoran 명사 추출
         Set<String> nouns = new HashSet<>(
