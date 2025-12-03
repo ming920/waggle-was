@@ -17,7 +17,7 @@ public record ProjectSearchCondition(
 ) {
     public ProjectSearchCondition {
         // Collection의 불변성 보장
-        keywords = (keywords == null) ? Set.of() : Set.copyOf(keywords);
+        keywords = (keywords == null) ? null : Set.copyOf(keywords);
         positions = (positions == null) ? Set.of() : Set.copyOf(positions);
         skills = (skills == null) ? Set.of() : Set.copyOf(skills);
     }

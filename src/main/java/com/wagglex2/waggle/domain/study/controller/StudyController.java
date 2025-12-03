@@ -70,7 +70,7 @@ public class StudyController implements StudyControllerDocs {
             @PageableDefault(size = 9) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        Set<String> nouns = (keywords != null) ? komoranUtil.getNouns(keywords) : Set.of();
+        Set<String> nouns = komoranUtil.getNouns(keywords);
         Set<Skill> skillSet = (skills != null) ? Set.copyOf(skills) : Set.of();
 
         StudySearchCondition condition = new StudySearchCondition(

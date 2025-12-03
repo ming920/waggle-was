@@ -61,11 +61,17 @@ public class KomoranUtil {
     public Set<String> getNouns(String target) {
         log.info("[Search] 입력 검색어: '{}'", target);
 
-        // 전처리 - 특수문자 및 초성 제거, 소문자로 통일, 앞뒤 공백 제거
-        String preProcessed = target.replaceAll("[^a-zA-Z0-9가-힣\\s]", " ")
-                                    .replaceAll("\\s+", " ")
-                                    .toLowerCase()
-                                    .trim();
+        if (target == null) {
+            return null;
+        }
+
+        // 전처리
+        String preProcessed = target
+                .replaceAll("<[^>]*>", "")  // html tag 제거
+                .replaceAll("[^a-zA-Z0-9가-힣\\s]", " ")  // 특수문자 및 초성 제거
+                .replaceAll("\\s+", " ")  // 불필요한 공백 제거
+                .toLowerCase()  // 소문자로 통일
+                .trim();  // 앞뒤 공백 제거
 
         log.info("[Search] 검색어 전처리 결과: '{}'", preProcessed);
 
