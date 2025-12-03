@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import static org.springframework.data.web.config.EnableSpringDataWebSupport.PageSerializationMode.VIA_DTO;
 
@@ -14,6 +15,7 @@ import static org.springframework.data.web.config.EnableSpringDataWebSupport.Pag
 @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO)
 @EnableRetry(proxyTargetClass = true)  // 낙관적 락 충돌 시 재시도를 위함
 @EnableAsync  // 이벤트 처리를 위함
+@EnableScheduling  // 스케줄링 활성화
 public class WaggleApplication {
 	public static void main(String[] args) {
         SpringApplication.run(WaggleApplication.class, args);
