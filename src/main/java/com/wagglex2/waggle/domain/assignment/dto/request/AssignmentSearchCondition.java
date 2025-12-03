@@ -10,7 +10,7 @@ public record AssignmentSearchCondition(
         RecruitmentStatus status
 ) {
     public AssignmentSearchCondition {
-        keywords = (keywords == null) ? Set.of() : Set.copyOf(keywords);
+        keywords = (keywords == null) ? null : Set.copyOf(keywords);
         grades = (grades == null) ? Set.of() : Set.copyOf(grades);
     }
 }

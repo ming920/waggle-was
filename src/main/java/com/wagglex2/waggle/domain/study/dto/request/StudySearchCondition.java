@@ -11,7 +11,7 @@ public record StudySearchCondition(
         RecruitmentStatus status
 ) {
     public StudySearchCondition {
-        keywords = (keywords == null) ? Set.of() : Set.copyOf(keywords);
+        keywords = (keywords == null) ? null : Set.copyOf(keywords);
         skills = (skills == null) ? Set.of() : Set.copyOf(skills);
     }
 }
