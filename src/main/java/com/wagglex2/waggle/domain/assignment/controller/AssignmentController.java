@@ -68,7 +68,7 @@ public class AssignmentController {
             @PageableDefault(size = 9) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        Set<String> nouns = (keywords != null) ? KomoranUtil.getNouns(keywords) : Set.of();
+        Set<String> nouns = KomoranUtil.getNouns(keywords);
         Set<Integer> gradeSet = (grades != null) ? Set.copyOf(grades) : Set.of();
 
         AssignmentSearchCondition condition = new AssignmentSearchCondition(

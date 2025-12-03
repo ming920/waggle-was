@@ -76,7 +76,7 @@ public class ProjectController implements ProjectControllerDocs {
             @PageableDefault(size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
-        Set<String> nouns = (keywords != null) ? komoranUtil.getNouns(keywords) : Set.of();
+        Set<String> nouns = komoranUtil.getNouns(keywords);
         Set<PositionType> positionSet = (positions != null) ? Set.copyOf(positions) : Set.of();
         Set<Skill> skillSet = (skills != null) ? Set.copyOf(skills) : Set.of();
 

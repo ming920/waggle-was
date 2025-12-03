@@ -32,7 +32,8 @@ public class RecruitmentSearchMatcher {
      * 제목(title)과 내용(content)에서 주어진 키워드가 포함된 행을 찾는
      * BooleanExpression을 생성한다.
      *
-     * <p>키워드가 비어 있거나 null인 경우 null을 반환한다.
+     * <p>키워드가 null이면 null을 반환하고,
+     * 의미 있는 토큰이 없으면 항상 false 조건을 반환한다.
      *
      * @param keywords 검색할 키워드
      * @param title 검색 대상 제목 컬럼
@@ -40,8 +41,14 @@ public class RecruitmentSearchMatcher {
      * @return 키워드가 포함된 행을 찾는 BooleanExpression, 키워드가 없으면 null을 반환
      */
     public static BooleanExpression match(Set<String> keywords, StringPath title, StringPath content) {
-        if (keywords == null || keywords.isEmpty()) {
+        // 검색어 입력이 없으므로 모든 데이터 조회
+        if (keywords == null) {
             return null;
+        }
+
+        // 검색어가 공백이거나 의미 있는 토큰이 없으므로 조회 결과 없음
+        if (keywords.isEmpty()) {
+            return Expressions.booleanTemplate("1 = 0");
         }
 
         /*
