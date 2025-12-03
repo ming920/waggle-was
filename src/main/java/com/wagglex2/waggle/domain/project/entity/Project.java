@@ -54,7 +54,7 @@ public class Project extends BaseRecruitment {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
-            name = "recruitment_positions",
+            name = "project_positions",
             joinColumns = @JoinColumn(name = "recruitment_id", referencedColumnName = "id")
     )
     private Set<PositionParticipantInfo> positions = new HashSet<>();
@@ -62,14 +62,14 @@ public class Project extends BaseRecruitment {
     @Enumerated(value = EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
-            name = "recruitment_skills",
+            name = "project_skills",
             joinColumns = @JoinColumn(name = "recruitment_id", referencedColumnName = "id")
     )
     private Set<Skill> skills = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
-            name = "recruitment_grades",
+            name = "project_grades",
             joinColumns = @JoinColumn(name = "recruitment_id", referencedColumnName = "id")
     )
     private Set<Integer> grades = new HashSet<>();
