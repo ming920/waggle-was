@@ -115,6 +115,7 @@ public class AuthController implements AuthControllerDocs {
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("None")
+                .domain(".waggle-waggle.com")
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
