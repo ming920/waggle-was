@@ -349,6 +349,7 @@ public class UserController implements UserControllerDocs {
                 .sameSite("None")
                 .path("/")
                 .maxAge(maxAge)
+                .domain(".waggle-waggle.com")
                 .build();
 
         response.addHeader("Set-Cookie", cookie.toString());
