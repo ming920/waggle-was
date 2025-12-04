@@ -22,8 +22,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -257,6 +260,15 @@ public class AuthServiceImpl implements AuthService {
 
         } catch (BadCredentialsException e) {
             log.warn("로그인 실패 - 잘못된 인증 정보 : {}", dto.username());
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        } catch (UsernameNotFoundException e) {
+            log.warn("로그인 실패 - 사용자를 찾을 수 없음 : {}", dto.username());
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        } catch (DisabledException e) {
+            log.warn("로그인 실패 - 계정 비활성화 : {}", dto.username());
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        } catch (AuthenticationException e) {
+            log.warn("로그인 실패 - 기타 인증 실패");
             throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
         }
     }
