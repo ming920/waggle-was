@@ -89,6 +89,15 @@ public interface AuthControllerDocs {
                                                         ]
                                                     }
                                                     """
+                                    ),
+                                    @ExampleObject(
+                                            name = "지원하지 않는 학교 이메일",
+                                            value = """
+                                                    {
+                                                        "code": "UNSUPPORTED_UNIVERSITY_DOMAIN",
+                                                        "message": "지원하지 않는 학교 도메인입니다."
+                                                    }
+                                                    """
                                     )
                             }
                     )
