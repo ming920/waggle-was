@@ -176,6 +176,7 @@ public class AuthController implements AuthControllerDocs {
                 .secure(true)
                 .sameSite("None")
                 .path("/")
+                .domain(".waggle-waggle.com")
                 .maxAge(maxAge)
                 .build();
 
