@@ -24,6 +24,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -257,6 +258,8 @@ public class AuthServiceImpl implements AuthService {
 
         } catch (BadCredentialsException e) {
             log.warn("로그인 실패 - 잘못된 인증 정보 : {}", dto.username());
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        } catch (AuthenticationException e) {
             throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
         }
     }
