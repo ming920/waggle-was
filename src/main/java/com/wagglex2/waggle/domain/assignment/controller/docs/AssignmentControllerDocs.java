@@ -3,6 +3,7 @@ package com.wagglex2.waggle.domain.assignment.controller.docs;
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentCreationRequestDto;
+import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentUpdateRequestDto;
 import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentSummaryResponseDto;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
@@ -937,6 +938,297 @@ public interface AssignmentControllerDocs {
     ResponseEntity<APIResponse<Page<AssignmentSummaryResponseDto>>> getMyBookmarks(
             @RequestParam(value = "status", required = false) RecruitmentStatus status,
             @PageableDefault(size = 9) Pageable pageable,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+
+    @Operation(
+            summary = "과제 공고 수정",
+            description = "본인이 작성한 과제 공고 1건을 수정한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
+            parameters = {
+                    @Parameter(
+                            name = "assignmentId",
+                            description = "수정하려는 과제 공고 ID",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            example = "23"
+                    )
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "과제 공고 수정 내용",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = AssignmentUpdateRequestDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "title": "데이터베이스 설계 과제 팀원 모집 (추가 모집)",
+                                                        "content": "데이터베이스 설계 과제를 함께 진행할 팀원을 추가로 모집합니다.",
+                                                        "department": "컴퓨터공학과",
+                                                        "lecture": "데이터베이스",
+                                                        "lectureCode": "CS301",
+                                                        "participants": {
+                                                            "maxParticipants": 5,
+                                                            "currParticipants": 2
+                                                        },
+                                                        "grades": [
+                                                            { "grade": 2 },
+                                                            { "grade": 3 }
+                                                        ],
+                                                        "deadline": "2025-12-25T23:59:59"
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "과제 공고 수정 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "과제 공고를 성공적으로 수정하였습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "요청 값이 유효하지 않은 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "현재 참가 인원이 모집 인원보다 많은 경우",
+                                            value = """
+                                                    {
+                                                        "code": "MAX_PARTICIPANTS_EXCEEDED",
+                                                        "message": "참가 인원이 최대 모집 인원을 초과했습니다."
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            name = "요청 값이 유효하지 않은 경우",
+                                            value = """
+                                                    {
+                                                        "code": "VALIDATION_FAILED",
+                                                        "message": "요청 값이 유효하지 않습니다.",
+                                                        "data": [
+                                                            {
+                                                                "field": "participants.maxParticipants",
+                                                                "message": "모집 인원은 1 이상이어야 합니다."
+                                                            },
+                                                            {
+                                                                "field": "department",
+                                                                "message": "학과명이 누락되었습니다."
+                                                            }
+                                                        ]
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "다른 사용자의 과제 공고를 수정하려는 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "CANNOT_UPDATE_ANOTHER_USER_ASSIGNMENT",
+                                                        "message": "다른 사용자의 과제 공고는 수정할 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "해당 과제 공고를 찾을 수 없는 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "ASSIGNMENT_NOT_FOUND",
+                                                        "message": "과제 공고를 찾을 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    ResponseEntity<APIResponse<Void>> updateAssignment(
+            @PathVariable Long assignmentId,
+            @RequestBody @Valid AssignmentUpdateRequestDto requestDto,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    );
+
+    @Operation(
+            summary = "과제 공고 삭제",
+            description = "본인이 작성한 과제 공고 1건을 삭제한다.",
+            security = @SecurityRequirement(name = "Bearer Token"),
+            parameters = {
+                    @Parameter(
+                            name = "assignmentId",
+                            description = "삭제하려는 과제 공고 ID",
+                            required = true,
+                            in = ParameterIn.PATH,
+                            example = "23"
+                    )
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "과제 공고 삭제 성공",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "SUCCESS",
+                                                        "message": "과제 공고를 성공적으로 삭제하였습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "401",
+                    description = "인증 필요",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "UNAUTHORIZED",
+                                                        "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "다른 사용자의 과제 공고를 삭제하려는 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "CANNOT_DELETE_ANOTHER_USER_ASSIGNMENT",
+                                                        "message": "다른 사용자의 과제 공고는 삭제할 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "해당 과제 공고를 찾을 수 없는 경우",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "ASSIGNMENT_NOT_FOUND",
+                                                        "message": "과제 공고를 찾을 수 없습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "서버 오류 발생",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "INTERNAL_ERROR",
+                                                        "message": "서버 오류가 발생했습니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            )
+    })
+    ResponseEntity<APIResponse<Void>> deleteAssignment(
+            @PathVariable Long assignmentId,
             @AuthenticationPrincipal CustomUserDetails userDetails
     );
 }
