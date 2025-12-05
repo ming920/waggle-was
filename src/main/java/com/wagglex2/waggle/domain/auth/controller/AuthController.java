@@ -1,5 +1,6 @@
 package com.wagglex2.waggle.domain.auth.controller;
 
+import com.wagglex2.waggle.common.exception.BusinessException;
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
@@ -132,21 +133,33 @@ public class AuthController implements AuthControllerDocs {
             @CookieValue(name = REFRESH_TOKEN_COOKIE_NAME, required = false) String refreshToken,
             HttpServletResponse response
     ) {
-        // 1. 토큰 재발급
-        TokenPair tokens = authService.reissueTokens(refreshToken);
+        try {
+            // 1. 토큰 재발급
+            TokenPair tokens = authService.reissueTokens(refreshToken);
 
-        // 2. Access Token -> 헤더에 추가
-        response.setHeader("Authorization", "Bearer " + tokens.accessToken());
+            // 2. Access Token -> 헤더에 추가
+            response.setHeader("Authorization", "Bearer " + tokens.accessToken());
 
-        // 2. Refresh Token -> 쿠키 설정
-        addCookie(response,
-                tokens.refreshToken(),
-                REFRESH_TOKEN_COOKIE_NAME,
-                jwtUtil.getRefreshExpMills() / 1000
-        );
+            // 2. Refresh Token -> 쿠키 설정
+            addCookie(response,
+                    tokens.refreshToken(),
+                    REFRESH_TOKEN_COOKIE_NAME,
+                    jwtUtil.getRefreshExpMills() / 1000
+            );
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(APIResponse.ok("토큰 재발급에 성공했습니다."));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(APIResponse.ok("토큰 재발급에 성공했습니다."));
+
+        } catch (BusinessException e) {
+            addCookie(
+                    response,
+                    "",
+                    REFRESH_TOKEN_COOKIE_NAME,
+                    0
+                    );
+
+            throw new BusinessException(e.getErrorCode());
+        }
     }
 
     /**
