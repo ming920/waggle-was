@@ -9,6 +9,7 @@ import com.wagglex2.waggle.domain.auth.dto.response.SignInResult;
 import com.wagglex2.waggle.domain.auth.dto.response.TokenPair;
 import com.wagglex2.waggle.domain.auth.service.AuthService;
 import com.wagglex2.waggle.domain.user.entity.User;
+import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import io.lettuce.core.RedisConnectionException;
 import jakarta.mail.MessagingException;
@@ -71,6 +72,8 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public void sendAuthCode(String toEmail) {
+
+        University.fromEmail(toEmail);
 
         try {
             // 1. 랜덤 6자리 인증번호 생성
@@ -190,6 +193,9 @@ public class AuthServiceImpl implements AuthService {
         } catch (RedisConnectionException e) {
             log.error("Redis 연결 실패 : {}", e.getMessage());
             throw new BusinessException(ErrorCode.REDIS_CONNECTION_ERROR);
+        } catch (BusinessException e) {
+            log.error("인증번호 오류 : {}", e.getMessage());
+            throw new BusinessException(e.getErrorCode());
         } catch (Exception e) {
             log.error("인증번호 검증 도중 오류 발생 : {]", e.getMessage());
             throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
