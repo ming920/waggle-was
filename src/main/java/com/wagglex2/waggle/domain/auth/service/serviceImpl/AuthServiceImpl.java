@@ -366,6 +366,9 @@ public class AuthServiceImpl implements AuthService {
 
             return new TokenPair(newAccessToken, newRefreshToken);
 
+        } catch (BusinessException e) {
+            log.warn("{}", e.getMessage());
+            throw new BusinessException(e.getErrorCode());
         } catch (RedisConnectionException e) {
             log.warn("Redis 연결 실패 - Token 재발급 로직: {}", e.getMessage());
             throw new BusinessException(ErrorCode.REDIS_CONNECTION_ERROR);
