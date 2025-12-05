@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.assignment.controller;
 
 import com.wagglex2.waggle.common.response.APIResponse;
 import com.wagglex2.waggle.common.security.CustomUserDetails;
+import com.wagglex2.waggle.domain.assignment.controller.docs.AssignmentControllerDocs;
 import com.wagglex2.waggle.domain.common.dto.response.RecruitmentWithAppsResponseDto;
 import com.wagglex2.waggle.domain.common.util.KomoranUtil;
 import com.wagglex2.waggle.domain.assignment.dto.request.AssignmentCreationRequestDto;
@@ -29,7 +30,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/assignments")
 @RequiredArgsConstructor
-public class AssignmentController {
+public class AssignmentController implements AssignmentControllerDocs {
     private final AssignmentService assignmentService;
     private final KomoranUtil KomoranUtil;
 
