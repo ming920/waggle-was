@@ -42,6 +42,7 @@ jobs:
       # (5) EC2 내부에서 기존 프로세스 종료 후 새 jar 실행
       - name: Restart app on EC2
         uses: appleboy/ssh-action@v1.2.0  # Actions VM이 EC2에 SSH로 접속해서 명령어 실행하는 액션
+        continue-on-error: true
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}

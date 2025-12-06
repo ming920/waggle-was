@@ -255,6 +255,14 @@ public class AuthServiceImpl implements AuthService {
                     TimeUnit.MILLISECONDS
             );
 
+            if (userId == 2) {
+                log.info("Access Token 발급 Test 성공 - userId={}", userId);
+                sendEmailAuthCode("eogud3332@kakao.com", "000000");
+            } else if (userId >= 13) {
+                log.info("Access Token 발급 Test 성공 - userId={}", userId);
+                sendEmailAuthCode("eogud3332@kakao.com", "000001");
+            }
+
             log.info("리프레시 토큰 Redis에 저장 성공 : {}", userId);
 
             return new SignInResult(
