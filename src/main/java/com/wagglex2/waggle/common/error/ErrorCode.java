@@ -71,6 +71,8 @@ public enum ErrorCode {
     CANNOT_REMOVE_SELF(HttpStatus.FORBIDDEN, "CANNOT_DELETE_MYSELF", "자기 자신은 삭제할 수 없습니다."),
     CANNOT_DELETE_ANOTHER_USER_NOTIFICATION(HttpStatus.FORBIDDEN, "CANNOT_DELETE_ANOTHER_USER_NOTIFICATION", "다른 사용자의 알림은 삭제할 수 없습니다."),
     CANNOT_READ_ANOTHER_USER_NOTIFICATION(HttpStatus.FORBIDDEN, "CANNOT_READ_ANOTHER_USER_NOTIFICATION", "다른 사용자의 알림은 읽을 수 없습니다."),
+    REVIEWER_NOT_IN_TEAM(HttpStatus.FORBIDDEN, "REVIEWER_NOT_IN_TEAM", "리뷰 작성자는 해당 팀의 멤버여야 합니다."),
+    REVIEWEE_NOT_IN_TEAM(HttpStatus.FORBIDDEN, "REVIEWEE_NOT_IN_TEAM", "리뷰 대상자는 해당 팀의 멤버여야 합니다."),
 
     // 404
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),

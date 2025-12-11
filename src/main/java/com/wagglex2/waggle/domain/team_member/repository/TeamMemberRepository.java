@@ -31,4 +31,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, Long> {
         AND m.user.id = :userId
     """)
     PositionType getPositionInProject(Long projectId, Long userId);
+
+    boolean existsByTeamIdAndUserId(Long teamId, Long userId);
 }
