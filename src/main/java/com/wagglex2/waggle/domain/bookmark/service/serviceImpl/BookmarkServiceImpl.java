@@ -109,4 +109,9 @@ public class BookmarkServiceImpl implements BookmarkService {
         log.error("공고 삭제에 따른 찜 삭제 실패(재시도 모두 실패) (recruitmentId={}, 예외타입={}, 메시지={})",
                 recruitmentId, e.getClass().getSimpleName(), e.getMessage(), e);
     }
+
+    @Recover
+    protected void recover(BusinessException e) {
+        throw e;
+    }
 }

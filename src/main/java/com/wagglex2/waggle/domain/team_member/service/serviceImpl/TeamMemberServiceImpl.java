@@ -89,4 +89,9 @@ public class TeamMemberServiceImpl implements TeamMemberService {
     protected void recover(ObjectOptimisticLockingFailureException e, Long teamId, Long removerId, Long targetId) {
         throw new BusinessException(ErrorCode.TOO_MANY_REQUESTS);
     }
+
+    @Recover
+    protected void recover(BusinessException e) {
+        throw e;
+    }
 }
