@@ -15,9 +15,16 @@ import com.wagglex2.waggle.domain.review.entity.Review;
  * @see com.wagglex2.waggle.domain.review.entity.Review
  */
 public record ReviewResponseDto(
+        Long reviewId,
+        Long teamId,
+        Long revieweeId,
         String content
 ) {
     public static ReviewResponseDto from(Review review) {
-        return new ReviewResponseDto(review.getContent());
+        return new ReviewResponseDto(
+                review.getId(),
+                review.getTeam().getId(),
+                review.getReviewee().getId(),
+                review.getContent());
     }
 }

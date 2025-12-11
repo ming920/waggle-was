@@ -10,6 +10,9 @@ import com.wagglex2.waggle.domain.review.entity.Review;
 import com.wagglex2.waggle.domain.review.entity.type.ReviewStatus;
 import com.wagglex2.waggle.domain.review.repository.ReviewRepository;
 import com.wagglex2.waggle.domain.review.service.ReviewService;
+import com.wagglex2.waggle.domain.team.entity.Team;
+import com.wagglex2.waggle.domain.team.service.TeamService;
+import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserService userService;
+    private final TeamService teamService;
+    private final TeamMemberService teamMemberService;
     private final PageableValidator pageableValidator;
 
     private static final Set<String> REVIEW_SORT_FIELDS =
@@ -66,10 +71,19 @@ public class ReviewServiceImpl implements ReviewService {
             throw new BusinessException(ErrorCode.SELF_REVIEW_NOT_ALLOWED);
         }
 
+        Team team = teamService.findById(dto.teamId());
         User reviewer = userService.findById(reviewerId);
         User reviewee = userService.findById(dto.revieweeId());
 
-        Review review = dto.toEntity(reviewer, reviewee, dto.content());
+        if (!teamMemberService.existsByTeamIdAndUserId(team.getId(), reviewer.getId())) {
+            throw new BusinessException(ErrorCode.REVIEWER_NOT_IN_TEAM);
+        }
+
+        if (!teamMemberService.existsByTeamIdAndUserId(team.getId(), reviewee.getId())) {
+            throw new BusinessException(ErrorCode.REVIEWEE_NOT_IN_TEAM);
+        }
+
+        Review review = dto.toEntity(team, reviewer, reviewee, dto.content());
         return reviewRepository.save(review).getId();
     }
 
