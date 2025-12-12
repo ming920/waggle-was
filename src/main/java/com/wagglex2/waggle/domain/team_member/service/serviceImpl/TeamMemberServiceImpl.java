@@ -82,6 +82,11 @@ public class TeamMemberServiceImpl implements TeamMemberService {
         recruitment.decreaseCurrParticipant(target.getPosition());
     }
 
+    @Override
+    public boolean existsByTeamIdAndUserId(Long teamId, Long userId) {
+        return teamMemberRepository.existsByTeamIdAndUserId(teamId, userId);
+    }
+
     /**
      * 재시도 실패 시 처리
      */

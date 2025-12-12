@@ -2,6 +2,7 @@ package com.wagglex2.waggle.domain.review.entity;
 
 import com.wagglex2.waggle.domain.review.dto.request.ReviewUpdateRequestDto;
 import com.wagglex2.waggle.domain.review.entity.type.ReviewStatus;
+import com.wagglex2.waggle.domain.team.entity.Team;
 import com.wagglex2.waggle.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -45,6 +46,10 @@ public class Review {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id", nullable = false)
+    private Team team;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reviewer_id", nullable = false)
     private User reviewer;
 
@@ -68,7 +73,8 @@ public class Review {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Review(User reviewer, User reviewee, String content) {
+    public Review(Team team, User reviewer, User reviewee, String content) {
+        this.team = team;
         this.reviewer = reviewer;
         this.reviewee = reviewee;
         this.content = content;

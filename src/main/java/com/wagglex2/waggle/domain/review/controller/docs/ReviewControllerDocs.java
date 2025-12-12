@@ -41,8 +41,9 @@ public interface ReviewControllerDocs {
                                     @ExampleObject(
                                             value = """
                                                     {
-                                                        "userTargetId" : 5,
-                                                        "content" : "리뷰 test"
+                                                        "teamId": 52,
+                                                        "revieweeId" : 12,
+                                                        "content" : "디자인 너무 잘하시는 거 같아요!"
                                                     }
                                                     """
                                     )
@@ -120,6 +121,32 @@ public interface ReviewControllerDocs {
                                                     {
                                                         "code": "UNAUTHORIZED",
                                                         "message": "인증이 필요합니다."
+                                                    }
+                                                    """
+                                    )
+                            }
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "403",
+                    description = "리뷰 작성자/대상자가 팀에 없음",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = APIResponse.class),
+                            examples = {
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "REVIEWER_NOT_IN_TEAM",
+                                                        "message": "리뷰 작성자는 해당 팀의 멤버여야 합니다."
+                                                    }
+                                                    """
+                                    ),
+                                    @ExampleObject(
+                                            value = """
+                                                    {
+                                                        "code": "REVIEWEE_NOT_IN_TEAM",
+                                                        "message": "리뷰 대상자는 해당 팀의 멤버여야 합니다."
                                                     }
                                                     """
                                     )
@@ -206,33 +233,49 @@ public interface ReviewControllerDocs {
                                     @ExampleObject(
                                             value = """
                                                     {
-                                                        "code": "SUCCESS",
-                                                        "message": "내가 작성한 리뷰 조회에 성공했습니다.",
-                                                        "data": {
-                                                            "content": [
-                                                                {
-                                                                    "content": "리뷰 test13"
-                                                                },
-                                                                {
-                                                                    "content": "리뷰 test12"
-                                                                },
-                                                                {
-                                                                    "content": "리뷰 test11"
-                                                                },
-                                                                {
-                                                                    "content": "리뷰 test9"                                                                    },
-                                                                {
-                                                                    "content": "리뷰 test8"
-                                                                }
-                                                            ],
-                                                            "page": {
-                                                                "size": 5,
-                                                                "number": 0,
-                                                                "totalElements": 13,
-                                                                "totalPages": 3
-                                                            }
-                                                        }
-                                                    }
+                                                         "code": "SUCCESS",
+                                                         "message": "내가 작성한 리뷰 조회에 성공했습니다.",
+                                                         "data": {
+                                                             "content": [
+                                                                 {
+                                                                     "reviewId": 53,
+                                                                     "teamId": 52,
+                                                                     "revieweeId": 11,
+                                                                     "content": "디자인 너무 잘하시는 거 같아요!"
+                                                                 },
+                                                                 {
+                                                                     "reviewId": 46,
+                                                                     "teamId": 1,
+                                                                     "revieweeId": 10,
+                                                                     "content": "ㅎㅇㅎㅇㅎㅇ"
+                                                                 },
+                                                                 {
+                                                                     "reviewId": 45,
+                                                                     "teamId": 2,
+                                                                     "revieweeId": 10,
+                                                                     "content": "안녕하세요 리뷰 테스트 수정"
+                                                                 },
+                                                                 {
+                                                                     "reviewId": 39,
+                                                                     "teamId": 3,
+                                                                     "revieweeId": 10,
+                                                                     "content": "리뷰 테스트 테스트"
+                                                                 },
+                                                                 {
+                                                                     "reviewId": 28,
+                                                                     "teamId": 4,
+                                                                     "revieweeId": 10,
+                                                                     "content": "리뷰 테스트 22"
+                                                                 }
+                                                             ],
+                                                             "page": {
+                                                                 "size": 5,
+                                                                 "number": 0,
+                                                                 "totalElements": 11,
+                                                                 "totalPages": 3
+                                                             }
+                                                         }
+                                                     }
                                                     """
                                     )
                             }
@@ -352,34 +395,49 @@ public interface ReviewControllerDocs {
                                     @ExampleObject(
                                             value = """
                                                     {
-                                                        "code": "SUCCESS",
-                                                        "message": "내가 받은 리뷰 조회에 성공했습니다.",
-                                                        "data": {
-                                                            "content": [
-                                                                {
-                                                                    "content": "리뷰 test입니다.(5)"
-                                                                },
-                                                                {
-                                                                    "content": "리뷰 test입니다.(4)"
-                                                                },
-                                                                {
-                                                                    "content": "리뷰 test입니다.(3)"
-                                                                },
-                                                                {
-                                                                   "content": "리뷰 test입니다.(2)"
-                                                                },
-                                                                {
-                                                                    "content": "리뷰 test입니다.(1)"
-                                                                }
-                                                            ],
-                                                            "page": {
-                                                                "size": 5,
-                                                                "number": 0,
-                                                                "totalElements": 6,
-                                                                "totalPages": 2
-                                                            }
-                                                        }
-                                                    }
+                                                         "code": "SUCCESS",
+                                                         "message": "내가 받은 리뷰 조회에 성공했습니다.",
+                                                         "data": {
+                                                             "content": [
+                                                                 {
+                                                                     "reviewId": 51,
+                                                                     "teamId": 5,
+                                                                     "revieweeId": 3,
+                                                                     "content": "덕분에 버스탔습니다!"
+                                                                 },
+                                                                 {
+                                                                     "reviewId": 50,
+                                                                     "teamId": 4,
+                                                                     "revieweeId": 3,
+                                                                     "content": "너무 멋있어요!"
+                                                                 },
+                                                                 {
+                                                                     "reviewId": 18,
+                                                                     "teamId": 3,
+                                                                     "revieweeId": 3,
+                                                                     "content": "테스팅에 재능 있으신 것 같아요. 굿굿"
+                                                                 },
+                                                                 {
+                                                                     "reviewId": 15,
+                                                                     "teamId": 2,
+                                                                     "revieweeId": 3,
+                                                                     "content": "이 분 볼때마다 새우깡 먹고 싶어요"
+                                                                 },
+                                                                 {
+                                                                     "reviewId": 14,
+                                                                     "teamId": 1,
+                                                                     "revieweeId": 3,
+                                                                     "content": "이 분 볼때마다 새우깡 먹고 싶어요"
+                                                                 }
+                                                             ],
+                                                             "page": {
+                                                                 "size": 5,
+                                                                 "number": 0,
+                                                                 "totalElements": 6,
+                                                                 "totalPages": 2
+                                                             }
+                                                         }
+                                                     }
                                                     """
                                     )
                             }

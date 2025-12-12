@@ -55,4 +55,6 @@ public interface TeamMemberService {
      * </ul>
      */
     void removeMember(Long teamId, Long removerId ,Long targetId);
+
+    boolean existsByTeamIdAndUserId(Long teamId, Long userId);
 }
