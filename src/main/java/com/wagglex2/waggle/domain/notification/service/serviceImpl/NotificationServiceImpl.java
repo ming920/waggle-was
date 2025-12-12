@@ -135,4 +135,9 @@ public class NotificationServiceImpl implements NotificationService {
         log.error("알림 생성 실패(재시도 모두 실패) (senderId={}, receiverId={}, applicationId={}, type={})",
                 senderId, receiverId, applicationId, type);
     }
+
+    @Recover
+    protected void recover(BusinessException e) {
+        throw e;
+    }
 }

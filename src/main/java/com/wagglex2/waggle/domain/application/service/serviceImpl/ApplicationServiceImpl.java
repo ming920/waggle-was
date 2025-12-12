@@ -398,4 +398,9 @@ public class ApplicationServiceImpl implements ApplicationService {
         log.error("공고 삭제 및 재개에 따른 지원 상태 업데이트 실패(재시도 모두 실패) (recruitmentId={}, 예외타입={}, 메시지={})",
                 recruitmentId, e.getClass().getSimpleName(), e.getMessage(), e);
     }
+
+    @Recover
+    protected void recover(BusinessException e) {
+        throw e;
+    }
 }
