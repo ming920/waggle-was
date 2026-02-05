@@ -7,10 +7,27 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    @Query(value = """
+        SELECT field FROM (
+            SELECT 'username' AS field FROM users u WHERE u.username = :username AND u.status != :status
+            UNION ALL
+            SELECT 'email' AS field FROM users u WHERE u.email = :email AND u.status != :status
+            UNION ALL
+            SELECT 'nickname' AS field FROM users u WHERE u.nickname = :nickname AND u.status != :status
+        ) duplicated
+        """, nativeQuery = true)
+    List<String> findDuplicatedFields(
+            @Param("username") String username,
+            @Param("email") String email,
+            @Param("nickname") String nickname,
+            @Param("status") String status
+    );
 
     Optional<User> findByUsername(String username);
     Optional<User> findByIdAndStatusNot(Long id, UserStatus status);

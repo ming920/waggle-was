@@ -39,10 +39,16 @@ import java.util.Set;
 @Entity
 @Table(
         name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_username", columnNames = "username"),
+                @UniqueConstraint(name = "uk_email", columnNames = "email"),
+                @UniqueConstraint(name = "uk_nickname", columnNames = "nickname")
+        },
         indexes = {
                 @Index(name = "idx_username", columnList = "username"),
                 @Index(name = "idx_email", columnList = "email"),
-                @Index(name = "idx_nickname", columnList = "nickname")
+                @Index(name = "idx_nickname", columnList = "nickname"),
+                @Index(name = "idx_status", columnList = "status")
         }
 )
 @Getter
@@ -149,6 +155,21 @@ public class User {
 
     public void withdraw() {
         this.status = UserStatus.WITHDRAWN;
+
+        // 탈퇴 시 개인정보 익명화
+        long timestamp = System.currentTimeMillis();
+        this.username = "withdrawn_" + this.id + "_" + timestamp;
+        this.email = "withdrawn_" + this.id + "_" + timestamp + "@deleted.local";
+        this.nickname = "탈퇴한사용자" + this.id;
+
+        // 추가 개인정보 삭제
+        this.profileImageUrl = null;
+        this.shortIntro = null;
+        this.grade = null;
+        this.position = null;
+        if (this.skills != null) {
+            this.skills.clear();
+        }
     }
 
     public void updateProfileImageUrl(String profileImageUrl) {

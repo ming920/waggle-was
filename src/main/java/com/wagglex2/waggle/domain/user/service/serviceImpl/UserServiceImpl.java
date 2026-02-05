@@ -16,6 +16,7 @@ import com.wagglex2.waggle.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -101,20 +104,43 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Long signUp(SignUpRequestDto dto) {
-        if (existsByUsername(dto.username())) {
+
+        // 한번에 쿼리로 모든 중복 체크
+        List<String> duplicated = userRepository.findDuplicatedFields(
+                dto.username(),
+                dto.email(),
+                dto.nickname(),
+                UserStatus.WITHDRAWN.name()
+        );
+
+        if (duplicated.contains("username")) {
             throw new BusinessException(ErrorCode.DUPLICATED_USERNAME);
         }
 
-        if (existsByEmail(dto.email())) {
+        if (duplicated.contains("email")) {
             throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
         }
 
-        if (existsByNickname(dto.nickname())) {
+        if (duplicated.contains("nickname")) {
             throw new BusinessException(ErrorCode.DUPLICATED_NICKNAME);
         }
 
-        User user = dto.toEntity(passwordEncoder, defaultProfileImageUrl);
-        return userRepository.save(user).getId();
+        try {
+            User user = dto.toEntity(passwordEncoder, defaultProfileImageUrl);
+            return userRepository.save(user).getId();
+        } catch (DataIntegrityViolationException e) {
+            String message = e.getMessage();
+
+            if (message.contains("username")  || message.contains("uk_username")) {
+                throw new BusinessException(ErrorCode.DUPLICATED_USERNAME);
+            } else if (message.contains("email") || message.contains("uk_email")) {
+                throw new BusinessException(ErrorCode.DUPLICATED_EMAIL);
+            } else if (message.contains("nickname") || message.contains("uk_nickname")) {
+                throw new BusinessException(ErrorCode.DUPLICATED_NICKNAME);
+            }
+
+            throw new BusinessException(ErrorCode.DUPLICATED_USER);
+        }
     }
 
     @Override
