@@ -29,7 +29,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.security.SecureRandom;
@@ -38,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class AuthServiceImpl implements AuthService {
 
@@ -225,6 +223,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public SignInResult login(SignInRequestDto dto) {
         try {
+            long totalStart = System.currentTimeMillis();
+
+            long authStart = System.currentTimeMillis();
             // 1. 인증 시도
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.username(), dto.password())
@@ -234,6 +235,10 @@ public class AuthServiceImpl implements AuthService {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             Long userId = userDetails.getUserId();
 
+            long authTime = System.currentTimeMillis() - authStart;
+            log.info("인증 처리 시간: {} ms", authTime);
+
+            long tokenStart = System.currentTimeMillis();
             // 3. Access / Refresh Token 발급
             String accessToken = jwtUtil.createAccessToken(
                     userId,
@@ -242,11 +247,17 @@ public class AuthServiceImpl implements AuthService {
                     userDetails.getRole()
             );
             String refreshToken = jwtUtil.createRefreshToken(userId);
+            long tokenTime = System.currentTimeMillis() - tokenStart;
+            log.info("토큰 생성 처리 시간: {} ms", tokenTime);
 
+            long redisDeleteStart = System.currentTimeMillis();
             // 4. 기존 Refresh Token 삭제 (중복 로그인 방지)
             String redisKey = REFRESH_TOKEN_PREFIX + userId;
             redisTemplate.delete(redisKey);
+            long redisDeleteTime = System.currentTimeMillis() - redisDeleteStart;
+            log.info("기존 리프레시 토큰 삭제 처리 시간: {} ms", redisDeleteTime);
 
+            long redisSetStart = System.currentTimeMillis();
             // 5. 새로운 Refresh Token을 Redis에 저장
             redisTemplate.opsForValue().set(
                     redisKey,
@@ -254,16 +265,11 @@ public class AuthServiceImpl implements AuthService {
                     jwtUtil.getRefreshExpMills(),
                     TimeUnit.MILLISECONDS
             );
-
-            if (userId == 2) {
-                log.info("Access Token 발급 Test 성공 - userId={}", userId);
-                sendEmailAuthCode("eogud3332@kakao.com", "000000");
-            } else if (userId >= 13) {
-                log.info("Access Token 발급 Test 성공 - userId={}", userId);
-                sendEmailAuthCode("eogud3332@kakao.com", "000001");
-            }
+            long redisSetTime = System.currentTimeMillis() - redisSetStart;
+            log.info("새 리프레시 토큰 저장 처리 시간: {} ms", redisSetTime);
 
             log.info("리프레시 토큰 Redis에 저장 성공 : {}", userId);
+            log.info("총 로그인 처리 시간: {} ms", System.currentTimeMillis() - totalStart);
 
             return new SignInResult(
                     userId,
