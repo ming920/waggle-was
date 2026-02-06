@@ -18,10 +18,17 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        long startTime = System.currentTimeMillis();
+
         User user = userService.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
+        long endTime = System.currentTimeMillis() - startTime;
+
+        log.info("loadUserByUsername 실행 시간: {} ms", endTime);
+
         return new CustomUserDetails(user);
     }
 }

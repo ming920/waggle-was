@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum University {
-    YOUNGNAM_UNIV("영남대", "yu.ac.kr"),
+    YEUNGNAM_UNIV("영남대", "yu.ac.kr"),
     KYUNGBUK_UNIV("경북대", "knu.ac.kr"),
     KUMOH_UNIV("금오공대", "kumoh.ac.kr"),
     GYEONGGUK_NATIONAL_UNIV("국립경국대", "gknu.ac.kr"),
