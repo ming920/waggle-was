@@ -82,7 +82,7 @@ public class ProjectServiceIntegrationTest {
         // 데이터 변경 확인
         assertThat(project).usingRecursiveComparison()
                 .ignoringFields("id", "user", "category", "grades",
-                        "createdAt", "updatedAt", "viewCount", "status")
+                        "createdAt", "updatedAt", "viewCount", "status", "version")
                 .isEqualTo(updateDto);
 
         // 수정일이 갱신되었는지 확인

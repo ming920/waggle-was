@@ -71,7 +71,7 @@ class StudyServiceIntegrationTest {
         // Project 테스트처럼 DTO와 엔티티를 재귀 비교 (타입 달라도 필드명 기준으로 비교됨)
         assertThat(study).usingRecursiveComparison()
                 .ignoringFields(
-                        "id", "user", "category", "createdAt", "updatedAt", "viewCount", "status"
+                        "id", "user", "category", "createdAt", "updatedAt", "viewCount", "status", "version"
                 )
                 .isEqualTo(updateDto);
 
