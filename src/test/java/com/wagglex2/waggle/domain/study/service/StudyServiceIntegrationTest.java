@@ -10,6 +10,7 @@ import com.wagglex2.waggle.domain.study.repository.StudyRepository;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.entity.type.UserRoleType;
+import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
 import com.wagglex2.waggle.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +71,7 @@ class StudyServiceIntegrationTest {
         // Project 테스트처럼 DTO와 엔티티를 재귀 비교 (타입 달라도 필드명 기준으로 비교됨)
         assertThat(study).usingRecursiveComparison()
                 .ignoringFields(
-                        "id", "user", "category", "createdAt", "updatedAt", "viewCount", "status"
+                        "id", "user", "category", "createdAt", "updatedAt", "viewCount", "status", "version"
                 )
                 .isEqualTo(updateDto);
 
@@ -120,12 +121,9 @@ class StudyServiceIntegrationTest {
                 .password("pw")
                 .nickname("솔랑솔랑")
                 .email("abc123@waggle.com")
-                .university(University.YOUNGNAM_UNIV)
-                .grade(3)
+                .university(University.YEUNGNAM_UNIV)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("Hi")
-                .position(PositionType.BACK_END)
-                .skills(Set.of(Skill.JAVA, Skill.SPRING_BOOT))
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 }

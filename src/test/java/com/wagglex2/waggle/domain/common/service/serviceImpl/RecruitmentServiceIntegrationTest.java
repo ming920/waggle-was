@@ -11,6 +11,7 @@ import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.entity.type.UserRoleType;
+import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
 import com.wagglex2.waggle.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +58,7 @@ class RecruitmentServiceIntegrationTest {
         // given
         saveRecruitments();  // 마감일이 지난 공고와 지나지 않은 공고 각각 5개씩 저장
 
-        List<BaseRecruitment> expired = recruitmentRepository.findByStatusIsAndDeadlineBefore(
+        List<BaseRecruitment> expired = findByStatusAndDeadlineBefore(
                 RecruitmentStatus.RECRUITING,
                 LocalDateTime.now()
         );
@@ -73,7 +74,7 @@ class RecruitmentServiceIntegrationTest {
         recruitmentRepository.flush();
 
         // then
-        List<BaseRecruitment> updated = recruitmentRepository.findByStatusIsAndDeadlineBefore(
+        List<BaseRecruitment> updated = findByStatusAndDeadlineBefore(
                 RecruitmentStatus.CLOSED,
                 LocalDateTime.now()
         );
@@ -87,6 +88,12 @@ class RecruitmentServiceIntegrationTest {
         // 상태 변경 데이터 개수 일치 확인
         // 실제 DB 연동 테스트이기 때문에 5개 보다 많을 수 있음
         assertThat(updated.size()).isEqualTo(expired.size());
+    }
+
+    private List<BaseRecruitment> findByStatusAndDeadlineBefore(RecruitmentStatus status, LocalDateTime time) {
+        return recruitmentRepository.findAll().stream()
+                .filter(r -> r.getStatus() == status && r.getDeadline().isBefore(time))
+                .toList();
     }
 
     void saveRecruitments() {
@@ -144,12 +151,9 @@ class RecruitmentServiceIntegrationTest {
                 .password("pw")
                 .nickname("솔랑솔랑")
                 .email("abc123@waggle.com")
-                .university(University.YOUNGNAM_UNIV)
-                .grade(3)
+                .university(University.YEUNGNAM_UNIV)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("Hi")
-                .position(PositionType.FRONT_END)
-                .skills(Set.of(Skill.REACT, Skill.SPRING_BOOT))
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 }

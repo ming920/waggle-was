@@ -1,6 +1,7 @@
 package com.wagglex2.waggle.domain.project.repository;
 
 import com.wagglex2.waggle.common.config.JpaAuditingConfig;
+import com.wagglex2.waggle.common.config.QueryDslConfig;
 import com.wagglex2.waggle.domain.common.type.*;
 import com.wagglex2.waggle.domain.project.entity.Project;
 import com.wagglex2.waggle.domain.project.type.MeetingType;
@@ -8,6 +9,7 @@ import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.entity.type.UserRoleType;
+import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
 import com.wagglex2.waggle.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +29,7 @@ import static org.assertj.core.api.Assertions.*;
     JpaAuditingConfig를 import하지 않으면 @CreatedDate, @LastModifiedDate 등이 적용되지 않아
     createdAt, updatedAt 필드가 null이 되어, 테스트 정상 진행 불가
 */
-@Import(JpaAuditingConfig.class)
+@Import({JpaAuditingConfig.class, QueryDslConfig.class})
 @DataJpaTest
 class ProjectRepositoryTest {
     @Autowired
@@ -144,12 +146,9 @@ class ProjectRepositoryTest {
                 .password("password")
                 .nickname("nickname")
                 .email("email@email.com")
-                .university(University.YOUNGNAM_UNIV)
-                .grade(3)
+                .university(University.YEUNGNAM_UNIV)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("short intro")
-                .position(PositionType.FRONT_END)
-                .skills(Set.of(Skill.REACT, Skill.SPRING_BOOT))
+                .status(UserStatus.ACTIVE)
                 .build();
 
     }

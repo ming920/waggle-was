@@ -14,6 +14,7 @@ import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.entity.type.UserRoleType;
+import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
 import com.wagglex2.waggle.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,7 @@ public class ProjectServiceIntegrationTest {
         // 데이터 변경 확인
         assertThat(project).usingRecursiveComparison()
                 .ignoringFields("id", "user", "category", "grades",
-                        "createdAt", "updatedAt", "viewCount", "status")
+                        "createdAt", "updatedAt", "viewCount", "status", "version")
                 .isEqualTo(updateDto);
 
         // 수정일이 갱신되었는지 확인
@@ -163,12 +164,9 @@ public class ProjectServiceIntegrationTest {
                 .password("pw")
                 .nickname("솔랑솔랑")
                 .email("abc123@waggle.com")
-                .university(University.YOUNGNAM_UNIV)
-                .grade(3)
+                .university(University.YEUNGNAM_UNIV)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("Hi")
-                .position(PositionType.FRONT_END)
-                .skills(Set.of(Skill.REACT, Skill.SPRING_BOOT))
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 }

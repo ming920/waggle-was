@@ -1,8 +1,10 @@
 package com.wagglex2.waggle.domain.project.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
 import com.wagglex2.waggle.domain.common.type.*;
+import com.wagglex2.waggle.domain.common.util.KomoranUtil;
 import com.wagglex2.waggle.domain.project.dto.response.ProjectDetailResponseDto;
 import com.wagglex2.waggle.domain.project.entity.Project;
 import com.wagglex2.waggle.domain.project.service.ProjectService;
@@ -19,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -55,6 +59,9 @@ class ProjectControllerTest {
     @MockitoBean
     private JwtUtil jwtUtil;
 
+    @MockitoBean
+    private KomoranUtil komoranUtil;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -63,8 +70,11 @@ class ProjectControllerTest {
     void getProject() throws Exception {
         // given
         Project project = createProject();
-        ProjectDetailResponseDto responseDto = ProjectDetailResponseDto.fromEntity(project);
-        given(projectService.getProject(1L, 1L)).willReturn(responseDto);
+        ProjectDetailResponseDto responseDto = ProjectDetailResponseDto.fromEntity(project, null, false, null);
+        given(projectService.getProject(7L, 1L)).willReturn(responseDto);
+        CustomUserDetails principal = new CustomUserDetails(7L, "username", "nickname", "ROLE_USER");
+        TestSecurityContextHolder.setAuthentication(
+                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities()));
 
         // when
         String responseJson = mockMvc.perform(

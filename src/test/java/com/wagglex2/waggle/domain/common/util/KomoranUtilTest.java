@@ -25,6 +25,6 @@ class KomoranUtilTest {
 
         // then
         assertThat(res1).containsExactlyInAnyOrder("소공", "웹", "백엔드", "자바", "스프링");
-        assertThat(res2).containsExactlyInAnyOrder("운영체제", "과제", "3학년");
+        assertThat(res2).containsExactlyInAnyOrder("운영체제", "과제", "3학년", "운영체제과제3학년");
     }
 }

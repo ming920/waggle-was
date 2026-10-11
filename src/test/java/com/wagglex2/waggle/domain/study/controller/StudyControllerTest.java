@@ -1,7 +1,9 @@
 package com.wagglex2.waggle.domain.study.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
+import com.wagglex2.waggle.domain.common.util.KomoranUtil;
 import com.wagglex2.waggle.domain.study.dto.response.StudyDetailResponseDto;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.study.service.StudyService;
@@ -18,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -47,6 +51,9 @@ class StudyControllerTest {
     @MockitoBean
     private JwtUtil jwtUtil;
 
+    @MockitoBean
+    private KomoranUtil komoranUtil;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -55,8 +62,11 @@ class StudyControllerTest {
     void getStudy() throws Exception {
         // given
         Study study = createStudy();
-        StudyDetailResponseDto responseDto = StudyDetailResponseDto.fromEntity(study);
-        given(studyService.getStudy(1L, 1L)).willReturn(responseDto);
+        StudyDetailResponseDto responseDto = StudyDetailResponseDto.fromEntity(study, false, null);
+        given(studyService.getStudy(7L, 1L)).willReturn(responseDto);
+        CustomUserDetails principal = new CustomUserDetails(7L, "username", "nickname", "ROLE_USER");
+        TestSecurityContextHolder.setAuthentication(
+                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities()));
 
         // when
         String responseJson = mockMvc.perform(
@@ -79,7 +89,7 @@ class StudyControllerTest {
         User author = mock(User.class);
         given(author.getId()).willReturn(1L);
         given(author.getNickname()).willReturn("홍길동");
-        given(author.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(author.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
 
         // Period 는 내부 생성자가 공개 안됐을 수 있어 mock 처리 (DTO 변환은 null 필드 허용)
         Period period = mock(Period.class);

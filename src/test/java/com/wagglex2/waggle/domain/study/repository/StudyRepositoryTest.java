@@ -1,11 +1,13 @@
 package com.wagglex2.waggle.domain.study.repository;
 
 import com.wagglex2.waggle.common.config.JpaAuditingConfig;
+import com.wagglex2.waggle.common.config.QueryDslConfig;
 import com.wagglex2.waggle.domain.common.type.*;
 import com.wagglex2.waggle.domain.study.entity.Study;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.entity.type.UserRoleType;
+import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
 import com.wagglex2.waggle.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,7 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(JpaAuditingConfig.class)
+@Import({JpaAuditingConfig.class, QueryDslConfig.class})
 @DataJpaTest
 class StudyRepositoryTest {
 
@@ -137,12 +139,9 @@ class StudyRepositoryTest {
                 .password("password")
                 .nickname("nickname")
                 .email("email@email.com")
-                .university(University.YOUNGNAM_UNIV)
-                .grade(3)
+                .university(University.YEUNGNAM_UNIV)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("short intro")
-                .position(PositionType.BACK_END)
-                .skills(Set.of(Skill.JAVA, Skill.SPRING_BOOT))
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 }
