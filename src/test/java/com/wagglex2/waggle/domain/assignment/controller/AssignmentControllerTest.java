@@ -1,11 +1,13 @@
 package com.wagglex2.waggle.domain.assignment.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wagglex2.waggle.common.security.CustomUserDetails;
 import com.wagglex2.waggle.common.security.jwt.JwtUtil;
 import com.wagglex2.waggle.domain.assignment.dto.response.AssignmentDetailResponseDto;
 import com.wagglex2.waggle.domain.assignment.entity.Assignment;
 import com.wagglex2.waggle.domain.assignment.service.AssignmentService;
 import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
+import com.wagglex2.waggle.domain.common.util.KomoranUtil;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.service.UserService;
@@ -17,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.test.context.TestSecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -47,6 +51,9 @@ class AssignmentControllerTest {
     @MockitoBean
     private JwtUtil jwtUtil;
 
+    @MockitoBean
+    private KomoranUtil komoranUtil;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -56,7 +63,10 @@ class AssignmentControllerTest {
         // given
         Assignment assignment = createAssignment();
         AssignmentDetailResponseDto responseDto = AssignmentDetailResponseDto.fromEntity(assignment, false, null);
-        given(assignmentService.getAssignment(1L, 1L)).willReturn(responseDto);
+        given(assignmentService.getAssignment(7L, 1L)).willReturn(responseDto);
+        CustomUserDetails principal = new CustomUserDetails(7L, "username", "nickname", "ROLE_USER");
+        TestSecurityContextHolder.setAuthentication(
+                new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities()));
 
         // when
         String responseJson = mockMvc.perform(

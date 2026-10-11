@@ -11,6 +11,7 @@ import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.entity.type.UserRoleType;
+import com.wagglex2.waggle.domain.user.entity.type.UserStatus;
 import com.wagglex2.waggle.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,6 +154,7 @@ public class AssignmentServiceIntegrationTest {
                 .email("abc123@waggle.com")
                 .university(University.YOUNGNAM_UNIV)
                 .role(UserRoleType.ROLE_USER)
+                .status(UserStatus.ACTIVE)
                 .build();
     }
 }

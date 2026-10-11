@@ -1,5 +1,6 @@
 package com.wagglex2.waggle.domain.project.service;
 
+import com.wagglex2.waggle.domain.bookmark.service.BookmarkService;
 import com.wagglex2.waggle.domain.common.dto.response.PositionInfoResponseDto;
 import com.wagglex2.waggle.domain.common.type.*;
 import com.wagglex2.waggle.domain.project.dto.response.ProjectDetailResponseDto;
@@ -8,7 +9,10 @@ import com.wagglex2.waggle.domain.project.repository.ProjectRepository;
 import com.wagglex2.waggle.domain.project.service.serviceImpl.ProjectServiceImpl;
 import com.wagglex2.waggle.domain.project.type.MeetingType;
 import com.wagglex2.waggle.domain.project.type.ProjectPurpose;
+import com.wagglex2.waggle.domain.team_member.service.TeamMemberService;
 import com.wagglex2.waggle.domain.user.entity.User;
+import com.wagglex2.waggle.domain.user.entity.type.University;
+import com.wagglex2.waggle.domain.user.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +36,15 @@ class ProjectServiceImplTest {
     @Mock
     private ProjectRepository projectRepository;
 
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private BookmarkService bookmarkService;
+
+    @Mock
+    private TeamMemberService teamMemberService;
+
     @InjectMocks
     private ProjectServiceImpl projectService;
 
@@ -40,25 +53,33 @@ class ProjectServiceImplTest {
     void getProject() {
         // given
         Project project = createProject();
+        given(projectRepository.findWithAllById(1L)).willReturn(Optional.of(project));
+        User viewer = mock(User.class);
+        given(viewer.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(userService.findById(2L)).willReturn(viewer);
+        given(bookmarkService.findIdByUserIdAndRecruitmentId(2L, 1L)).willReturn(Optional.empty());
+        given(teamMemberService.getPositionInProject(1L, 3L)).willReturn(PositionType.BACK_END);
         given(projectRepository.increaseViewCount(1L)).willReturn(1);
 
         // when
-        ProjectDetailResponseDto actual = projectService.getProject(1L, 1L);
+        ProjectDetailResponseDto actual = projectService.getProject(2L, 1L);
 
         // then
-        ProjectDetailResponseDto expected = ProjectDetailResponseDto.fromEntity(project, null, false, null);
+        ProjectDetailResponseDto expected = ProjectDetailResponseDto.fromEntity(project, PositionType.BACK_END, false, null);
 
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("viewCount")
                 .isEqualTo(expected);
 
+        verify(projectRepository, times(1)).findWithAllById(1L);
         verify(projectRepository, times(1)).increaseViewCount(1L);
     }
 
     private Project createProject() {
         User author = mock(User.class);
-        given(author.getId()).willReturn(1L);
+        given(author.getId()).willReturn(3L);
         given(author.getNickname()).willReturn("솔랑솔랑");
+        given(author.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
 
         LocalDate startDate = LocalDate.of(2025, 9, 10);
         LocalDate endDate = startDate.plusDays(10);
