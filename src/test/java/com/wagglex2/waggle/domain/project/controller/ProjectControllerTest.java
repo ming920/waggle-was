@@ -63,7 +63,7 @@ class ProjectControllerTest {
     void getProject() throws Exception {
         // given
         Project project = createProject();
-        ProjectDetailResponseDto responseDto = ProjectDetailResponseDto.fromEntity(project);
+        ProjectDetailResponseDto responseDto = ProjectDetailResponseDto.fromEntity(project, null, false, null);
         given(projectService.getProject(1L, 1L)).willReturn(responseDto);
 
         // when

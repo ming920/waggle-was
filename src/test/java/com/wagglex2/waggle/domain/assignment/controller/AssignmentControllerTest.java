@@ -55,7 +55,7 @@ class AssignmentControllerTest {
     void getAssignment() throws Exception {
         // given
         Assignment assignment = createAssignment();
-        AssignmentDetailResponseDto responseDto = AssignmentDetailResponseDto.fromEntity(assignment);
+        AssignmentDetailResponseDto responseDto = AssignmentDetailResponseDto.fromEntity(assignment, false, null);
         given(assignmentService.getAssignment(1L, 1L)).willReturn(responseDto);
 
         // when

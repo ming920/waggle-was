@@ -46,7 +46,7 @@ class ProjectServiceImplTest {
         ProjectDetailResponseDto actual = projectService.getProject(1L, 1L);
 
         // then
-        ProjectDetailResponseDto expected = ProjectDetailResponseDto.fromEntity(project);
+        ProjectDetailResponseDto expected = ProjectDetailResponseDto.fromEntity(project, null, false, null);
 
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("viewCount")

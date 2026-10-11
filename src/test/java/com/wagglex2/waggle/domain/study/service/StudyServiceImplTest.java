@@ -45,7 +45,7 @@ class StudyServiceImplTest {
         StudyDetailResponseDto actual = studyService.getStudy(1L, 1L);
 
         // then
-        StudyDetailResponseDto expected = StudyDetailResponseDto.fromEntity(study);
+        StudyDetailResponseDto expected = StudyDetailResponseDto.fromEntity(study, false, null);
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("viewCount")
                 .isEqualTo(expected);

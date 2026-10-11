@@ -43,7 +43,7 @@ class AssignmentServiceImplTest {
         AssignmentDetailResponseDto actual = assignmentService.getAssignment(1L, 1L);
 
         // then
-        AssignmentDetailResponseDto expected = AssignmentDetailResponseDto.fromEntity(assignment);
+        AssignmentDetailResponseDto expected = AssignmentDetailResponseDto.fromEntity(assignment, false, null);
         assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("viewCount")
                 .isEqualTo(expected);

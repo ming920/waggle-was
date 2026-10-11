@@ -138,11 +138,7 @@ class StudyRepositoryTest {
                 .nickname("nickname")
                 .email("email@email.com")
                 .university(University.YOUNGNAM_UNIV)
-                .grade(3)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("short intro")
-                .position(PositionType.BACK_END)
-                .skills(Set.of(Skill.JAVA, Skill.SPRING_BOOT))
                 .build();
     }
 }

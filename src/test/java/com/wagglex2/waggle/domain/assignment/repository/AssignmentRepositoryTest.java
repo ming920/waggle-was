@@ -117,11 +117,7 @@ class AssignmentRepositoryTest {
                 .nickname("nickname")
                 .email("email@email.com")
                 .university(University.YOUNGNAM_UNIV)
-                .grade(3)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("짧은 소개글")
-                .position(com.wagglex2.waggle.domain.common.type.PositionType.FRONT_END)
-                .skills(Set.of(com.wagglex2.waggle.domain.common.type.Skill.JAVA))
                 .build();
     }
 }

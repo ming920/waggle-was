@@ -7,9 +7,7 @@ import com.wagglex2.waggle.domain.assignment.repository.AssignmentRepository;
 import com.wagglex2.waggle.domain.common.dto.request.GradeRequestDto;
 import com.wagglex2.waggle.domain.common.dto.request.ParticipantInfoUpdateRequestDto;
 import com.wagglex2.waggle.domain.common.type.ParticipantInfo;
-import com.wagglex2.waggle.domain.common.type.PositionType;
 import com.wagglex2.waggle.domain.common.type.RecruitmentStatus;
-import com.wagglex2.waggle.domain.common.type.Skill;
 import com.wagglex2.waggle.domain.user.entity.User;
 import com.wagglex2.waggle.domain.user.entity.type.University;
 import com.wagglex2.waggle.domain.user.entity.type.UserRoleType;
@@ -154,11 +152,7 @@ public class AssignmentServiceIntegrationTest {
                 .nickname("솔랑솔랑")
                 .email("abc123@waggle.com")
                 .university(University.YOUNGNAM_UNIV)
-                .grade(3)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("Hi")
-                .position(PositionType.FRONT_END)
-                .skills(Set.of(Skill.REACT, Skill.SPRING_BOOT))
                 .build();
     }
 }

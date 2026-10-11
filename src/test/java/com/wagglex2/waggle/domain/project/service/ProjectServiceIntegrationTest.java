@@ -164,11 +164,7 @@ public class ProjectServiceIntegrationTest {
                 .nickname("솔랑솔랑")
                 .email("abc123@waggle.com")
                 .university(University.YOUNGNAM_UNIV)
-                .grade(3)
                 .role(UserRoleType.ROLE_USER)
-                .shortIntro("Hi")
-                .position(PositionType.FRONT_END)
-                .skills(Set.of(Skill.REACT, Skill.SPRING_BOOT))
                 .build();
     }
 }

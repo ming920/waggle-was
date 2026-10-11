@@ -55,7 +55,7 @@ class StudyControllerTest {
     void getStudy() throws Exception {
         // given
         Study study = createStudy();
-        StudyDetailResponseDto responseDto = StudyDetailResponseDto.fromEntity(study);
+        StudyDetailResponseDto responseDto = StudyDetailResponseDto.fromEntity(study, false, null);
         given(studyService.getStudy(1L, 1L)).willReturn(responseDto);
 
         // when
