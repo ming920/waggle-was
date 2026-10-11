@@ -164,7 +164,7 @@ public class ProjectServiceIntegrationTest {
                 .password("pw")
                 .nickname("솔랑솔랑")
                 .email("abc123@waggle.com")
-                .university(University.YOUNGNAM_UNIV)
+                .university(University.YEUNGNAM_UNIV)
                 .role(UserRoleType.ROLE_USER)
                 .status(UserStatus.ACTIVE)
                 .build();

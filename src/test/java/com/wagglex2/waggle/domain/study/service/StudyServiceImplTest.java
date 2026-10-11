@@ -48,7 +48,7 @@ class StudyServiceImplTest {
         Study study = createStudy();
         given(studyRepository.findWithAllById(1L)).willReturn(Optional.of(study));
         User viewer = mock(User.class);
-        given(viewer.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(viewer.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
         given(userService.findById(2L)).willReturn(viewer);
         given(bookmarkService.findIdByUserIdAndRecruitmentId(2L, 1L)).willReturn(Optional.empty());
         given(studyRepository.increaseViewCount(1L)).willReturn(1);
@@ -70,7 +70,7 @@ class StudyServiceImplTest {
         User author = mock(User.class);
         given(author.getId()).willReturn(3L);
         given(author.getNickname()).willReturn("박대형");
-        given(author.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(author.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
 
         return Study.builder()
                 .user(author)

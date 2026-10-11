@@ -89,7 +89,7 @@ class StudyControllerTest {
         User author = mock(User.class);
         given(author.getId()).willReturn(1L);
         given(author.getNickname()).willReturn("홍길동");
-        given(author.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(author.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
 
         // Period 는 내부 생성자가 공개 안됐을 수 있어 mock 처리 (DTO 변환은 null 필드 허용)
         Period period = mock(Period.class);

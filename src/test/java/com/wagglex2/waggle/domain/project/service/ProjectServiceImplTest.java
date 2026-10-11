@@ -55,7 +55,7 @@ class ProjectServiceImplTest {
         Project project = createProject();
         given(projectRepository.findWithAllById(1L)).willReturn(Optional.of(project));
         User viewer = mock(User.class);
-        given(viewer.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(viewer.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
         given(userService.findById(2L)).willReturn(viewer);
         given(bookmarkService.findIdByUserIdAndRecruitmentId(2L, 1L)).willReturn(Optional.empty());
         given(teamMemberService.getPositionInProject(1L, 3L)).willReturn(PositionType.BACK_END);
@@ -79,7 +79,7 @@ class ProjectServiceImplTest {
         User author = mock(User.class);
         given(author.getId()).willReturn(3L);
         given(author.getNickname()).willReturn("솔랑솔랑");
-        given(author.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(author.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
 
         LocalDate startDate = LocalDate.of(2025, 9, 10);
         LocalDate endDate = startDate.plusDays(10);

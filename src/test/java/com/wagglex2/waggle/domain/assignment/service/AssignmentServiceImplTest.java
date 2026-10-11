@@ -46,7 +46,7 @@ class AssignmentServiceImplTest {
         Assignment assignment = createAssignment();
         given(assignmentRepository.findWithAllById(1L)).willReturn(Optional.of(assignment));
         User viewer = mock(User.class);
-        given(viewer.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(viewer.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
         given(userService.findById(2L)).willReturn(viewer);
         given(bookmarkService.findIdByUserIdAndRecruitmentId(2L, 1L)).willReturn(Optional.empty());
         given(assignmentRepository.increaseViewCount(1L)).willReturn(1);
@@ -68,7 +68,7 @@ class AssignmentServiceImplTest {
         User author = mock(User.class);
         given(author.getId()).willReturn(3L);
         given(author.getNickname()).willReturn("박대형");
-        given(author.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(author.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
 
         return Assignment.builder()
                 .user(author)

@@ -89,7 +89,7 @@ class AssignmentControllerTest {
         User author = mock(User.class);
         given(author.getId()).willReturn(1L);
         given(author.getNickname()).willReturn("박대형");
-        given(author.getUniversity()).willReturn(University.YOUNGNAM_UNIV);
+        given(author.getUniversity()).willReturn(University.YEUNGNAM_UNIV);
 
         return Assignment.builder()
                 .user(author)

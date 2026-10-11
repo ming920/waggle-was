@@ -139,7 +139,7 @@ class StudyRepositoryTest {
                 .password("password")
                 .nickname("nickname")
                 .email("email@email.com")
-                .university(University.YOUNGNAM_UNIV)
+                .university(University.YEUNGNAM_UNIV)
                 .role(UserRoleType.ROLE_USER)
                 .status(UserStatus.ACTIVE)
                 .build();
